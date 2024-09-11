@@ -47,6 +47,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        //should return an array list
         throw new RuntimeException("Not implemented");
     }
 }
