@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -68,8 +69,12 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //should return an array list
+        //PieceMoveCalc returns arraylist which can be converted into Collection to return
         //use switch cases based on pieceType to call PieceMovesCalc
-        throw new RuntimeException("Not implemented");
+        PieceMoveCalc Calculator = new PieceMoveCalc(myPosition, type, getTeamColor(), board);
+        ArrayList<ChessMove> Moves = Calculator.CalcPieceMoves();
+
+        return Moves;
+        //throw new RuntimeException("Not implemented");
     }
 }
