@@ -176,8 +176,8 @@ public class PieceMoveCalc {
     }
 
     public ArrayList<ChessMove> QueenMovesCalc() {
-        ArrayList<ChessMove> MovesList = new ArrayList<ChessMove>();
-
+        ArrayList<ChessMove> MovesList = RookMovesCalc();
+        MovesList.addAll(BishopMovesCalc());
         return MovesList;
     }
 
