@@ -72,7 +72,34 @@ public class PieceMoveCalc {
 
     public ArrayList<ChessMove> RookMovesCalc() {
         ArrayList<ChessMove> MovesList = new ArrayList<ChessMove>();
-
+        //up
+        int i = 1;
+        while (spaceAvailable(pos.getRow()+i,pos.getColumn())) {
+            MovesList.add(new ChessMove(pos, new ChessPosition(pos.getRow()+i,pos.getColumn()),null));
+            if (pieceFound(pos.getRow()+i,pos.getColumn())) break;
+            i++;
+        }
+        //down
+        i = 1;
+        while (spaceAvailable(pos.getRow()-i,pos.getColumn())) {
+            MovesList.add(new ChessMove(pos, new ChessPosition(pos.getRow()-i,pos.getColumn()),null));
+            if (pieceFound(pos.getRow()-i,pos.getColumn())) break;
+            i++;
+        }
+        //left
+        i = 1;
+        while (spaceAvailable(pos.getRow(),pos.getColumn()-i)) {
+            MovesList.add(new ChessMove(pos, new ChessPosition(pos.getRow(),pos.getColumn()-i),null));
+            if (pieceFound(pos.getRow(),pos.getColumn()-i)) break;
+            i++;
+        }
+        //right
+        i = 1;
+        while (spaceAvailable(pos.getRow(),pos.getColumn()+i)) {
+            MovesList.add(new ChessMove(pos, new ChessPosition(pos.getRow(),pos.getColumn()+i),null));
+            if (pieceFound(pos.getRow(),pos.getColumn()+i)) break;
+            i++;
+        }
         return MovesList;
     }
 
