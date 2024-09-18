@@ -57,15 +57,94 @@ public class PieceMoveCalc {
         return WithinBounds(row, col) && moveable(row, col);
     }
 
-    public boolean EligibleForPromotion(int row) {
-        return row == 0 || row == 7;
+    public boolean eligibleForPromotion(int row) {
+        return row == 1 || row == 8;
+    }
+
+    public boolean pieceNotFound(int row, int col) {
+        return chessboard.getPiece(new ChessPosition(row, col)) == null;
+    }
+
+    public boolean enemyFound(int row, int col) {
+        return ((chessboard.getPiece(new ChessPosition(row,col)) != null) && (chessboard.getPiece(new ChessPosition(row,col)).getTeamColor() != color));
+    }
+
+    public void addPromoMoves(ArrayList<ChessMove> MovesList, int row, int col) {
+        MovesList.add(new ChessMove(pos, (new ChessPosition(row,col)), ChessPiece.PieceType.QUEEN));
+        MovesList.add(new ChessMove(pos, (new ChessPosition(row,col)), ChessPiece.PieceType.ROOK));
+        MovesList.add(new ChessMove(pos, (new ChessPosition(row,col)), ChessPiece.PieceType.KNIGHT));
+        MovesList.add(new ChessMove(pos, (new ChessPosition(row,col)), ChessPiece.PieceType.BISHOP));
     }
 
     //nested static class?
     //need to take into account
     public ArrayList<ChessMove> PawnMovesCalc() {
         ArrayList<ChessMove> MovesList = new ArrayList<ChessMove>();
+        //pawns at top of board
+        if (color == ChessGame.TeamColor.BLACK) {
+            //check for double move on first move
+            if (pos.getRow() == 7 && pieceNotFound(6,pos.getColumn()) && pieceNotFound(5,pos.getColumn())) {
+                MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow()-2,pos.getColumn())),null));
+            } //move one
+            if (pieceNotFound(pos.getRow()-1,pos.getColumn())) {
+                //check eligible for promotion, if true then add 4 moves with promotion pieces
+                if (eligibleForPromotion(pos.getRow()-1)) {
+                    addPromoMoves(MovesList, pos.getRow()-1,pos.getColumn());
+                } else { //add without promotion piece
+                    MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow()-1,pos.getColumn())), null));
+                }
+            } //check diagonals --possible if enemy found
+            // </
+            if (enemyFound(pos.getRow()-1,pos.getColumn()-1)) {
+                if (eligibleForPromotion(pos.getRow()-1)) {
+                    addPromoMoves(MovesList, pos.getRow()-1,pos.getColumn()-1);
+                } else {
+                    MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow()-1,pos.getColumn()-1)),null));
+                }
+            }
+            // \>
+            if (enemyFound(pos.getRow()-1,pos.getColumn()+1)) {
+                if (eligibleForPromotion(pos.getRow()-1)) {
+                    addPromoMoves(MovesList, pos.getRow()-1,pos.getColumn()+1);
+                } else {
+                    MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow()-1,pos.getColumn()+1)),null));
+                }
+            }
 
+        }
+        else { //color is WHITE, pawns at bottom of board
+            //check for double move on first move
+            if (pos.getRow() == 2 && pieceNotFound(3, pos.getColumn()) && pieceNotFound(4, pos.getColumn())) {
+                MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow() + 2, pos.getColumn())), null));
+            }
+            //move one
+            if (pieceNotFound(pos.getRow()+1, pos.getColumn())) {
+                //check eligible for promotion, if true then add 4 moves with promotion pieces
+                if (eligibleForPromotion(pos.getRow()+1)) {
+                    addPromoMoves(MovesList, pos.getRow()+1, pos.getColumn());
+                } else { //add without promotion piece
+                    MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow()+1, pos.getColumn())), null));
+                }
+            }
+
+            //check diagonals --possible if enemy found
+            // <\
+            if (enemyFound(pos.getRow()+1,pos.getColumn()-1)) {
+                if (eligibleForPromotion(pos.getRow()+1)) {
+                    addPromoMoves(MovesList, pos.getRow()+1,pos.getColumn()-1);
+                } else {
+                    MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow()+1,pos.getColumn()-1)),null));
+                }
+            }
+            // />
+            if (enemyFound(pos.getRow()+1,pos.getColumn()+1)) {
+                if (eligibleForPromotion(pos.getRow()+1)) {
+                    addPromoMoves(MovesList, pos.getRow()+1,pos.getColumn()+1);
+                } else {
+                    MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow()+1,pos.getColumn()+1)),null));
+                }
+            }
+        }
         return MovesList;
     }
 
