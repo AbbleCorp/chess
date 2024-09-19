@@ -73,7 +73,6 @@ public class ChessPiece {
         //use switch cases based on pieceType to call PieceMovesCalc
         PieceMoveCalc Calculator = new PieceMoveCalc(myPosition, type, getTeamColor(), board);
         ArrayList<ChessMove> Moves = Calculator.CalcPieceMoves();
-
         return Moves;
         //throw new RuntimeException("Not implemented");
     }

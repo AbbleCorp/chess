@@ -86,7 +86,7 @@ public class PieceMoveCalc {
             if (pos.getRow() == 7 && pieceNotFound(6,pos.getColumn()) && pieceNotFound(5,pos.getColumn())) {
                 MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow()-2,pos.getColumn())),null));
             } //move one
-            if (pieceNotFound(pos.getRow()-1,pos.getColumn())) {
+            if (WithinBounds(pos.getRow()-1,pos.getColumn()) && pieceNotFound(pos.getRow()-1,pos.getColumn())) {
                 //check eligible for promotion, if true then add 4 moves with promotion pieces
                 if (eligibleForPromotion(pos.getRow()-1)) {
                     addPromoMoves(MovesList, pos.getRow()-1,pos.getColumn());
@@ -95,7 +95,7 @@ public class PieceMoveCalc {
                 }
             } //check diagonals --possible if enemy found
             // </
-            if (enemyFound(pos.getRow()-1,pos.getColumn()-1)) {
+            if (WithinBounds(pos.getRow()-1,pos.getColumn()-1) && enemyFound(pos.getRow()-1,pos.getColumn()-1)) {
                 if (eligibleForPromotion(pos.getRow()-1)) {
                     addPromoMoves(MovesList, pos.getRow()-1,pos.getColumn()-1);
                 } else {
@@ -103,7 +103,7 @@ public class PieceMoveCalc {
                 }
             }
             // \>
-            if (enemyFound(pos.getRow()-1,pos.getColumn()+1)) {
+            if (WithinBounds(pos.getRow()-1,pos.getColumn()+1) &&enemyFound(pos.getRow()-1,pos.getColumn()+1)) {
                 if (eligibleForPromotion(pos.getRow()-1)) {
                     addPromoMoves(MovesList, pos.getRow()-1,pos.getColumn()+1);
                 } else {
@@ -118,7 +118,7 @@ public class PieceMoveCalc {
                 MovesList.add(new ChessMove(pos, (new ChessPosition(pos.getRow() + 2, pos.getColumn())), null));
             }
             //move one
-            if (pieceNotFound(pos.getRow()+1, pos.getColumn())) {
+            if (WithinBounds(pos.getRow()+1,pos.getColumn()) &&pieceNotFound(pos.getRow()+1, pos.getColumn())) {
                 //check eligible for promotion, if true then add 4 moves with promotion pieces
                 if (eligibleForPromotion(pos.getRow()+1)) {
                     addPromoMoves(MovesList, pos.getRow()+1, pos.getColumn());
@@ -129,7 +129,7 @@ public class PieceMoveCalc {
 
             //check diagonals --possible if enemy found
             // <\
-            if (enemyFound(pos.getRow()+1,pos.getColumn()-1)) {
+            if (WithinBounds(pos.getRow()+1,pos.getColumn()-1) && enemyFound(pos.getRow()+1,pos.getColumn()-1)) {
                 if (eligibleForPromotion(pos.getRow()+1)) {
                     addPromoMoves(MovesList, pos.getRow()+1,pos.getColumn()-1);
                 } else {
@@ -137,7 +137,7 @@ public class PieceMoveCalc {
                 }
             }
             // />
-            if (enemyFound(pos.getRow()+1,pos.getColumn()+1)) {
+            if (WithinBounds(pos.getRow()+1,pos.getColumn()+1) &&enemyFound(pos.getRow()+1,pos.getColumn()+1)) {
                 if (eligibleForPromotion(pos.getRow()+1)) {
                     addPromoMoves(MovesList, pos.getRow()+1,pos.getColumn()+1);
                 } else {
