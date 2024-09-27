@@ -25,7 +25,6 @@ public class ChessPosition {
     //subtracted one since row/col count doesn't start from 0
     public int getRow() {
         return row;
-        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -35,7 +34,6 @@ public class ChessPosition {
     //subtracted one since row/col count doesn't start from 0
     public int getColumn() {
         return col;
-        //throw new RuntimeException("Not implemented");
     }
 
     @Override
