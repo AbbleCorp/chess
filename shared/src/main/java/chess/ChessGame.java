@@ -46,6 +46,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        //call pieceMoves on board.getPiece(startPosition)
+        //iterate through collection, creating copy of board with each iteration
+        //play suggested move on board copy, call isInCheck --if true, add to collection validMoves
+        //else don't add, iterate to next
+        //returns null if collection is empty
         throw new RuntimeException("Not implemented");
     }
 
@@ -56,6 +61,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        //apply move to board, removing piece if captured
         throw new RuntimeException("Not implemented");
     }
 
@@ -66,6 +72,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        //opposing team has a piece that could capture the king, but validMoves returns collection
         throw new RuntimeException("Not implemented");
     }
 
@@ -76,6 +83,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
+        //is in check, team has no valid moves to make
         throw new RuntimeException("Not implemented");
     }
 
@@ -88,6 +96,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+        //if not in check and validMoves returns empty
     }
 
     /**
