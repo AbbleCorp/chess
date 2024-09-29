@@ -1,7 +1,11 @@
 package chess;
 
 import java.util.ArrayList;
-
+/**
+ * A calculator that returns an array list of possible moves according to the
+ * type of the piece. Methods for each piece type
+ *
+ */
 public class PieceMoveCalc {
     private ChessPosition pos;
     private ChessGame.TeamColor color;
