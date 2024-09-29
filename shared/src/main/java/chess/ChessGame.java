@@ -57,7 +57,11 @@ public class ChessGame {
             ChessBoard boardCopy = new ChessBoard(chessboard);
             ChessGame gameCopy = new ChessGame();
             gameCopy.setBoard(boardCopy);
-            gameCopy.makeMove(move);
+            try {
+            gameCopy.makeMove(move); }
+            catch (Exception InvalidMoveException) {
+                //what to do here?
+            }
             if (!gameCopy.isInCheck(teamTurn)) {
                 validMoves.add(move);
             }
@@ -77,7 +81,13 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //apply move to board, removing piece if captured
-        throw new RuntimeException("Not implemented");
+        if (move.getPromotionPiece() != null) {
+            chessboard.addPiece(move.getEndPosition(), new ChessPiece(chessboard.getPiece(move.getStartPosition()).getTeamColor(),move.getPromotionPiece()));
+        } else {
+            chessboard.addPiece(move.getEndPosition(),chessboard.getPiece(move.getStartPosition()));
+            chessboard.removePiece(move.getStartPosition());
+        }
+        throw new InvalidMoveException("Illegal Move");
     }
 
     /**
@@ -87,7 +97,9 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        //opposing team has a piece that could capture the king, but validMoves returns collection
+        //opposing team has a piece that could capture the king
+        //iterate through board, if piece at position !- teamColor, call piecemoves to get list of moves
+        //iterate through moves list to see if there is move where endpos == kingpos
         throw new RuntimeException("Not implemented");
     }
 
@@ -98,7 +110,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        //is in check, team has no valid moves to make
+        //is in check, validMoves returns null
         throw new RuntimeException("Not implemented");
     }
 
