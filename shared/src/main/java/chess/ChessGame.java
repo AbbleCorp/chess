@@ -130,7 +130,22 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         //is in check, validMoves returns null
-        throw new RuntimeException("Not implemented");
+        //iterate through board, find moves that teamColor could do
+        //if empty, and isInCheck is true, then return true
+        boolean hasMoves = false;
+        Collection<ChessMove> moves = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessboard.pieceFound(i,j) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
+                    moves = validMoves(new ChessPosition(i,j));
+                    if (!moves.isEmpty()) {
+                        hasMoves = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return isInCheck(teamColor) && hasMoves;
     }
 
     /**
@@ -142,16 +157,21 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         //check for valid moves
-//        Collection<ChessMove> moves;
-//        if (teamColor == TeamColor.WHITE) {
-//            for (ChessPiece piece : whitePieces) {
-//                 moves.addAll(validMoves(piece.))
-//            }
-//        }
-        //return (getTeamTurn() == teamColor && !isInCheck(teamColor))
-
+        boolean hasMoves = false;
+        Collection<ChessMove> moves = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessboard.pieceFound(i,j) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
+                    moves = validMoves(new ChessPosition(i,j));
+                    if (!moves.isEmpty()) {
+                        hasMoves = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return !isInCheck(teamColor) && !hasMoves;
         //if not in check and validMoves returns empty
-        throw new RuntimeException("Not implemented");
     }
 
     /**
