@@ -56,12 +56,13 @@ public class ChessGame {
         for (ChessMove move : moves) {
             ChessBoard boardCopy = new ChessBoard(chessboard);
             ChessGame gameCopy = new ChessGame();
-            gameCopy.setBoard(boardCopy);
-            try {
-            gameCopy.makeMove(move); }
-            catch (Exception InvalidMoveException) {
-                //what to do here?
-            }
+            //use add/remove to apply move, then call isInCheck
+//            gameCopy.setBoard(boardCopy);
+//            try {
+//            gameCopy.makeMove(move); }
+//            catch (Exception InvalidMoveException) {
+//                //what to do here?
+//            }
             if (!gameCopy.isInCheck(teamTurn)) {
                 validMoves.add(move);
             }
@@ -81,6 +82,9 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //apply move to board, removing piece if captured
+        //check if move is valid
+        //call valid moves on startposition of move, see if move is in returned collection
+        //else return invalid move exception
         if (move.getPromotionPiece() != null) {
             chessboard.addPiece(move.getEndPosition(), new ChessPiece(chessboard.getPiece(move.getStartPosition()).getTeamColor(),move.getPromotionPiece()));
         } else {
@@ -97,10 +101,30 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        //find kingpos
+        ChessPosition kingPos = null;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessboard.pieceFound(i,j) && chessboard.getPiece(new ChessPosition(i,j)).equals(new ChessPiece(teamColor, ChessPiece.PieceType.KING))) {
+                    kingPos = new ChessPosition(i,j);
+                }
+            }
+        }
         //opposing team has a piece that could capture the king
         //iterate through board, if piece at position !- teamColor, call piecemoves to get list of moves
-        //iterate through moves list to see if there is move where endpos == kingpos
-        throw new RuntimeException("Not implemented");
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessboard.pieceFound(i,j) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() != teamColor) {
+                    Collection<ChessMove> enemyMoves = chessboard.getPiece(new ChessPosition(i,j)).pieceMoves(chessboard, new ChessPosition(i,j));
+                    for (ChessMove move : enemyMoves) {
+                        if (move.getEndPosition().equals(kingPos)) return true;
+                    }
+                }
+                }
+            }
+        //iterate through moves list to see if there is move where endpos .equals kingpos
+        //else return false
+        return false;
     }
 
     /**

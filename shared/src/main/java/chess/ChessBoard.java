@@ -51,6 +51,10 @@ public class ChessBoard {
         board[position.getRow()-1][position.getColumn()-1] = null;
     }
 
+    public boolean pieceFound(int row, int col) {
+        return board[row][col] == null;
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
