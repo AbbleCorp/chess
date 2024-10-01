@@ -43,6 +43,7 @@ public class ChessBoard {
      * @return Either the piece at the position, or null if no piece is at that
      * position
      */
+
     public ChessPiece getPiece(ChessPosition position) {
         return board[position.getRow()-1][position.getColumn()-1];
     }
@@ -53,6 +54,11 @@ public class ChessBoard {
 
     public boolean pieceFound(int row, int col) {
         return board[row][col] == null;
+    }
+
+    public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece) {
+        addPiece(end,piece);
+        removePiece(start);
     }
 
     /**

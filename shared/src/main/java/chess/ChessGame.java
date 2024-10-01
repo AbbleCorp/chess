@@ -56,8 +56,7 @@ public class ChessGame {
         Collection<ChessMove> moves = chessboard.getPiece(startPosition).pieceMoves(chessboard, startPosition);
         for (ChessMove move : moves) {
             boardCopy = new ChessBoard(chessboard);
-            boardCopy.addPiece(move.getEndPosition(),boardCopy.getPiece(move.getStartPosition()));
-            boardCopy.removePiece(move.getEndPosition());
+            boardCopy.movePiece(move.getStartPosition(),move.getEndPosition(),boardCopy.getPiece(move.getStartPosition()));
             //use add/remove to apply move,
             if (!isInCheck(teamTurn)) {
                 validMoves.add(move);
@@ -80,13 +79,14 @@ public class ChessGame {
         //check if move is valid
         //call valid moves on startposition of move, see if move is in returned collection
         //else return invalid move exception
-        if (move.getPromotionPiece() != null) {
-            chessboard.addPiece(move.getEndPosition(), new ChessPiece(chessboard.getPiece(move.getStartPosition()).getTeamColor(),move.getPromotionPiece()));
-        } else {
-            chessboard.addPiece(move.getEndPosition(),chessboard.getPiece(move.getStartPosition()));
-            chessboard.removePiece(move.getStartPosition());
-        }
-        throw new InvalidMoveException("Illegal Move");
+        Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+        if (validMoves.contains(move)) {
+            if (move.getPromotionPiece() != null) {
+                chessboard.movePiece(move.getStartPosition(),move.getEndPosition(), new ChessPiece(chessboard.getPiece(move.getStartPosition()).getTeamColor(),move.getPromotionPiece()));
+            } else {
+                chessboard.movePiece(move.getStartPosition(),move.getEndPosition(),chessboard.getPiece(move.getStartPosition()));
+            }
+        } else throw new InvalidMoveException("Illegal Move");
     }
 
     /**
