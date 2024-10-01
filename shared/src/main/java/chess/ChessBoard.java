@@ -15,12 +15,11 @@ public class ChessBoard {
         
     }
 
-    public ChessBoard(ChessBoard copy) {
-        ChessPiece[][] boardCopy = new ChessPiece[8][8];
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (getPiece(new ChessPosition(i, j)) != null) {
-                    boardCopy[i][j] = new ChessPiece(getPiece(new ChessPosition(i, j)));
+    public ChessBoard(ChessBoard og) {
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                if (og.pieceFound(new ChessPosition(i, j))) {
+                    addPiece(new ChessPosition(i,j),new ChessPiece(og.getPiece(new ChessPosition(i, j))));
                 }
             }
         }
@@ -52,8 +51,8 @@ public class ChessBoard {
         board[position.getRow()-1][position.getColumn()-1] = null;
     }
 
-    public boolean pieceFound(int row, int col) {
-        return board[row][col] == null;
+    public boolean pieceFound(ChessPosition position) {
+        return board[position.getRow()-1][position.getColumn()-1] != null;
     }
 
     public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece) {

@@ -10,11 +10,11 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private ChessBoard chessboard;
-    TeamColor teamTurn;
-    private ChessBoard boardCopy;
-    public ChessGame() {
+    private ChessBoard chessboard = new ChessBoard();
+    TeamColor teamTurn = TeamColor.WHITE;
 
+    public ChessGame() {
+        chessboard.resetBoard();
     }
 
     /**
@@ -51,14 +51,14 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //call pieceMoves on board.getPiece(startPosition)
         //return null if no piece found
-        if (!chessboard.pieceFound(startPosition.getRow(),startPosition.getColumn())) return null;
+        if (!chessboard.pieceFound(new ChessPosition(startPosition.getRow(),startPosition.getColumn()))) return null;
         Collection<ChessMove> validMoves = new ArrayList<>();
         Collection<ChessMove> moves = chessboard.getPiece(startPosition).pieceMoves(chessboard, startPosition);
         for (ChessMove move : moves) {
-            boardCopy = new ChessBoard(chessboard);
-            boardCopy.movePiece(move.getStartPosition(),move.getEndPosition(),boardCopy.getPiece(move.getStartPosition()));
+            ChessBoard boardCopy = new ChessBoard(chessboard);
+            boardCopy.movePiece(move.getStartPosition(),move.getEndPosition(), boardCopy.getPiece(move.getStartPosition()));
             //use add/remove to apply move,
-            if (!isInCheck(teamTurn)) {
+            if (!isInCheck(chessboard.getPiece(startPosition).getTeamColor(), boardCopy)) {
                 validMoves.add(move);
             }
             //iterate through collection, creating copy of board with each iteration
@@ -96,27 +96,31 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        return isInCheck(teamColor, chessboard);
+    }
+
+    private boolean isInCheck(TeamColor teamColor, ChessBoard board) {
         //find kingpos
         ChessPosition kingPos = null;
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (boardCopy.pieceFound(i,j) && boardCopy.getPiece(new ChessPosition(i,j)).equals(new ChessPiece(teamColor, ChessPiece.PieceType.KING))) {
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                if (board.pieceFound(new ChessPosition(i,j)) && board.getPiece(new ChessPosition(i,j)).equals(new ChessPiece(teamColor, ChessPiece.PieceType.KING))) {
                     kingPos = new ChessPosition(i,j);
                 }
             }
         }
         //opposing team has a piece that could capture the king
         //iterate through board, if piece at position !- teamColor, call piecemoves to get list of moves
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (boardCopy.pieceFound(i,j) && boardCopy.getPiece(new ChessPosition(i,j)).getTeamColor() != teamColor) {
-                    Collection<ChessMove> enemyMoves = boardCopy.getPiece(new ChessPosition(i,j)).pieceMoves(boardCopy, new ChessPosition(i,j));
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                if (board.pieceFound(new ChessPosition(i,j)) && board.getPiece(new ChessPosition(i,j)).getTeamColor() != teamColor) {
+                    Collection<ChessMove> enemyMoves = board.getPiece(new ChessPosition(i,j)).pieceMoves(board, new ChessPosition(i,j));
                     for (ChessMove move : enemyMoves) {
                         if (move.getEndPosition().equals(kingPos)) return true;
                     }
                 }
-                }
             }
+        }
         //iterate through moves list to see if there is move where endpos .equals kingpos
         //else return false
         return false;
@@ -136,7 +140,7 @@ public class ChessGame {
         Collection<ChessMove> moves = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (chessboard.pieceFound(i,j) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
+                if (chessboard.pieceFound(new ChessPosition(i,j)) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
                     moves = validMoves(new ChessPosition(i,j));
                     if (!moves.isEmpty()) {
                         hasMoves = true;
@@ -161,7 +165,7 @@ public class ChessGame {
         Collection<ChessMove> moves = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (chessboard.pieceFound(i,j) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
+                if (chessboard.pieceFound(new ChessPosition(i,j)) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
                     moves = validMoves(new ChessPosition(i,j));
                     if (!moves.isEmpty()) {
                         hasMoves = true;
