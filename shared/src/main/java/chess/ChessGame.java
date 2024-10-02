@@ -151,7 +151,7 @@ public class ChessGame {
                 }
             }
         }
-        return isInCheck(teamColor) && hasMoves;
+        return isInCheck(teamColor) && !hasMoves;
     }
 
     /**
