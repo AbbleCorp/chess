@@ -56,7 +56,7 @@ public class ChessGame {
         Collection<ChessMove> moves = chessboard.getPiece(startPosition).pieceMoves(chessboard, startPosition);
         for (ChessMove move : moves) {
             ChessBoard boardCopy = new ChessBoard(chessboard);
-            boardCopy.movePiece(move.getStartPosition(),move.getEndPosition(), boardCopy.getPiece(move.getStartPosition()));
+            boardCopy.movePiece(move, boardCopy.getPiece(move.getStartPosition()));
             //use add/remove to apply move,
             if (!isInCheck(chessboard.getPiece(startPosition).getTeamColor(), boardCopy)) {
                 validMoves.add(move);
@@ -74,18 +74,20 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
+
+
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //apply move to board, removing piece if captured
         //check if move is valid
         //call valid moves on startposition of move, see if move is in returned collection
         //else return invalid move exception
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
-        if (validMoves.contains(move)) {
-            if (move.getPromotionPiece() != null) {
-                chessboard.movePiece(move.getStartPosition(),move.getEndPosition(), new ChessPiece(chessboard.getPiece(move.getStartPosition()).getTeamColor(),move.getPromotionPiece()));
-            } else {
-                chessboard.movePiece(move.getStartPosition(),move.getEndPosition(),chessboard.getPiece(move.getStartPosition()));
-            }
+        if (chessboard.pieceFound(move.getStartPosition()) &&
+                chessboard.getPiece(move.getStartPosition()).getTeamColor() == teamTurn &&
+                        validMoves.contains(move)) {
+            chessboard.movePiece(move,chessboard.getPiece(move.getStartPosition()));
+            if (teamTurn == TeamColor.BLACK) teamTurn = TeamColor.WHITE;
+            else teamTurn = TeamColor.BLACK;
         } else throw new InvalidMoveException("Illegal Move");
     }
 
@@ -138,8 +140,8 @@ public class ChessGame {
         //if empty, and isInCheck is true, then return true
         boolean hasMoves = false;
         Collection<ChessMove> moves = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
                 if (chessboard.pieceFound(new ChessPosition(i,j)) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
                     moves = validMoves(new ChessPosition(i,j));
                     if (!moves.isEmpty()) {
@@ -163,8 +165,8 @@ public class ChessGame {
         //check for valid moves
         boolean hasMoves = false;
         Collection<ChessMove> moves = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
                 if (chessboard.pieceFound(new ChessPosition(i,j)) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
                     moves = validMoves(new ChessPosition(i,j));
                     if (!moves.isEmpty()) {
@@ -186,12 +188,7 @@ public class ChessGame {
     public void setBoard(ChessBoard board) {
         chessboard = board;
         //also add all pieces to collection to track them
-//        for (int i = 0; i < 8; i++) {
-//            whitePieces.add(chessboard.getPiece(new ChessPosition(0,i)));
-//            whitePieces.add(chessboard.getPiece(new ChessPosition(1,i)));
-//            blackPieces.add(chessboard.getPiece(new ChessPosition(6,i)));
-//            blackPieces.add(chessboard.getPiece(new ChessPosition(7,i)));
-//        }
+
     }
 
     /**

@@ -55,9 +55,13 @@ public class ChessBoard {
         return board[position.getRow()-1][position.getColumn()-1] != null;
     }
 
-    public void movePiece(ChessPosition start, ChessPosition end, ChessPiece piece) {
-        addPiece(end,piece);
-        removePiece(start);
+    public void movePiece(ChessMove move, ChessPiece piece) {
+        if (move.getPromotionPiece() != null) {
+                addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(),move.getPromotionPiece()));
+            } else {
+                addPiece(move.getEndPosition(),piece);
+            }
+        removePiece(move.getStartPosition());
     }
 
     /**
