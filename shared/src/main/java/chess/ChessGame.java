@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public class ChessGame {
     private ChessBoard chessboard = new ChessBoard();
-    TeamColor teamTurn = TeamColor.WHITE;
+    private TeamColor teamTurn = TeamColor.WHITE;
 
     public ChessGame() {
         chessboard.resetBoard();
@@ -78,7 +78,7 @@ public class ChessGame {
 
     public void makeMove(ChessMove move) throws InvalidMoveException {
         //apply move to board, removing piece if captured
-        //check if move is valid
+        //check move is valid
         //call valid moves on startposition of move, see if move is in returned collection
         //else return invalid move exception
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
@@ -138,6 +138,11 @@ public class ChessGame {
         //is in check, validMoves returns null
         //iterate through board, find moves that teamColor could do
         //if empty, and isInCheck is true, then return true
+        boolean hasMoves = teamHasMoves(teamColor);
+        return isInCheck(teamColor) && !hasMoves;
+    }
+
+    private boolean teamHasMoves(TeamColor teamColor) {
         boolean hasMoves = false;
         Collection<ChessMove> moves = new ArrayList<>();
         for (int i = 1; i < 9; i++) {
@@ -151,7 +156,7 @@ public class ChessGame {
                 }
             }
         }
-        return isInCheck(teamColor) && !hasMoves;
+        return hasMoves;
     }
 
     /**
@@ -163,19 +168,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         //check for valid moves
-        boolean hasMoves = false;
-        Collection<ChessMove> moves = new ArrayList<>();
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                if (chessboard.pieceFound(new ChessPosition(i,j)) && chessboard.getPiece(new ChessPosition(i,j)).getTeamColor() == teamColor) {
-                    moves = validMoves(new ChessPosition(i,j));
-                    if (!moves.isEmpty()) {
-                        hasMoves = true;
-                        break;
-                    }
-                }
-            }
-        }
+        boolean hasMoves = teamHasMoves(teamColor);
         return !isInCheck(teamColor) && !hasMoves;
         //if not in check and validMoves returns empty
     }
