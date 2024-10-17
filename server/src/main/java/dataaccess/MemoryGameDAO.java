@@ -3,25 +3,32 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
+    Map<Integer, GameData> gameList;
+
+    @Override
+    public void clear() {
+        gameList.clear();
+    }
 
     @Override
     public void createGame(int GameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
-        //TODO: implement, may need to change method type
+        gameList.put(GameID, new GameData(GameID,whiteUsername,blackUsername,gameName,game));
     }
 
     @Override
     public GameData getGame(int GameID) throws DataAccessException {
-        //TODO: implement
-        throw new DataAccessException("not implemented");
+        return gameList.get(GameID);
     }
 
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
-        //TODO: implement, need to change return type to whatever Collection interface
-        throw new DataAccessException("not implemented");
+        Collection<GameData> gameDataList = new ArrayList<>(gameList.values());
+        return gameDataList;
     }
 
     @Override

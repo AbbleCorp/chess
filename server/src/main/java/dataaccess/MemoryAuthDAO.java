@@ -2,23 +2,27 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.util.Map;
+import java.util.UUID;
+
 public class MemoryAuthDAO implements AuthDAO {
+    Map<String, String> authList;
 
     @Override
-    public AuthData createAuth() throws DataAccessException {
-        //TODO: implement, create token and return
-        throw new DataAccessException("not implemented");
+    public AuthData createAuth(String username) throws DataAccessException {
+        String token = UUID.randomUUID().toString();
+        return new AuthData(username,token);
     }
 
     @Override
-    public void getAuth(AuthData authToken) throws DataAccessException {
-        //TODO: implement, will need to change method type
-        throw new DataAccessException("not implemented");
+    public boolean getAuth(AuthData authToken) throws DataAccessException {
+        return authList.containsKey(authToken.authToken());
     }
 
     @Override
     public void deleteAuth(AuthData authToken) throws DataAccessException {
-        //TODO: implement, may need to change return type?
-        throw new DataAccessException("not implemented");
+        authList.remove(authToken.authToken());
     }
+
+
 }

@@ -11,5 +11,9 @@ public interface UserDAO {
 
     void deleteUser(UserData u) throws DataAccessException;
 
-    UserData getUser() throws DataAccessException;
+    UserData getUser(String username) throws DataAccessException;
+
+    boolean isUserFound(UserData u) throws DataAccessException;
+
+    boolean checkPassword(UserData user, String password) throws DataAccessException;
 }

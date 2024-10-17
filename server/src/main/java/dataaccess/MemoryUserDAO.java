@@ -2,27 +2,37 @@ package dataaccess;
 
 import model.UserData;
 
+import java.util.Map;
+
 public class MemoryUserDAO implements UserDAO {
+    Map<String,UserData> userList;
 
     @Override
     public void clear() throws DataAccessException {
-        //TODO: implement, may need to change type
+        userList.clear();
     }
 
     @Override
     public void createUser(UserData u) throws DataAccessException {
-        //TODO: implement, may need to change type
+        userList.put(u.username(), u);
     }
 
     @Override
     public void deleteUser(UserData u) throws DataAccessException {
-        //TODO: implement, may need to change type
+        userList.remove(u.username());
     }
 
     @Override
-    public UserData getUser() throws DataAccessException {
-        //TODO: implement, may need to change type, figure out parameters
-        throw new DataAccessException("not implemented");
+    public UserData getUser(String username) throws DataAccessException {
+        return userList.get(username);
+    }
+
+    public boolean isUserFound(UserData u) throws DataAccessException{
+        return userList.containsValue(u);
+    }
+
+    public boolean checkPassword(UserData user, String password) throws DataAccessException {
+        return user.username().equals(password);
     }
 
 }

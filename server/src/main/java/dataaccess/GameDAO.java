@@ -8,6 +8,8 @@ import java.util.Collection;
 public interface GameDAO {
 
 
+    void clear() throws DataAccessException;
+
     void createGame(int GameID, String whiteUsername, String blackUsername, String gameName, ChessGame game)
             throws DataAccessException;
 
