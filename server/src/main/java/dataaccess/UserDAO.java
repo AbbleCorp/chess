@@ -5,15 +5,15 @@ import model.UserData;
 public interface UserDAO {
 
 
-    void clear() throws DataAccessException;
+    void clear();
 
-    void createUser(UserData u) throws DataAccessException;
+    void createUser(UserData u);
 
     void deleteUser(UserData u) throws DataAccessException;
 
     UserData getUser(String username) throws DataAccessException;
 
-    boolean isUserFound(UserData u) throws DataAccessException;
+    public boolean isUserFound(String username);
 
-    boolean checkPassword(UserData user, String password) throws DataAccessException;
+    boolean checkPassword(String username, String password) throws DataAccessException;
 }

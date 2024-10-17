@@ -6,23 +6,33 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
-    Map<String, String> authList;
+    Map<String, String> authList; //auth is key, username is value
 
     @Override
-    public AuthData createAuth(String username) throws DataAccessException {
+    public AuthData createAuth(String username) {
         String token = UUID.randomUUID().toString();
-        return new AuthData(username,token);
+        authList.put(token,username);
+        return new AuthData(token, username);
     }
 
     @Override
-    public boolean getAuth(AuthData authToken) throws DataAccessException {
-        return authList.containsKey(authToken.authToken());
+    public boolean getAuth(String authToken) {
+        return authList.containsKey(authToken);
     }
 
     @Override
-    public void deleteAuth(AuthData authToken) throws DataAccessException {
-        authList.remove(authToken.authToken());
+    public void deleteAuth(String authToken) throws DataAccessException {
+        if (authList.containsKey(authToken)) {
+            authList.remove(authToken); }
+        else throw new DataAccessException("Not authorized");
     }
 
+    @Override
+    public String getUsername(String authToken) throws DataAccessException {
+        if (authList.containsKey(authToken)) {
+            return authList.get(authToken);
+        }
+        else throw new DataAccessException("Not authorized");
+    }
 
 }

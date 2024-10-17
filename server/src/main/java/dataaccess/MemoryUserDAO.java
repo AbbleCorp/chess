@@ -8,31 +8,39 @@ public class MemoryUserDAO implements UserDAO {
     Map<String,UserData> userList;
 
     @Override
-    public void clear() throws DataAccessException {
+    public void clear() {
         userList.clear();
     }
 
     @Override
-    public void createUser(UserData u) throws DataAccessException {
+    public void createUser(UserData u) {
         userList.put(u.username(), u);
     }
 
     @Override
     public void deleteUser(UserData u) throws DataAccessException {
-        userList.remove(u.username());
+        if (!userList.containsValue(u)) {
+        userList.remove(u.username()); }
+        else throw new DataAccessException("User not found");
     }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return userList.get(username);
+        if (userList.containsKey(username)) {
+            return userList.get(username); }
+        else throw new DataAccessException("User not found");
     }
 
-    public boolean isUserFound(UserData u) throws DataAccessException{
-        return userList.containsValue(u);
+    public boolean isUserFound(String username) {
+        return userList.containsKey(username);
     }
 
-    public boolean checkPassword(UserData user, String password) throws DataAccessException {
-        return user.username().equals(password);
+
+    public boolean checkPassword(String username, String password) throws DataAccessException {
+        if (userList.containsKey(username)) {
+            return userList.get(username).password().equals(password);
+        }
+        else throw new DataAccessException("User not found");
     }
 
 }
