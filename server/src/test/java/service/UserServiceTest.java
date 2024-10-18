@@ -39,13 +39,10 @@ public class UserServiceTest {
     //register negative test
     @Test
     void testRegisterNeg() throws DataAccessException {
-        boolean exceptionThrown = false;
-        try {
-        userService.register(new UserData("user1", "password1", "email1")); }
-        catch (DataAccessException e) {
-            exceptionThrown = true;
-        }
-            Assertions.assertTrue(exceptionThrown);
+        Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
+            userService.register(new UserData("user1", "password1", "email1"));
+        });
+        Assertions.assertEquals("User already exists", e.getMessage());
     }
 
     //login positive test
@@ -58,29 +55,19 @@ public class UserServiceTest {
     //login negative test, not auth
     @Test
     void testLoginNotAuth() throws DataAccessException {
-        boolean exceptionThrown = false;
-        try {
+        Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             userService.login("user1", "incorrect");
-        } catch (DataAccessException e) {
-            exceptionThrown = true;
-            Assertions.assertEquals("Not authorized", e.getMessage());
-        }
-        Assertions.assertTrue(exceptionThrown);
+        });
+        Assertions.assertEquals("Not authorized", e.getMessage());
     }
 
 
     //login negative test, user not found
     @Test
     void testLoginUserNotFound() {
-        boolean exceptionThrown = false;
-        try {
-            userService.login("user3", "password3");
-        } catch (DataAccessException e) {
-            exceptionThrown = true;
-            Assertions.assertEquals("User not found", e.getMessage());
-        }
-        Assertions.assertTrue(exceptionThrown);
-
+        Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
+            userService.login("user3", "password3"); });
+        Assertions.assertEquals("User not found", e.getMessage());
     }
 
     //logout positive
@@ -89,23 +76,17 @@ public class UserServiceTest {
         Set<String> authTokens = authDAO.listAuth().keySet();
         Iterator<String> it = authTokens.iterator();
         String auth = it.next();
-        try {
-        userService.logout(auth); }
-        catch (DataAccessException e) {
-        }
+        Assertions.assertThrows(DataAccessException.class, () -> {
+        userService.logout(auth); });
         Assertions.assertFalse(authDAO.listAuth().containsKey(auth));
     }
 
     //
     @Test
     void testLogoutNeg() {
-        boolean exceptionThrown = false;
-        try {
-            userService.logout("incorrect"); }
-        catch (DataAccessException e) {
-            exceptionThrown = true;
-        }
-        Assertions.assertTrue(exceptionThrown);
+        Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
+            userService.logout("incorrect"); });
+        Assertions.assertEquals("Not authorized", e.getMessage());
     }
 
 }
