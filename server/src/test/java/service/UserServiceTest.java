@@ -76,8 +76,7 @@ public class UserServiceTest {
         Set<String> authTokens = authDAO.listAuth().keySet();
         Iterator<String> it = authTokens.iterator();
         String auth = it.next();
-        Assertions.assertThrows(DataAccessException.class, () -> {
-        userService.logout(auth); });
+        userService.logout(auth);
         Assertions.assertFalse(authDAO.listAuth().containsKey(auth));
     }
 

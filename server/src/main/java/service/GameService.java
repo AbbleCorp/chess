@@ -28,9 +28,9 @@ public class GameService {
         if (authData.getAuth(authToken) != null) {
             String username = authData.getUsername(authToken);
             GameData originalGame = gameData.getGame(gameID);
-            if (Objects.equals(playerColor, "WHITE") && originalGame.whiteUsername() != null) {
+            if (Objects.equals(playerColor, "WHITE") && originalGame.whiteUsername() == null) {
                 gameData.updateGame(gameID, new GameData(gameID, username, originalGame.blackUsername(), originalGame.gameName(), originalGame.game()));
-            } else if (Objects.equals(playerColor, "BLACK") && originalGame.blackUsername() != null) {
+            } else if (Objects.equals(playerColor, "BLACK") && originalGame.blackUsername() == null) {
                 gameData.updateGame(gameID, new GameData(gameID, originalGame.whiteUsername(), username, originalGame.gameName(), originalGame.game()));
             }
             else throw new DataAccessException("Already taken");
@@ -53,7 +53,7 @@ public class GameService {
     }
 
     int gameIDinc() {
-        return gameID++;
+        return ++gameID;
     }
 
 }
