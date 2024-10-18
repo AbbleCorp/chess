@@ -2,13 +2,18 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.util.Map;
+
 
 public interface AuthDAO {
 
+    void clear();
+
+    Map<String,String> listAuth();
 
     AuthData createAuth(String username);
 
-    boolean getAuth(String authToken);
+    String getAuth(String authToken);
 
     String getUsername(String authToken) throws DataAccessException;
 

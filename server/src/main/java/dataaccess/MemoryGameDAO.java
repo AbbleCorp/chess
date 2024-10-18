@@ -5,10 +5,15 @@ import model.GameData;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     Map<Integer, GameData> gameList;
+
+    public MemoryGameDAO() {
+        gameList = new HashMap<>();
+    }
 
     @Override
     public void clear() {

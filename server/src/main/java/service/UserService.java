@@ -18,12 +18,9 @@ public class UserService {
     }
 
 
-    public void clearUserData() throws DataAccessException {
-        users.clear();
-    }
 
     public AuthData register(UserData user) throws DataAccessException {
-        if (!users.isUserFound(user.username())) {
+        if (users.getUser(user.username()) == null) {
             users.createUser(user);
             AuthData authToken = auths.createAuth(user.username());
             return authToken;
@@ -31,15 +28,18 @@ public class UserService {
     }
 
     public AuthData login(String username, String password) throws DataAccessException {
-        if (users.isUserFound(username)) {
-            users.checkPassword(username,password);
-            return auths.createAuth(username);
+        if (users.getUser(username) != null) {
+            //do password check here
+            if (users.getUser(username).password().equals(password)) {
+                return auths.createAuth(username);
+            }
+            else throw new DataAccessException("Not authorized");
         }
         else throw new DataAccessException("User not found");
     }
 
     public void logout(String auth) throws DataAccessException {
-        if (auths.getAuth(auth)) {
+        if (auths.getAuth(auth) != null) {
             auths.deleteAuth(auth);
         } else throw new DataAccessException("Not authorized");
     }

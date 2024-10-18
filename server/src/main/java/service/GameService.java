@@ -25,7 +25,7 @@ public class GameService {
     }
 
     public void joinGame(String authToken, String playerColor, int gameID) throws DataAccessException {
-        if (authData.getAuth(authToken)) {
+        if (authData.getAuth(authToken) != null) {
             String username = authData.getUsername(authToken);
             GameData originalGame = gameData.getGame(gameID);
             if (Objects.equals(playerColor, "WHITE") && originalGame.whiteUsername() != null) {
@@ -39,7 +39,7 @@ public class GameService {
     }
 
     public int createGame(String authToken, String gameName) throws DataAccessException {
-        if (authData.getAuth(authToken)) {
+        if (authData.getAuth(authToken) != null) {
             int ID = gameIDinc();
             gameData.createGame(ID, null, null, gameName, new ChessGame());
             return gameID;
@@ -47,7 +47,7 @@ public class GameService {
     }
 
     public Collection<GameData> listGames(String authToken) throws DataAccessException {
-        if (authData.getAuth(authToken)) {
+        if (authData.getAuth(authToken) != null) {
             return gameData.listGames(); }
         else throw new DataAccessException("Not authorized");
     }

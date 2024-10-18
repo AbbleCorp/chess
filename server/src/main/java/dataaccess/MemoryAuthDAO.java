@@ -2,11 +2,17 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
     Map<String, String> authList; //auth is key, username is value
+
+    public MemoryAuthDAO() {
+        authList = new HashMap<>();
+    }
+
 
     @Override
     public AuthData createAuth(String username) {
@@ -16,8 +22,18 @@ public class MemoryAuthDAO implements AuthDAO {
     }
 
     @Override
-    public boolean getAuth(String authToken) {
-        return authList.containsKey(authToken);
+    public Map<String,String> listAuth() {
+        return authList;
+    }
+
+    @Override
+    public String getAuth(String authToken) {
+        return authList.get(authToken);
+    }
+
+    @Override
+    public void clear() {
+        authList.clear();
     }
 
     @Override
