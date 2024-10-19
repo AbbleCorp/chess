@@ -28,12 +28,12 @@ public class GameService {
     }
 
     public void joinGame(JoinGameRequest request) throws DataAccessException {
-        if (authData.getAuth(request.authorization()) != null) {
-            String username = authData.getUsername(request.authorization());
+        if (authData.getAuth(request.getAuthorization()) != null) {
+            String username = authData.getUsername(request.getAuthorization());
             GameData originalGame = gameData.getGame(gameID);
-            if (Objects.equals(request.playerColor(), "WHITE") && originalGame.whiteUsername() == null) {
+            if (Objects.equals(request.getPlayerColor(), "WHITE") && Objects.equals(originalGame.whiteUsername(), "")) {
                 gameData.updateGame(gameID, new GameData(gameID, username, originalGame.blackUsername(), originalGame.gameName(), originalGame.game()));
-            } else if (Objects.equals(request.playerColor(), "BLACK") && originalGame.blackUsername() == null) {
+            } else if (Objects.equals(request.getPlayerColor(), "BLACK") && Objects.equals(originalGame.blackUsername(), "")) {
                 gameData.updateGame(gameID, new GameData(gameID, originalGame.whiteUsername(), username, originalGame.gameName(), originalGame.game()));
             }
             else throw new DataAccessException("Already taken");
@@ -42,9 +42,9 @@ public class GameService {
     }
 
     public int createGame(CreateGameRequest request) throws DataAccessException {
-        if (authData.getAuth(request.authorization()) != null) {
+        if (authData.getAuth(request.getAuthorization()) != null) {
             int ID = gameIDinc();
-            gameData.createGame(ID, null, null, request.gameName(), new ChessGame());
+            gameData.createGame(ID, null, null, request.getGameName(), new ChessGame());
             return gameID;
         } else throw new DataAccessException("Not authorized");
     }

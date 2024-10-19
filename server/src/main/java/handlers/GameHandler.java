@@ -31,15 +31,17 @@ public class GameHandler {
     public String createGame(Request req, Response res) throws DataAccessException {
         var Serializer = new Gson();
         String auth = req.headers("authorization");
-        CreateGameRequest request = new CreateGameRequest(req.headers("authorization"),req.params("gameName"));
+        CreateGameRequest request = Serializer.fromJson(req.body(),CreateGameRequest.class);
+        request.setAuthorization(auth);
         int gameID = gameService.createGame(request);
         return Serializer.toJson(gameID);
     }
 
     public String joinGame(Request req, Response res) throws DataAccessException {
         var Serializer = new Gson();
-        JoinGameRequest request = new JoinGameRequest(req.headers("authorization"),
-                req.params("playerColor"),Integer.parseInt(req.params("gameID")));
+        String auth = req.headers("authorization");
+        JoinGameRequest request = Serializer.fromJson(req.body(),JoinGameRequest.class);
+        request.setAuthorization(auth);
         gameService.joinGame(request);
         return Serializer.toJson(new JoinGameResult());
     }
