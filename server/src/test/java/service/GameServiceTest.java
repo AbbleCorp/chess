@@ -2,10 +2,7 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.*;
-import model.AuthData;
-import model.GameData;
-import model.ListGamesRequest;
-import model.UserData;
+import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,8 +37,8 @@ public class GameServiceTest {
     //positive list games
     @Test
     void testListGames() throws DataAccessException {
-        gameService.createGame(auth1.authToken(), "game1");
-        gameService.createGame(auth1.authToken(), "game2");
+        gameService.createGame(new CreateGameRequest(auth1.authToken(), "game1"));
+        gameService.createGame(new CreateGameRequest(auth1.authToken(), "game2"));
         Assertions.assertFalse(gameService.listGames(new ListGamesRequest(auth1.authToken())).isEmpty());
         Assertions.assertEquals(2, gameService.listGames(new ListGamesRequest(auth1.authToken())).size());
     }
@@ -59,7 +56,7 @@ public class GameServiceTest {
     //create Game test
     @Test
     void testCreateGame() throws DataAccessException {
-        int gameID = gameService.createGame(auth1.authToken(), "game1");
+        int gameID = gameService.createGame(new CreateGameRequest(auth1.authToken(), "game1"));
         Assertions.assertEquals(0001, gameID);
         Assertions.assertFalse(gameService.listGames(new ListGamesRequest(auth1.authToken())).isEmpty());
     }
@@ -69,7 +66,7 @@ public class GameServiceTest {
     @Test
     void testCreateGameNegative() {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            gameService.createGame("incorrect", "game1");
+            gameService.createGame(new CreateGameRequest("incorrect", "game1"));
         });
         Assertions.assertEquals("Not authorized", e.getMessage());
     }
@@ -78,8 +75,8 @@ public class GameServiceTest {
     //joinGame white positive
     @Test
     void testJoinGameWhitePos() throws DataAccessException {
-        gameService.createGame(auth1.authToken(),"game1");
-        gameService.joinGame(auth1.authToken(),"WHITE", 0001);
+        gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
+        gameService.joinGame(new JoinGameRequest(auth1.authToken(),"WHITE", 0001));
         GameData game = gameDAO.getGame(0001);
         Assertions.assertEquals("user1",game.whiteUsername());
         Assertions.assertNull(game.blackUsername());
@@ -89,8 +86,8 @@ public class GameServiceTest {
     //test joinGame black positive
     @Test
     void testJoinGameBlackPos() throws DataAccessException {
-        gameService.createGame(auth1.authToken(),"game1");
-        gameService.joinGame(auth1.authToken(),"BLACK", 0001);
+        gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
+        gameService.joinGame(new JoinGameRequest(auth1.authToken(),"BLACK", 0001));
         GameData game = gameDAO.getGame(0001);
         Assertions.assertEquals("user1",game.blackUsername());
         Assertions.assertNull(game.whiteUsername());
@@ -99,10 +96,10 @@ public class GameServiceTest {
     //test joinGame negative, already taken
     @Test
     void testJoinGameSpotTaken() throws DataAccessException {
-        gameService.createGame(auth1.authToken(),"game1");
-        gameService.joinGame(auth1.authToken(),"WHITE", 0001);
+        gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
+        gameService.joinGame(new JoinGameRequest(auth1.authToken(),"WHITE", 0001));
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            gameService.joinGame(auth2.authToken(),"WHITE", 0001);
+            gameService.joinGame(new JoinGameRequest(auth2.authToken(),"WHITE", 0001));
         });
         Assertions.assertEquals("Already taken",e.getMessage());
     }
@@ -110,9 +107,9 @@ public class GameServiceTest {
     //test joinGame, invalid auth
     @Test
     void testJoinGameInvalidAuth() throws DataAccessException {
-        gameService.createGame(auth1.authToken(),"game1");
+        gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            gameService.joinGame("incorrect","WHITE", 0001);
+            gameService.joinGame(new JoinGameRequest("incorrect","WHITE", 0001));
         });
         Assertions.assertEquals("Not authorized",e.getMessage());
     }

@@ -1,12 +1,8 @@
 package server;
 
 import dataaccess.*;
-import handlers.DataHandler;
-import handlers.GameHandler;
-import handlers.UserHandler;
-import service.DataService;
-import service.GameService;
-import service.UserService;
+import service.*;
+import handlers.*;
 import spark.*;
 
 public class Server {
@@ -63,6 +59,8 @@ public class Server {
         Spark.get("/game",gameHandler::listGames); //listGames
         Spark.post("/game", gameHandler::createGame); //createGame
         Spark.put("/game",gameHandler::joinGame); //joinGame
-        Spark.exception(DataAccessException.class, this::exceptionHandler);
+        Spark.exception(DataAccessException.class, ExHandler::catchException);
     }
+
+
 }

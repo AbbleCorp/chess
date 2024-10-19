@@ -4,7 +4,9 @@ import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
+import model.CreateGameRequest;
 import model.GameData;
+import model.JoinGameRequest;
 import model.ListGamesRequest;
 
 import java.util.Collection;
@@ -25,13 +27,13 @@ public class GameService {
         gameData.clear();
     }
 
-    public void joinGame(String authToken, String playerColor, int gameID) throws DataAccessException {
-        if (authData.getAuth(authToken) != null) {
-            String username = authData.getUsername(authToken);
+    public void joinGame(JoinGameRequest request) throws DataAccessException {
+        if (authData.getAuth(request.authorization()) != null) {
+            String username = authData.getUsername(request.authorization());
             GameData originalGame = gameData.getGame(gameID);
-            if (Objects.equals(playerColor, "WHITE") && originalGame.whiteUsername() == null) {
+            if (Objects.equals(request.playerColor(), "WHITE") && originalGame.whiteUsername() == null) {
                 gameData.updateGame(gameID, new GameData(gameID, username, originalGame.blackUsername(), originalGame.gameName(), originalGame.game()));
-            } else if (Objects.equals(playerColor, "BLACK") && originalGame.blackUsername() == null) {
+            } else if (Objects.equals(request.playerColor(), "BLACK") && originalGame.blackUsername() == null) {
                 gameData.updateGame(gameID, new GameData(gameID, originalGame.whiteUsername(), username, originalGame.gameName(), originalGame.game()));
             }
             else throw new DataAccessException("Already taken");
@@ -39,10 +41,10 @@ public class GameService {
         else throw new DataAccessException("Not authorized");
     }
 
-    public int createGame(String authToken, String gameName) throws DataAccessException {
-        if (authData.getAuth(authToken) != null) {
+    public int createGame(CreateGameRequest request) throws DataAccessException {
+        if (authData.getAuth(request.authorization()) != null) {
             int ID = gameIDinc();
-            gameData.createGame(ID, null, null, gameName, new ChessGame());
+            gameData.createGame(ID, null, null, request.gameName(), new ChessGame());
             return gameID;
         } else throw new DataAccessException("Not authorized");
     }

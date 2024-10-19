@@ -1,4 +1,6 @@
 package handlers;
+import com.google.gson.Gson;
+import model.ClearResult;
 import service.DataService;
 import spark.Request;
 import spark.Response;
@@ -11,7 +13,8 @@ public class DataHandler {
     }
 
     public String clear(Request req, Response res) {
-        return null;
+        var Serializer = new Gson();
+        return Serializer.toJson(new ClearResult());
     }
 
 }
