@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.RegisterRequest;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,7 @@ public class UserServiceTest {
     //register positive test
     @Test
     void testRegisterPos() throws DataAccessException {
-        userService.register(new UserData("user3", "password3", "email3"));
+        userService.register(new RegisterRequest("user3", "password3", "email3"));
         Assertions.assertNotNull(userDAO.getUser("user3"));
     }
 
@@ -40,7 +41,7 @@ public class UserServiceTest {
     @Test
     void testRegisterNeg() throws DataAccessException {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            userService.register(new UserData("user1", "password1", "email1"));
+            userService.register(new RegisterRequest("user1", "password1", "email1"));
         });
         Assertions.assertEquals("User already exists", e.getMessage());
     }

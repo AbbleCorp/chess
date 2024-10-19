@@ -15,7 +15,7 @@ public class GameService {
     private final AuthDAO authData;
     int gameID = 0000;
 
-    GameService(GameDAO gameData, AuthDAO authData) {
+    public GameService(GameDAO gameData, AuthDAO authData) {
         this.gameData = gameData;
         this.authData = authData;
     }

@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
 import model.AuthData;
+import model.RegisterRequest;
 import model.UserData;
 
 
@@ -12,17 +13,17 @@ public class UserService {
     private final UserDAO users;
     private final AuthDAO auths;
 
-    UserService(UserDAO userdata, AuthDAO authData) {
+    public UserService(UserDAO userdata, AuthDAO authData) {
         this.users = userdata;
         this.auths = authData;
     }
 
 
 
-    public AuthData register(UserData user) throws DataAccessException {
-        if (users.getUser(user.username()) == null) {
-            users.createUser(user);
-            AuthData authToken = auths.createAuth(user.username());
+    public AuthData register(RegisterRequest req) throws DataAccessException {
+        if (users.getUser(req.username()) == null) {
+            users.createUser(new UserData(req.username(),req.password(),req.email()));
+            AuthData authToken = auths.createAuth(req.username());
             return authToken;
         } else throw new DataAccessException("User already exists");
     }

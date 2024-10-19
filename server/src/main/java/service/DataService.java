@@ -10,7 +10,7 @@ public class DataService {
     GameDAO gameData;
     AuthDAO authData;
 
-    DataService(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) {
+    public DataService(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) {
         this.userData = userDAO;
         this.gameData = gameDAO;
         this.authData = authDAO;
