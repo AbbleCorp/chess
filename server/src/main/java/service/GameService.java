@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 import model.GameData;
+import model.ListGamesRequest;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -46,8 +47,8 @@ public class GameService {
         } else throw new DataAccessException("Not authorized");
     }
 
-    public Collection<GameData> listGames(String authToken) throws DataAccessException {
-        if (authData.getAuth(authToken) != null) {
+    public Collection<GameData> listGames(ListGamesRequest req) throws DataAccessException {
+        if (authData.getAuth(req.authorization()) != null) {
             return gameData.listGames(); }
         else throw new DataAccessException("Not authorized");
     }

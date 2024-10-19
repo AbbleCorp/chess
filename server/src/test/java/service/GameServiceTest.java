@@ -4,6 +4,7 @@ import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
+import model.ListGamesRequest;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,15 +42,15 @@ public class GameServiceTest {
     void testListGames() throws DataAccessException {
         gameService.createGame(auth1.authToken(), "game1");
         gameService.createGame(auth1.authToken(), "game2");
-        Assertions.assertFalse(gameService.listGames(auth1.authToken()).isEmpty());
-        Assertions.assertEquals(2, gameService.listGames(auth1.authToken()).size());
+        Assertions.assertFalse(gameService.listGames(new ListGamesRequest(auth1.authToken())).isEmpty());
+        Assertions.assertEquals(2, gameService.listGames(new ListGamesRequest(auth1.authToken())).size());
     }
 
     //negative listGames test
     @Test
     void testListGamesNeg() {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            gameService.listGames("incorrect");
+            gameService.listGames(new ListGamesRequest("incorrect"));
         });
         Assertions.assertEquals("Not authorized", e.getMessage());
     }
@@ -60,7 +61,7 @@ public class GameServiceTest {
     void testCreateGame() throws DataAccessException {
         int gameID = gameService.createGame(auth1.authToken(), "game1");
         Assertions.assertEquals(0001, gameID);
-        Assertions.assertFalse(gameService.listGames(auth1.authToken()).isEmpty());
+        Assertions.assertFalse(gameService.listGames(new ListGamesRequest(auth1.authToken())).isEmpty());
     }
 
 
