@@ -38,15 +38,8 @@ public class Server {
         // Register your endpoints and handle exceptions here.
 
 
-        //create new one each time?
-        Spark.delete("/db", dataHandler::clear); //clear database
-        Spark.post("/user", userHandler::register); //register
-        Spark.post("/session",userHandler::login); //login
-        Spark.delete("/session",userHandler::logout); //logout
-        Spark.get("/game",gameHandler::listGames); //listGames
-        Spark.post("/game", gameHandler::createGame); //createGame
-        Spark.put("/game",gameHandler::joinGame); //joinGame
-        Spark.exception(DataAccessException.class, this::exceptionHandler);
+        setRoutes();
+
 
         //exception handler or try catch
 
@@ -63,6 +56,13 @@ public class Server {
     }
 
     public void setRoutes() {
-
+        Spark.delete("/db", dataHandler::clear); //clear database
+        Spark.post("/user", userHandler::register); //register
+        Spark.post("/session",userHandler::login); //login
+        Spark.delete("/session",userHandler::logout); //logout
+        Spark.get("/game",gameHandler::listGames); //listGames
+        Spark.post("/game", gameHandler::createGame); //createGame
+        Spark.put("/game",gameHandler::joinGame); //joinGame
+        Spark.exception(DataAccessException.class, this::exceptionHandler);
     }
 }

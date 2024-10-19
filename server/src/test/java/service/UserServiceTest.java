@@ -1,9 +1,7 @@
 package service;
 
 import dataaccess.*;
-import model.AuthData;
-import model.RegisterRequest;
-import model.UserData;
+import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +47,7 @@ public class UserServiceTest {
     //login positive test
     @Test
     void testLoginPos() throws DataAccessException {
-        AuthData auth = userService.login("user1","password1");
+        AuthData auth = userService.login(new LoginRequest("user1","password1"));
         Assertions.assertTrue(auth instanceof AuthData);
     }
 
@@ -57,7 +55,7 @@ public class UserServiceTest {
     @Test
     void testLoginNotAuth() throws DataAccessException {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            userService.login("user1", "incorrect");
+            userService.login(new LoginRequest("user1", "incorrect"));
         });
         Assertions.assertEquals("Not authorized", e.getMessage());
     }
@@ -67,7 +65,7 @@ public class UserServiceTest {
     @Test
     void testLoginUserNotFound() {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            userService.login("user3", "password3"); });
+            userService.login(new LoginRequest("user3", "password3")); });
         Assertions.assertEquals("User not found", e.getMessage());
     }
 
@@ -77,7 +75,7 @@ public class UserServiceTest {
         Set<String> authTokens = authDAO.listAuth().keySet();
         Iterator<String> it = authTokens.iterator();
         String auth = it.next();
-        userService.logout(auth);
+        userService.logout(new LogoutRequest(auth));
         Assertions.assertFalse(authDAO.listAuth().containsKey(auth));
     }
 
@@ -85,7 +83,7 @@ public class UserServiceTest {
     @Test
     void testLogoutNeg() {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            userService.logout("incorrect"); });
+            userService.logout(new LogoutRequest("incorrect")); });
         Assertions.assertEquals("Not authorized", e.getMessage());
     }
 

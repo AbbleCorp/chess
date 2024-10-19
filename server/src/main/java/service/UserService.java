@@ -4,9 +4,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
-import model.AuthData;
-import model.RegisterRequest;
-import model.UserData;
+import model.*;
 
 
 public class UserService {
@@ -28,20 +26,20 @@ public class UserService {
         } else throw new DataAccessException("User already exists");
     }
 
-    public AuthData login(String username, String password) throws DataAccessException {
-        if (users.getUser(username) != null) {
+    public AuthData login(LoginRequest req) throws DataAccessException {
+        if (users.getUser(req.username()) != null) {
             //do password check here
-            if (users.getUser(username).password().equals(password)) {
-                return auths.createAuth(username);
+            if (users.getUser(req.username()).password().equals(req.password())) {
+                return auths.createAuth(req.username());
             }
             else throw new DataAccessException("Not authorized");
         }
         else throw new DataAccessException("User not found");
     }
 
-    public void logout(String auth) throws DataAccessException {
-        if (auths.getAuth(auth) != null) {
-            auths.deleteAuth(auth);
+    public void logout(LogoutRequest req) throws DataAccessException {
+        if (auths.getAuth(req.authorization()) != null) {
+            auths.deleteAuth(req.authorization());
         } else throw new DataAccessException("Not authorized");
     }
 

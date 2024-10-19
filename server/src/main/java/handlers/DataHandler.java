@@ -8,4 +8,8 @@ public class DataHandler {
         this.dataService = dataService;
     }
 
+    public String clear() {
+        return null;
+    }
+
 }
