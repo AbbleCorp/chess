@@ -37,25 +37,26 @@ public class GameService {
                 gameData.updateGame(gameID, new GameData(gameID, originalGame.whiteUsername(), username,
                         originalGame.gameName(), originalGame.game()));
             }
-            else throw new DataAccessException("Error: already taken");
+            else {throw new DataAccessException("Error: already taken");}
         }
-        else throw new DataAccessException("Error: unauthorized");
+        else {throw new DataAccessException("Error: unauthorized");}
     }
 
     public int createGame(CreateGameRequest request) throws Exception {
-        if (request.getAuthorization() == null || request.getGameName() == null) throw new Exception("Error: bad request");
+        if (request.getAuthorization() == null || request.getGameName() == null)
+        {throw new Exception("Error: bad request");}
         if (authData.getAuth(request.getAuthorization()) != null) {
             int id = gameIDinc();
             gameData.createGame(id, null, null, request.getGameName(), new ChessGame());
             return gameID;
-        } else throw new DataAccessException("Error: unauthorized");
+        } else {throw new DataAccessException("Error: unauthorized");}
     }
 
     public ArrayList<GameData> listGames(ListGamesRequest req) throws Exception {
-        if (req.authorization() == null) throw new Exception("Error: bad request");
+        if (req.authorization() == null) {throw new Exception("Error: bad request");}
         if (authData.getAuth(req.authorization()) != null) {
             return gameData.listGames(); }
-        else throw new DataAccessException("Error: unauthorized");
+        else {throw new DataAccessException("Error: unauthorized");}
     }
 
     int gameIDinc() {

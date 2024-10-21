@@ -24,7 +24,7 @@ public class MemoryGameDAO implements GameDAO {
         if (!gameList.containsKey(GameId)) {
             gameList.put(GameId, new GameData(GameId, whiteUsername, blackUsername, gameName, game));
         }
-        else throw new DataAccessException("Game already exists");
+        else {throw new DataAccessException("Game already exists");}
     }
 
     @Override
@@ -32,7 +32,7 @@ public class MemoryGameDAO implements GameDAO {
         if (gameList.containsKey(GameId)) {
             return gameList.get(GameId);
         }
-        else throw new DataAccessException("Game not found");
+        else {throw new DataAccessException("Game not found");}
     }
 
     @Override

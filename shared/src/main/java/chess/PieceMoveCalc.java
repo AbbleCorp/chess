@@ -134,25 +134,25 @@ public class PieceMoveCalc {
         int i = 1;
         while (emptyOrEnemy(pos.getRow()+i,pos.getColumn()-i)) {
             movesList.add(new ChessMove(pos,new ChessPosition(pos.getRow()+i,pos.getColumn()-i),null));
-            if (pieceFound(pos.getRow()+i,pos.getColumn()-i)) break;
+            if (pieceFound(pos.getRow()+i,pos.getColumn()-i)) {break;}
             i++;
         }//upper right
         i = 1;
         while (emptyOrEnemy(pos.getRow()+i,pos.getColumn()+i)) {
             movesList.add(new ChessMove(pos,new ChessPosition(pos.getRow()+i,pos.getColumn()+i),null));
-            if (pieceFound(pos.getRow()+i,pos.getColumn()+i)) break;
+            if (pieceFound(pos.getRow()+i,pos.getColumn()+i)) {break;}
             i++;
         }//lower left
         i = 1;
         while (emptyOrEnemy(pos.getRow()-i,pos.getColumn()-i)) {
             movesList.add(new ChessMove(pos,new ChessPosition(pos.getRow()-i,pos.getColumn()-i),null));
-            if (pieceFound(pos.getRow()-i,pos.getColumn()-i)) break;
+            if (pieceFound(pos.getRow()-i,pos.getColumn()-i)) {break;}
             i++;
         }//lower right
         i = 1;
         while (emptyOrEnemy(pos.getRow()-i,pos.getColumn()+i)) {
             movesList.add(new ChessMove(pos,new ChessPosition(pos.getRow()-i,pos.getColumn()+i),null));
-            if (pieceFound(pos.getRow()-i,pos.getColumn()+i)) break;
+            if (pieceFound(pos.getRow()-i,pos.getColumn()+i)) {break;}
             i++;
         }
         return movesList;
@@ -164,25 +164,25 @@ public class PieceMoveCalc {
         int i = 1;
         while (emptyOrEnemy(pos.getRow()+i,pos.getColumn())) {
             movesList.add(new ChessMove(pos,new ChessPosition(pos.getRow()+i,pos.getColumn()),null));
-            if (pieceFound(pos.getRow()+i,pos.getColumn())) break;
+            if (pieceFound(pos.getRow()+i,pos.getColumn())) {break;}
             i++;
         }//down
         i = 1;
         while (emptyOrEnemy(pos.getRow()-i,pos.getColumn())) {
             movesList.add(new ChessMove(pos,new ChessPosition(pos.getRow()-i,pos.getColumn()),null));
-            if (pieceFound(pos.getRow()-i,pos.getColumn())) break;
+            if (pieceFound(pos.getRow()-i,pos.getColumn())) {break;}
             i++;
         }//left
         i = 1;
         while (emptyOrEnemy(pos.getRow(),pos.getColumn()-i)) {
             movesList.add(new ChessMove(pos,new ChessPosition(pos.getRow(),pos.getColumn()-i),null));
-            if (pieceFound(pos.getRow(),pos.getColumn()-i)) break;
+            if (pieceFound(pos.getRow(),pos.getColumn()-i)) {break;}
             i++;
         }//right
         i = 1;
         while (emptyOrEnemy(pos.getRow(),pos.getColumn()+i)) {
             movesList.add(new ChessMove(pos,new ChessPosition(pos.getRow(),pos.getColumn()+i),null));
-            if (pieceFound(pos.getRow(),pos.getColumn()+i)) break;
+            if (pieceFound(pos.getRow(),pos.getColumn()+i)) {break;}
             i++;
         }
         return movesList;

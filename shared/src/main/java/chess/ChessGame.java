@@ -51,7 +51,7 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         //call pieceMoves on board.getPiece(startPosition)
         //return null if no piece found
-        if (!chessboard.pieceFound(new ChessPosition(startPosition.getRow(),startPosition.getColumn()))) return null;
+        if (!chessboard.pieceFound(new ChessPosition(startPosition.getRow(),startPosition.getColumn()))) {return null;}
         Collection<ChessMove> validMoves = new ArrayList<>();
         Collection<ChessMove> moves = chessboard.getPiece(startPosition).pieceMoves(chessboard, startPosition);
         for (ChessMove move : moves) {
@@ -86,9 +86,9 @@ public class ChessGame {
                 chessboard.getPiece(move.getStartPosition()).getTeamColor() == teamTurn &&
                         validMoves.contains(move)) {
             chessboard.movePiece(move,chessboard.getPiece(move.getStartPosition()));
-            if (teamTurn == TeamColor.BLACK) teamTurn = TeamColor.WHITE;
-            else teamTurn = TeamColor.BLACK;
-        } else throw new InvalidMoveException("Illegal Move");
+            if (teamTurn == TeamColor.BLACK) {teamTurn = TeamColor.WHITE;}
+            else {teamTurn = TeamColor.BLACK;}
+        } else {throw new InvalidMoveException("Illegal Move");}
     }
 
     /**
@@ -120,7 +120,7 @@ public class ChessGame {
                 if (board.pieceFound(new ChessPosition(i,j)) && board.getPiece(new ChessPosition(i,j)).getTeamColor() != teamColor) {
                     Collection<ChessMove> enemyMoves = board.getPiece(new ChessPosition(i,j)).pieceMoves(board, new ChessPosition(i,j));
                     for (ChessMove move : enemyMoves) {
-                        if (move.getEndPosition().equals(kingPos)) return true;
+                        if (move.getEndPosition().equals(kingPos)) {return true;}
                     }
                 }
             }

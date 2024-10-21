@@ -40,7 +40,7 @@ public class MemoryAuthDAO implements AuthDAO {
     public void deleteAuth(String authToken) throws DataAccessException {
         if (authList.containsKey(authToken)) {
             authList.remove(authToken); }
-        else throw new DataAccessException("Not authorized");
+        else {throw new DataAccessException("Not authorized");}
     }
 
     @Override
@@ -48,7 +48,7 @@ public class MemoryAuthDAO implements AuthDAO {
         if (authList.containsKey(authToken)) {
             return authList.get(authToken);
         }
-        else throw new DataAccessException("Not authorized");
+        else {throw new DataAccessException("Not authorized");}
     }
 
 }

@@ -59,8 +59,8 @@ public class GameHandler {
         gameService.joinGame(request);
         return serializer.toJson(new JoinGameResult());
         } catch (DataAccessException e) {
-            if (Objects.equals(e.getMessage(), "Error: unauthorized")) res.status(401);
-            else res.status(403);
+            if (Objects.equals(e.getMessage(), "Error: unauthorized")) {res.status(401);}
+            else {res.status(403);}
             return serializer.toJson(new ErrorMessage(e.getMessage()));
         }
         catch (Exception e) {
@@ -70,8 +70,8 @@ public class GameHandler {
 
     public String catchBadRequest(Exception e, Response res) {
         var serializer = new Gson();
-        if (Objects.equals(e.getMessage(), "Error: bad request")) res.status(400);
-        else res.status(500);
+        if (Objects.equals(e.getMessage(), "Error: bad request")) {res.status(400);}
+        else {res.status(500);}
         return serializer.toJson(new ErrorMessage(e.getMessage()));
     }
 
