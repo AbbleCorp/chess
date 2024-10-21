@@ -10,12 +10,12 @@ public interface GameDAO {
 
     void clear();
 
-    void createGame(int GameId, String whiteUsername, String blackUsername, String gameName, ChessGame game)
+    void createGame(int gameId, String whiteUsername, String blackUsername, String gameName, ChessGame game)
             throws DataAccessException;
 
-    GameData getGame(int GameId) throws DataAccessException;
+    GameData getGame(int gameId) throws DataAccessException;
 
     ArrayList<GameData> listGames();
 
-    void updateGame(int GameId, GameData game);
+    void updateGame(int gameId, GameData game);
 }

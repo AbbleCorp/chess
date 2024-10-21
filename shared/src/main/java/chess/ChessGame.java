@@ -119,9 +119,7 @@ public class ChessGame {
             for (int j = 1; j < 9; j++) {
                 if (board.pieceFound(new ChessPosition(i,j)) && board.getPiece(new ChessPosition(i,j)).getTeamColor() != teamColor) {
                     Collection<ChessMove> enemyMoves = board.getPiece(new ChessPosition(i,j)).pieceMoves(board, new ChessPosition(i,j));
-                    for (ChessMove move : enemyMoves) {
-                        if (move.getEndPosition().equals(kingPos)) {return true;}
-                    }
+                    if (isAttackingKing(enemyMoves, kingPos)) {return true;}
                 }
             }
         }
@@ -130,6 +128,12 @@ public class ChessGame {
         return false;
     }
 
+    private boolean isAttackingKing(Collection<ChessMove> enemyMoves, ChessPosition kingPos) {
+        for (ChessMove move : enemyMoves) {
+            if (move.getEndPosition().equals(kingPos)) {return true;}
+        }
+        return false;
+    }
 
     /**
      * Determines if the given team is in checkmate
