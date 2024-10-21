@@ -46,9 +46,7 @@ public class GameHandler {
             return serializer.toJson(new ErrorMessage(e.getMessage()));
         }
         catch (Exception e) {
-            if (Objects.equals(e.getMessage(), "Error: bad request")) res.status(400);
-            else res.status(500);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return catchBadRequest(e, res);
         }
     }
 
@@ -66,12 +64,15 @@ public class GameHandler {
             return serializer.toJson(new ErrorMessage(e.getMessage()));
         }
         catch (Exception e) {
-            if (Objects.equals(e.getMessage(), "Error: bad request")) res.status(400);
-            else res.status(500);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return catchBadRequest(e, res);
         }
     }
 
-
+    public String catchBadRequest(Exception e, Response res) {
+        var serializer = new Gson();
+        if (Objects.equals(e.getMessage(), "Error: bad request")) res.status(400);
+        else res.status(500);
+        return serializer.toJson(new ErrorMessage(e.getMessage()));
+    }
 
 }
