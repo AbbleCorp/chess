@@ -40,7 +40,8 @@ public class UserService {
         else throw new DataAccessException("Error: User not found");
     }
 
-    public void logout(LogoutRequest req) throws DataAccessException {
+    public void logout(LogoutRequest req) throws Exception {
+        if (req.authorization() == null) throw new Exception("Error: bad request");
         if (auths.getAuth(req.authorization()) != null) {
             auths.deleteAuth(req.authorization());
         } else throw new DataAccessException("Error: unauthorized");

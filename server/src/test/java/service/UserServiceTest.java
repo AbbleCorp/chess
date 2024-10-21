@@ -71,7 +71,7 @@ public class UserServiceTest {
 
     //logout positive
     @Test
-    void testLogoutPosition() throws DataAccessException {
+    void testLogoutPosition() throws Exception {
         Set<String> authTokens = authDAO.listAuth().keySet();
         Iterator<String> it = authTokens.iterator();
         String auth = it.next();

@@ -7,6 +7,7 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 
+import javax.xml.crypto.Data;
 import java.io.Serializable;
 
 public class UserHandler {
@@ -61,8 +62,17 @@ public class UserHandler {
     public String logout(Request req, Response res) throws DataAccessException {
         var Serializer = new Gson();
         LogoutRequest request = new LogoutRequest(req.headers("authorization"));
+        try {
         userService.logout(request);
         //res.body("{}");
-        return "{}";
+        return "{}"; }
+        catch (DataAccessException e) {
+            res.status(401);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
+        catch (Exception e) {
+            res.status(500);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
     }
 }
