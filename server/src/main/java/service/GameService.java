@@ -27,7 +27,8 @@ public class GameService {
         gameData.clear();
     }
 
-    public void joinGame(JoinGameRequest request) throws DataAccessException {
+    public void joinGame(JoinGameRequest request) throws Exception {
+        if (request.getAuthorization() == null || request.getPlayerColor() == null || request.getGameID() == null) throw new Exception("Error: bad request");
         if (authData.getAuth(request.getAuthorization()) != null) {
             String username = authData.getUsername(request.getAuthorization());
             GameData originalGame = gameData.getGame(gameID);
@@ -36,23 +37,25 @@ public class GameService {
             } else if (Objects.equals(request.getPlayerColor(), "BLACK") && originalGame.blackUsername()==null) {
                 gameData.updateGame(gameID, new GameData(gameID, originalGame.whiteUsername(), username, originalGame.gameName(), originalGame.game()));
             }
-            else throw new DataAccessException("Already taken");
+            else throw new DataAccessException("Error: already taken");
         }
-        else throw new DataAccessException("Not authorized");
+        else throw new DataAccessException("Error: unauthorized");
     }
 
-    public int createGame(CreateGameRequest request) throws DataAccessException {
+    public int createGame(CreateGameRequest request) throws Exception {
+        if (request.getAuthorization() == null || request.getGameName() == null) throw new Exception("Error: bad request");
         if (authData.getAuth(request.getAuthorization()) != null) {
             int ID = gameIDinc();
             gameData.createGame(ID, null, null, request.getGameName(), new ChessGame());
             return gameID;
-        } else throw new DataAccessException("Not authorized");
+        } else throw new DataAccessException("Error: unauthorized");
     }
 
-    public Collection<GameData> listGames(ListGamesRequest req) throws DataAccessException {
+    public Collection<GameData> listGames(ListGamesRequest req) throws Exception {
+        if (req.authorization() == null) throw new Exception("Error: bad request");
         if (authData.getAuth(req.authorization()) != null) {
             return gameData.listGames(); }
-        else throw new DataAccessException("Not authorized");
+        else throw new DataAccessException("Error: unauthorized");
     }
 
     int gameIDinc() {

@@ -7,6 +7,7 @@ import service.GameService;
 import spark.Request;
 import spark.Response;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -17,24 +18,39 @@ public class GameHandler {
         this.gameService = gameService;
     }
 
-    public String listGames(Request req, Response res) throws DataAccessException {
+    public String listGames(Request req, Response res) throws Exception {
         var Serializer = new Gson();
         ListGamesRequest request = new ListGamesRequest(req.headers("authorization"));
+        try {
         Collection<GameData> gamesList = gameService.listGames(request);
-        ArrayList<GameInfo> games = new ArrayList<>();
-//        for (GameData game : gamesList) {
-//            games.add(new GameInfo(game.GameID(),game.whiteUsername(),game.blackUsername(),game.gameName()));
-//        }
-        return Serializer.toJson(new ListGamesResult(gamesList));
+        return Serializer.toJson(new ListGamesResult(gamesList)); }
+        catch (DataAccessException e) {
+            res.status(401);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
+        catch (Exception e) {
+            res.status(500);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
     }
 
-    public String createGame(Request req, Response res) throws DataAccessException {
+    public String createGame(Request req, Response res) throws Exception {
         var Serializer = new Gson();
         String auth = req.headers("authorization");
         CreateGameRequest request = Serializer.fromJson(req.body(), CreateGameRequest.class);
         request.setAuthorization(auth);
-        CreateGameResult gameID = new CreateGameResult(gameService.createGame(request));
-        return Serializer.toJson(gameID);
+        try {
+            CreateGameResult gameID = new CreateGameResult(gameService.createGame(request));
+            return Serializer.toJson(gameID);
+        } catch (DataAccessException e) {
+            res.status(401);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
+        catch (Exception e) {
+            if (e.getMessage() == "Error: bad request") res.status(400);
+            else res.status(500);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
     }
 
     public String joinGame(Request req, Response res) throws DataAccessException {
@@ -42,8 +58,19 @@ public class GameHandler {
         String auth = req.headers("authorization");
         JoinGameRequest request = Serializer.fromJson(req.body(),JoinGameRequest.class);
         request.setAuthorization(auth);
+        try {
         gameService.joinGame(request);
         return Serializer.toJson(new JoinGameResult());
+        } catch (DataAccessException e) {
+            if (e.getMessage() == "Error: unauthorized") res.status(401);
+            else res.status(403);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
+        catch (Exception e) {
+            if (e.getMessage() == "Error: bad request") res.status(400);
+            else res.status(500);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
     }
 
 

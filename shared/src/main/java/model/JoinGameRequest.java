@@ -3,7 +3,7 @@ package model;
 public class JoinGameRequest {
     String authorization;
     String playerColor;
-    int gameID;
+    Integer gameID;
 
     public String getAuthorization() {
         return authorization;
@@ -21,7 +21,7 @@ public class JoinGameRequest {
         this.playerColor = playerColor;
     }
 
-    public int getGameID() {
+    public Integer getGameID() {
         return gameID;
     }
 

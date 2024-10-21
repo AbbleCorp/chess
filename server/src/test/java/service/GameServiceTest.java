@@ -36,7 +36,7 @@ public class GameServiceTest {
 
     //positive list games
     @Test
-    void testListGames() throws DataAccessException {
+    void testListGames() throws Exception {
         gameService.createGame(new CreateGameRequest(auth1.authToken(), "game1"));
         gameService.createGame(new CreateGameRequest(auth1.authToken(), "game2"));
         Assertions.assertFalse(gameService.listGames(new ListGamesRequest(auth1.authToken())).isEmpty());
@@ -55,7 +55,7 @@ public class GameServiceTest {
 
     //create Game test
     @Test
-    void testCreateGame() throws DataAccessException {
+    void testCreateGame() throws Exception {
         int gameID = gameService.createGame(new CreateGameRequest(auth1.authToken(), "game1"));
         Assertions.assertEquals(0001, gameID);
         Assertions.assertFalse(gameService.listGames(new ListGamesRequest(auth1.authToken())).isEmpty());
@@ -74,7 +74,7 @@ public class GameServiceTest {
 
     //joinGame white positive
     @Test
-    void testJoinGameWhitePos() throws DataAccessException {
+    void testJoinGameWhitePos() throws Exception {
         gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
         gameService.joinGame(new JoinGameRequest(auth1.authToken(),"WHITE", 0001));
         GameData game = gameDAO.getGame(0001);
@@ -85,7 +85,7 @@ public class GameServiceTest {
 
     //test joinGame black positive
     @Test
-    void testJoinGameBlackPos() throws DataAccessException {
+    void testJoinGameBlackPos() throws Exception {
         gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
         gameService.joinGame(new JoinGameRequest(auth1.authToken(),"BLACK", 0001));
         GameData game = gameDAO.getGame(0001);
@@ -95,7 +95,7 @@ public class GameServiceTest {
 
     //test joinGame negative, already taken
     @Test
-    void testJoinGameSpotTaken() throws DataAccessException {
+    void testJoinGameSpotTaken() throws Exception {
         gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
         gameService.joinGame(new JoinGameRequest(auth1.authToken(),"WHITE", 0001));
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
@@ -106,7 +106,7 @@ public class GameServiceTest {
 
     //test joinGame, invalid auth
     @Test
-    void testJoinGameInvalidAuth() throws DataAccessException {
+    void testJoinGameInvalidAuth() throws Exception {
         gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             gameService.joinGame(new JoinGameRequest("incorrect","WHITE", 0001));
