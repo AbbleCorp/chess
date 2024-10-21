@@ -14,7 +14,9 @@ public class DataHandler {
 
     public String clear(Request req, Response res) {
         var Serializer = new Gson();
-        return Serializer.toJson(new ClearResult());
+        dataService.clearDatabase();
+        //res.body("{}");
+        return "{}";
     }
 
 }

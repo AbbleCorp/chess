@@ -22,18 +22,18 @@ public class GameHandler {
         ListGamesRequest request = new ListGamesRequest(req.headers("authorization"));
         Collection<GameData> gamesList = gameService.listGames(request);
         ArrayList<GameInfo> games = new ArrayList<>();
-        for (GameData game : gamesList) {
-            games.add(new GameInfo(game.GameID(),game.whiteUsername(),game.blackUsername(),game.gameName()));
-        }
-        return Serializer.toJson(new ListGamesResult(games));
+//        for (GameData game : gamesList) {
+//            games.add(new GameInfo(game.GameID(),game.whiteUsername(),game.blackUsername(),game.gameName()));
+//        }
+        return Serializer.toJson(new ListGamesResult(gamesList));
     }
 
     public String createGame(Request req, Response res) throws DataAccessException {
         var Serializer = new Gson();
         String auth = req.headers("authorization");
-        CreateGameRequest request = Serializer.fromJson(req.body(),CreateGameRequest.class);
+        CreateGameRequest request = Serializer.fromJson(req.body(), CreateGameRequest.class);
         request.setAuthorization(auth);
-        int gameID = gameService.createGame(request);
+        CreateGameResult gameID = new CreateGameResult(gameService.createGame(request));
         return Serializer.toJson(gameID);
     }
 

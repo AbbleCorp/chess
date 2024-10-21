@@ -23,5 +23,7 @@ public class CreateGameRequest {
     public CreateGameRequest(String authorization, String gameName) {
         this.authorization = authorization;
         this.gameName = gameName;
+
     }
+
 }

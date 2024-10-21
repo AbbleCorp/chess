@@ -30,7 +30,7 @@ public class UserServiceTest {
 
     //register positive test
     @Test
-    void testRegisterPos() throws DataAccessException {
+    void testRegisterPos() throws Exception {
         userService.register(new RegisterRequest("user3", "password3", "email3"));
         Assertions.assertNotNull(userDAO.getUser("user3"));
     }

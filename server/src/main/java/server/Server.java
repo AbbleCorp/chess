@@ -59,7 +59,6 @@ public class Server {
         Spark.get("/game",gameHandler::listGames); //listGames
         Spark.post("/game", gameHandler::createGame); //createGame
         Spark.put("/game",gameHandler::joinGame); //joinGame
-        Spark.exception(DataAccessException.class, ExHandler::catchException);
     }
 
 

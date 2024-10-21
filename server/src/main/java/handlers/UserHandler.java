@@ -21,26 +21,48 @@ public class UserHandler {
     public String register(Request req, Response res) throws DataAccessException {
         var Serializer = new Gson();
         RegisterRequest request = Serializer.fromJson(req.body(), RegisterRequest.class);
+        try {
         AuthData auth = userService.register(request);
-        return Serializer.toJson(auth);
-        //turn req into record object, try register
-        //set status
-        //set body, return same info as body(as json string)
-        //String authToken
-        //String authToken = req.headers("Authorization");
+        //res.body(Serializer.toJson(auth));
+        return Serializer.toJson(auth); }
+        catch (DataAccessException e) {
+            res.status(403);
+            return Serializer.toJson(new ErrorMessage(e.getMessage())); }
+        catch (Exception e) {
+            res.status(400);
+            return Serializer.toJson(new ErrorMessage(e.getMessage()));
+        }
+
     }
 
     public String login(Request req, Response res) throws DataAccessException {
         var Serializer = new Gson();
         LoginRequest request = Serializer.fromJson(req.body(), LoginRequest.class);
+        try {
         AuthData auth = userService.login(request);
-        return Serializer.toJson(auth);
+        //res.body(auth.authorization());
+        return Serializer.toJson(new LoginResult(auth.username(), auth.authToken()));
+            }
+            catch (DataAccessException e) {
+            //if (e.getMessage().equals("Error: unauthorized")) {
+                res.status(401);
+                return Serializer.toJson(new ErrorMessage(e.getMessage())); }
+            catch (Exception e ) {
+                res.status(500);
+                return Serializer.toJson(new ErrorMessage(e.getMessage()));
+            }
+            //else {
+//                res.status(500);
+//                return Serializer.toJson(new ErrorMessage(e.getMessage()));
+
+
     }
 
     public String logout(Request req, Response res) throws DataAccessException {
         var Serializer = new Gson();
         LogoutRequest request = new LogoutRequest(req.headers("authorization"));
         userService.logout(request);
-        return Serializer.toJson(new LogoutResult());
+        //res.body("{}");
+        return "{}";
     }
 }
