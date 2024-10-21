@@ -22,7 +22,7 @@ public class GameHandler {
         var Serializer = new Gson();
         ListGamesRequest request = new ListGamesRequest(req.headers("authorization"));
         try {
-        Collection<GameData> gamesList = gameService.listGames(request);
+        ArrayList<GameData> gamesList = gameService.listGames(request);
         return Serializer.toJson(new ListGamesResult(gamesList)); }
         catch (DataAccessException e) {
             res.status(401);

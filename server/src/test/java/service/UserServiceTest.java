@@ -41,7 +41,7 @@ public class UserServiceTest {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             userService.register(new RegisterRequest("user1", "password1", "email1"));
         });
-        Assertions.assertEquals("User already exists", e.getMessage());
+        Assertions.assertEquals("Error: already taken", e.getMessage());
     }
 
     //login positive test
@@ -57,7 +57,7 @@ public class UserServiceTest {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             userService.login(new LoginRequest("user1", "incorrect"));
         });
-        Assertions.assertEquals("Not authorized", e.getMessage());
+        Assertions.assertEquals("Error: unauthorized", e.getMessage());
     }
 
 
@@ -66,7 +66,7 @@ public class UserServiceTest {
     void testLoginUserNotFound() {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             userService.login(new LoginRequest("user3", "password3")); });
-        Assertions.assertEquals("User not found", e.getMessage());
+        Assertions.assertEquals("Error: User not found", e.getMessage());
     }
 
     //logout positive
@@ -84,7 +84,7 @@ public class UserServiceTest {
     void testLogoutNeg() {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             userService.logout(new LogoutRequest("incorrect")); });
-        Assertions.assertEquals("Not authorized", e.getMessage());
+        Assertions.assertEquals("Error: unauthorized", e.getMessage());
     }
 
 }

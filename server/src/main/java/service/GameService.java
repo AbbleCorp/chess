@@ -9,23 +9,20 @@ import model.GameData;
 import model.JoinGameRequest;
 import model.ListGamesRequest;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
 public class GameService {
     private final GameDAO gameData;
     private final AuthDAO authData;
-    int gameID = 0000;
+    int gameID = 0;
 
     public GameService(GameDAO gameData, AuthDAO authData) {
         this.gameData = gameData;
         this.authData = authData;
     }
 
-    public void clearGameData() throws DataAccessException {
-        gameData.clear();
-    }
 
     public void joinGame(JoinGameRequest request) throws Exception {
         if (request.getAuthorization() == null || request.getPlayerColor() == null || request.getGameID() == null) throw new Exception("Error: bad request");
@@ -51,7 +48,7 @@ public class GameService {
         } else throw new DataAccessException("Error: unauthorized");
     }
 
-    public Collection<GameData> listGames(ListGamesRequest req) throws Exception {
+    public ArrayList<GameData> listGames(ListGamesRequest req) throws Exception {
         if (req.authorization() == null) throw new Exception("Error: bad request");
         if (authData.getAuth(req.authorization()) != null) {
             return gameData.listGames(); }

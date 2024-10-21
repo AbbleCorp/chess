@@ -5,6 +5,13 @@ public class JoinGameRequest {
     String playerColor;
     Integer gameID;
 
+    public JoinGameRequest(String authorization, String playerColor, Integer gameID) {
+        this.authorization = authorization;
+        this.playerColor = playerColor;
+        this.gameID = gameID;
+    }
+
+
     public String getAuthorization() {
         return authorization;
     }
@@ -17,19 +24,10 @@ public class JoinGameRequest {
         return playerColor;
     }
 
-    public void setPlayerColor(String playerColor) {
-        this.playerColor = playerColor;
-    }
 
     public Integer getGameID() {
         return gameID;
     }
 
-    public void setGameID(int gameID) {
-        this.gameID = gameID;
-    }
 
-    public JoinGameRequest(String authorization, String playerColor, int gameID) {
-
-    }
 }
