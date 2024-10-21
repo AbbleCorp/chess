@@ -16,10 +16,6 @@ public class CreateGameRequest {
         return gameName;
     }
 
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
-    }
-
     public CreateGameRequest(String authorization, String gameName) {
         this.authorization = authorization;
         this.gameName = gameName;

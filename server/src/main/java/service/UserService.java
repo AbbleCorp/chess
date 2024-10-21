@@ -2,7 +2,6 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
 import model.*;
 
@@ -24,14 +23,12 @@ public class UserService {
         }
         if (users.getUser(req.username()) == null) {
             users.createUser(new UserData(req.username(),req.password(),req.email()));
-            AuthData authToken = auths.createAuth(req.username());
-            return authToken;
+            return auths.createAuth(req.username());
         } else throw new DataAccessException("Error: already taken");
     }
 
     public AuthData login(LoginRequest req) throws DataAccessException {
         if (users.getUser(req.username()) != null) {
-            //do password check here
             if (users.getUser(req.username()).password().equals(req.password())) {
                 return auths.createAuth(req.username());
             }

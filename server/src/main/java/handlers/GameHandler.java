@@ -7,9 +7,8 @@ import service.GameService;
 import spark.Request;
 import spark.Response;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Objects;
 
 public class GameHandler {
     private final GameService gameService;
@@ -18,7 +17,7 @@ public class GameHandler {
         this.gameService = gameService;
     }
 
-    public String listGames(Request req, Response res) throws Exception {
+    public String listGames(Request req, Response res) {
         var Serializer = new Gson();
         ListGamesRequest request = new ListGamesRequest(req.headers("authorization"));
         try {
@@ -47,13 +46,13 @@ public class GameHandler {
             return Serializer.toJson(new ErrorMessage(e.getMessage()));
         }
         catch (Exception e) {
-            if (e.getMessage() == "Error: bad request") res.status(400);
+            if (Objects.equals(e.getMessage(), "Error: bad request")) res.status(400);
             else res.status(500);
             return Serializer.toJson(new ErrorMessage(e.getMessage()));
         }
     }
 
-    public String joinGame(Request req, Response res) throws DataAccessException {
+    public String joinGame(Request req, Response res){
         var Serializer = new Gson();
         String auth = req.headers("authorization");
         JoinGameRequest request = Serializer.fromJson(req.body(),JoinGameRequest.class);
@@ -62,12 +61,12 @@ public class GameHandler {
         gameService.joinGame(request);
         return Serializer.toJson(new JoinGameResult());
         } catch (DataAccessException e) {
-            if (e.getMessage() == "Error: unauthorized") res.status(401);
+            if (Objects.equals(e.getMessage(), "Error: unauthorized")) res.status(401);
             else res.status(403);
             return Serializer.toJson(new ErrorMessage(e.getMessage()));
         }
         catch (Exception e) {
-            if (e.getMessage() == "Error: bad request") res.status(400);
+            if (Objects.equals(e.getMessage(), "Error: bad request")) res.status(400);
             else res.status(500);
             return Serializer.toJson(new ErrorMessage(e.getMessage()));
         }
