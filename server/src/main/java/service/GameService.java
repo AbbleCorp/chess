@@ -42,8 +42,8 @@ public class GameService {
     public int createGame(CreateGameRequest request) throws Exception {
         if (request.getAuthorization() == null || request.getGameName() == null) throw new Exception("Error: bad request");
         if (authData.getAuth(request.getAuthorization()) != null) {
-            int ID = gameIDinc();
-            gameData.createGame(ID, null, null, request.getGameName(), new ChessGame());
+            int id = gameIDinc();
+            gameData.createGame(id, null, null, request.getGameName(), new ChessGame());
             return gameID;
         } else throw new DataAccessException("Error: unauthorized");
     }

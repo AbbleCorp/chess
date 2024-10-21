@@ -20,17 +20,17 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void createGame(int GameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
-        if (!gameList.containsKey(GameID)) {
-            gameList.put(GameID, new GameData(GameID, whiteUsername, blackUsername, gameName, game));
+    public void createGame(int GameId, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
+        if (!gameList.containsKey(GameId)) {
+            gameList.put(GameId, new GameData(GameId, whiteUsername, blackUsername, gameName, game));
         }
         else throw new DataAccessException("Game already exists");
     }
 
     @Override
-    public GameData getGame(int GameID) throws DataAccessException {
-        if (gameList.containsKey(GameID)) {
-            return gameList.get(GameID);
+    public GameData getGame(int GameId) throws DataAccessException {
+        if (gameList.containsKey(GameId)) {
+            return gameList.get(GameId);
         }
         else throw new DataAccessException("Game not found");
     }
