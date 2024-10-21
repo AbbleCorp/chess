@@ -25,14 +25,17 @@ public class GameService {
 
 
     public void joinGame(JoinGameRequest request) throws Exception {
-        if (request.getAuthorization() == null || request.getPlayerColor() == null || request.getGameID() == null) throw new Exception("Error: bad request");
+        if (request.getAuthorization() == null || request.getPlayerColor() == null || request.getGameID() == null) {
+            throw new Exception("Error: bad request"); }
         if (authData.getAuth(request.getAuthorization()) != null) {
             String username = authData.getUsername(request.getAuthorization());
             GameData originalGame = gameData.getGame(gameID);
             if (Objects.equals(request.getPlayerColor(), "WHITE") && originalGame.whiteUsername()==null) {
-                gameData.updateGame(gameID, new GameData(gameID, username, originalGame.blackUsername(), originalGame.gameName(), originalGame.game()));
+                gameData.updateGame(gameID, new GameData(gameID, username, originalGame.blackUsername(),
+                        originalGame.gameName(), originalGame.game()));
             } else if (Objects.equals(request.getPlayerColor(), "BLACK") && originalGame.blackUsername()==null) {
-                gameData.updateGame(gameID, new GameData(gameID, originalGame.whiteUsername(), username, originalGame.gameName(), originalGame.game()));
+                gameData.updateGame(gameID, new GameData(gameID, originalGame.whiteUsername(), username,
+                        originalGame.gameName(), originalGame.game()));
             }
             else throw new DataAccessException("Error: already taken");
         }

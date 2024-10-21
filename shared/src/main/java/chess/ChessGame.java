@@ -106,7 +106,9 @@ public class ChessGame {
         ChessPosition kingPos = null;
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
-                if (board.pieceFound(new ChessPosition(i,j)) && board.getPiece(new ChessPosition(i,j)).equals(new ChessPiece(teamColor, ChessPiece.PieceType.KING))) {
+                if (board.pieceFound(new ChessPosition(i,j)) &&
+                        board.getPiece(new ChessPosition(i,j)).equals(new ChessPiece(teamColor,
+                                ChessPiece.PieceType.KING))) {
                     kingPos = new ChessPosition(i,j);
                 }
             }
@@ -127,6 +129,7 @@ public class ChessGame {
         //else return false
         return false;
     }
+
 
     /**
      * Determines if the given team is in checkmate
