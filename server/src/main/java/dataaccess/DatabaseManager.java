@@ -77,7 +77,7 @@ public class DatabaseManager {
 """
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public void configureDatabase() throws DataAccessException {
         createDatabase();
         try (var conn = getConnection()) {
             for (var statement : createTableStatements) {

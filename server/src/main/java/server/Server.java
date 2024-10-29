@@ -5,13 +5,26 @@ import service.*;
 import handlers.*;
 import spark.*;
 
+import javax.xml.crypto.Data;
+
 public class Server {
     private UserHandler userHandler;
     private GameHandler gameHandler;
     private DataHandler dataHandler;
+    private DatabaseManager databaseManager;
 
     public Server() {
+        createDatabase();
         constructHandlers();
+    }
+
+    private void createDatabase() {
+        databaseManager = new DatabaseManager();
+        try {
+        databaseManager.configureDatabase(); }
+        catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void constructHandlers() {

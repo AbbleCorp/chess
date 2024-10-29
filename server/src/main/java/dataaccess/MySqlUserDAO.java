@@ -6,6 +6,10 @@ import java.util.Map;
 
 public class MySqlUserDAO implements UserDAO {
 
+    MySqlUserDAO() {
+    }
+
+
     @Override
     public void createUser(UserData u) {
 
