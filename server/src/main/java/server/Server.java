@@ -11,7 +11,6 @@ public class Server {
     private UserHandler userHandler;
     private GameHandler gameHandler;
     private DataHandler dataHandler;
-    private DatabaseManager databaseManager;
 
     public Server() {
         createDatabase();
@@ -19,7 +18,7 @@ public class Server {
     }
 
     private void createDatabase() {
-        databaseManager = new DatabaseManager();
+        DatabaseManager databaseManager = new DatabaseManager();
         try {
         databaseManager.configureDatabase(); }
         catch (DataAccessException e) {
