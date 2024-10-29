@@ -12,6 +12,10 @@ public class DatabaseManager {
     /*
      * Load the database information for the db.properties file.
      */
+
+    public DatabaseManager() {}
+
+
     static {
         try {
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
@@ -45,6 +49,44 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    private final String[] createTableStatements = {
+        """
+        CREATE TABLE IF NOT EXISTS user (
+        'username' varchar(256) NOT NULL,
+        'password' varchar(256) NOT NULL,
+        'email' varchar(256) NOT NULL,
+        PRIMARY KEY ('username')
+        """,
+            """
+        CREATE TABLE IF NOT EXISTS auth (
+        'username' varchar(256) NOT NULL,
+        'authToken' varchar(256) NOT NULL,
+        PRIMARY KEY ('username')
+        """,
+            """
+        CREATE TABLE IF NOT EXISTS game (
+        `gameId` int NOT NULL AUTO_INCREMENT,
+        'whiteUsername' varchar(256),
+        'blackUsername' varchar(256),
+        'gameName' varchar(256) NOT NULL,
+        'game' TEXT,
+        PRIMARY KEY ('gameId')
+"""
+    };
+
+    private void configureDatabase() throws DataAccessException {
+        createDatabase();
+        try (var conn = getConnection()) {
+            for (var statement : createTableStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+        }
+    } catch (SQLException e) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", e.getMessage()));
         }
     }
 
