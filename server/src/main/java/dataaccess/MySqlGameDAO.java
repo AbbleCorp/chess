@@ -4,12 +4,15 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import model.GameDataAutoId;
+import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MySqlGameDAO implements GameDAO {
 
@@ -63,7 +66,28 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public ArrayList<GameData> listGames() {
-        return null;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM game", Statement.RETURN_GENERATED_KEYS)) {
+                var resultSet = preparedStatement.executeQuery();
+                ArrayList<GameData> gameList = new ArrayList<>();
+                GameData data = null;
+                var Serializer = new Gson();
+                while (resultSet.next()) {
+                    var gameId = resultSet.getInt("gameId");
+                    var whiteUser = resultSet.getString("whiteUsername");
+                    var blackUser = resultSet.getString("blackUsername");
+                    var gameName = resultSet.getString("gameName");
+                    ChessGame game = Serializer.fromJson(resultSet.getString("game"),ChessGame.class);
+                    data = new GameData(gameId,whiteUser,blackUser,gameName,game);
+                    gameList.add(data);
+                }
+                return gameList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
