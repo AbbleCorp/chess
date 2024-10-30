@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,7 +28,20 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public Map<String, String> listAuth() {
-        return Map.of();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth", Statement.RETURN_GENERATED_KEYS)) {
+                var resultSet = preparedStatement.executeQuery();
+                Map<String, String> authList = new HashMap<>();
+                while (resultSet.next()) {
+                    authList.put(resultSet.getString("username"), resultSet.getString("authToken"));
+                }
+                return authList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -87,6 +101,13 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, authToken);
+                preparedStatement.executeUpdate();
+                }
+            } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
