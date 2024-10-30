@@ -26,7 +26,7 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
-    public void createGame(int gameId, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
+    public int createGame(int gameId, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("INSERT INTO game (whiteUsername, blackUsername, gameName,game) VALUES(?, ?, ?, ?)")) {
                 preparedStatement.setString(1, whiteUsername);
@@ -35,8 +35,7 @@ public class MySqlGameDAO implements GameDAO {
                 var Serializer = new Gson();
                 String jsonGame = Serializer.toJson(new GameDataAutoId(whiteUsername,blackUsername,gameName,game));
                 preparedStatement.setString(4,jsonGame);
-                var id = preparedStatement.executeUpdate();
-                return id;
+                return preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
