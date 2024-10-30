@@ -19,7 +19,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userDAO = new MemoryUserDAO();
+        userDAO = new MySqlUserDAO();
         authDAO = new MemoryAuthDAO();
         authDAO.createAuth("user1");
         authDAO.createAuth("user2");

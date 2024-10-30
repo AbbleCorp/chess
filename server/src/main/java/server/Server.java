@@ -27,9 +27,9 @@ public class Server {
     }
 
     private void constructHandlers() {
-        UserDAO userData = new MemoryUserDAO();
-        GameDAO gameData = new MemoryGameDAO();
-        AuthDAO authData = new MemoryAuthDAO();
+        UserDAO userData = new MySqlUserDAO();
+        GameDAO gameData = new MySqlGameDAO();
+        AuthDAO authData = new MySqlAuthDAO();
         UserService userService = new UserService(userData, authData);
         GameService gameService = new GameService(gameData, authData);
         DataService dataService = new DataService(userData, gameData, authData);
