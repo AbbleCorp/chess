@@ -1,29 +1,44 @@
 package dataaccess;
 
-import model.UserData;
+import chess.ChessGame;
+import model.GameData;
 
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
-public class MySqlGameDAO implements UserDAO {
+public class MySqlGameDAO implements GameDAO {
 
 
     @Override
-    public void createUser(UserData u) {
+    public void clear() {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM game")) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void createGame(int gameId, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
 
     }
 
     @Override
-    public UserData getUser(String username) throws DataAccessException {
+    public GameData getGame(int gameId) throws DataAccessException {
         return null;
     }
 
     @Override
-    public void clear() {
-
+    public ArrayList<GameData> listGames() {
+        return null;
     }
 
     @Override
-    public Map<String, UserData> listUsers() {
-        return Map.of();
+    public void updateGame(int gameId, GameData game) {
+
     }
 }

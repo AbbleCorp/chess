@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 public class MySqlUserDaoTests {
     private UserDAO userDB;
 
@@ -36,4 +38,13 @@ public class MySqlUserDaoTests {
         System.out.print(result.email());
     }
 
+
+    @Test
+    void listUsers() {
+        clear();
+        createUser();
+        userDB.createUser(new UserData("user2", "password2", "email2"));
+        userDB.createUser(new UserData("user3", "password3", "email3"));
+        Map<String, UserData> userList = userDB.listUsers();
+    }
 }

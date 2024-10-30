@@ -6,10 +6,10 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MySqlUserDAO implements UserDAO {
-
 
 
     @Override
@@ -57,14 +57,31 @@ public class MySqlUserDAO implements UserDAO {
             try (var preparedStatement = conn.prepareStatement("DELETE FROM user")) {
                 preparedStatement.executeUpdate();
             }
-    } catch (SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
-        }}
+        }
+    }
 
-        @Override
+    @Override
     public Map<String, UserData> listUsers() {
-        return Map.of();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM user", Statement.RETURN_GENERATED_KEYS)) {
+                var resultSet = preparedStatement.executeQuery();
+                Map<String, UserData> userList = new HashMap<>();
+                UserData data = null;
+                while (resultSet.next()) {
+                    data = new UserData(resultSet.getString("username"), resultSet.getString("password"), resultSet.getString("email"));
+                    userList.put(resultSet.getString("username"), data);
+                }
+                return userList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
+
