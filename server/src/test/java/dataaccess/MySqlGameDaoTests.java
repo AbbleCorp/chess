@@ -1,12 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
-import dataaccess.*;
 import model.GameData;
-import model.GameDataAutoId;
-import model.UserData;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,5 +33,16 @@ public class MySqlGameDaoTests {
         createGame();
         ArrayList<GameData> gameList = gameDB.listGames();
         System.out.print("test");
+    }
+
+    @Test
+    void updateGame() throws DataAccessException {
+        gameDB.updateGame(2,new GameData(2,"newwhite",null,"game2",new ChessGame()));
+    }
+
+    @Test
+    void getGame() throws DataAccessException {
+        GameData data = gameDB.getGame(1);
+        System.out.print(data.gameName());
     }
 }
