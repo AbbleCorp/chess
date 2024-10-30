@@ -68,7 +68,21 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public String getUsername(String authToken) throws DataAccessException {
-        return "";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT username FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, authToken);
+                var resultSet = preparedStatement.executeQuery();
+                String username = null;
+                if (resultSet.next()) {
+                    username = resultSet.getString("username");
+                }
+                return username;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

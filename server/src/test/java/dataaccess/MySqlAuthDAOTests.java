@@ -30,4 +30,11 @@ public class MySqlAuthDAOTests {
         String token = authDB.getAuth(data.authToken());
         System.out.print(token);
     }
+
+    @Test
+    void testGetUsername() throws DataAccessException {
+        AuthData data = authDB.createAuth("user1");
+        String user = authDB.getUsername(data.authToken());
+        System.out.print(user);
+    }
 }
