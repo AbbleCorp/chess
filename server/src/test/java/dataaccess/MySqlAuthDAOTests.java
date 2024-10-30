@@ -23,4 +23,11 @@ public class MySqlAuthDAOTests {
         System.out.println(data.username());
         System.out.println(data.authToken());
     }
+
+    @Test
+    void testGetAuth() {
+        AuthData data = authDB.createAuth("user1");
+        String token = authDB.getAuth(data.authToken());
+        System.out.print(token);
+    }
 }

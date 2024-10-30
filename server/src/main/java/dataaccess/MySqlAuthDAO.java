@@ -1,9 +1,11 @@
 package dataaccess;
 
 import model.AuthData;
+import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,7 +49,21 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public String getAuth(String authToken) {
-        return "";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT authToken FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, authToken);
+                var resultSet = preparedStatement.executeQuery();
+                String token = null;
+                if (resultSet.next()) {
+                    token = resultSet.getString("authToken");
+                }
+                return token;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
