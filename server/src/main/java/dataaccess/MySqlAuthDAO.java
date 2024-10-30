@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.AuthData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -29,8 +30,19 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public AuthData createAuth(String username) {
-        String token = UUID.randomUUID().toString();
-        return null;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES(?, ?)")) {
+                String token = UUID.randomUUID().toString();
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, token);
+                preparedStatement.executeUpdate();
+                return new AuthData(username, token);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
