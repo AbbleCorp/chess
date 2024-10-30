@@ -23,7 +23,7 @@ public class MySqlGameDaoTests {
     }
 
     @Test
-    void createUser() throws DataAccessException {
+    void createGame() throws DataAccessException {
         int game1 = gameDB.createGame(0,"white1",null,"game1", new ChessGame());
         System.out.print(game1);
         int game2 = gameDB.createGame(1,null,null,"game2",new ChessGame());

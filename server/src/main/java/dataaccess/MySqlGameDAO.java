@@ -6,7 +6,9 @@ import model.GameData;
 import model.GameDataAutoId;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class MySqlGameDAO implements GameDAO {
@@ -14,10 +16,12 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public void clear() {
+        String[] clearStatements = {"DELETE FROM game", "ALTER TABLE game AUTO_INCREMENT = 1"};
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("DELETE FROM game")) {
+            for (var statement : clearStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
-            }
+            }}
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (DataAccessException e) {
@@ -28,14 +32,22 @@ public class MySqlGameDAO implements GameDAO {
     @Override
     public int createGame(int gameId, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO game (whiteUsername, blackUsername, gameName,game) VALUES(?, ?, ?, ?)")) {
+            try (var preparedStatement = conn.prepareStatement(
+                    "INSERT INTO game (whiteUsername, blackUsername, gameName,game) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, whiteUsername);
                 preparedStatement.setString(2, blackUsername);
                 preparedStatement.setString(3, gameName);
                 var Serializer = new Gson();
                 String jsonGame = Serializer.toJson(new GameDataAutoId(whiteUsername,blackUsername,gameName,game));
                 preparedStatement.setString(4,jsonGame);
-                return preparedStatement.executeUpdate();
+                int id = 0;
+                if (preparedStatement.executeUpdate() == 1) {
+                    try(ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                        generatedKeys.next();
+                        id = generatedKeys.getInt(1);
+                    }
+                }
+                return id;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
