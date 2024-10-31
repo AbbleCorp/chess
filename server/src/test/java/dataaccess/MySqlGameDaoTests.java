@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MySqlGameDaoTests {
     DatabaseManager DB;
@@ -31,7 +33,7 @@ public class MySqlGameDaoTests {
 
     //positive
     @Test
-    void createGame() throws DataAccessException {
+    void testcreateGame() throws DataAccessException {
         gameDB.createGame("white1",null,"game1", new ChessGame());
         gameDB.createGame(null,null,"game2",new ChessGame());
         ArrayList<GameData> gameList = gameDB.listGames();
@@ -42,28 +44,99 @@ public class MySqlGameDaoTests {
 
     //negative
     @Test
-    void createGameNullGameName() throws DataAccessException {
+    void testcreateGameNullGameName() throws DataAccessException {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             gameDB.createGame(null,null,null,new ChessGame());
         });
         Assertions.assertEquals("Column 'gameName' cannot be null",e.getMessage());
     }
 
+
+    //positive
     @Test
-    void listGames() throws DataAccessException {
-        createGame();
+    void testlistGames() throws DataAccessException {
+        gameDB.createGame("white","black","game1",new ChessGame());
+        gameDB.createGame(null,null,"game1",new ChessGame());
         ArrayList<GameData> gameList = gameDB.listGames();
-        System.out.print("test");
+        Assertions.assertEquals(2,gameList.size());
+        Assertions.assertEquals("white",gameList.get(0).whiteUsername());
     }
 
+    //negative
     @Test
-    void updateGame() throws DataAccessException {
-        gameDB.updateGame(2,new GameData(2,"newwhite",null,"game2",new ChessGame()));
+    void testListGamesTableDropped() throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DROP TABLE game")) {
+                preparedStatement.executeUpdate();
+                Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
+                    ArrayList<GameData> gameList = gameDB.listGames();
+                });
+                Assertions.assertEquals("java.sql.SQLSyntaxErrorException: Table 'chess.game' doesn't exist",
+                        e.getMessage());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);} catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+
+    //positive
     @Test
-    void getGame() throws DataAccessException {
+    void testUpdateGame() throws DataAccessException {
+        gameDB.createGame(null,null,"game1",new ChessGame());
+        gameDB.updateGame(1,new GameData(1,"newwhite","newblack","game2",new ChessGame()));
+        GameData updatedGame = gameDB.getGame(1);
+        Assertions.assertEquals("newwhite",updatedGame.whiteUsername());
+        Assertions.assertEquals("newblack",updatedGame.blackUsername());
+    }
+
+    //negative
+    @Test
+    void testUpdateGameDroppedTable() throws DataAccessException {
+        gameDB.createGame(null,null,"game1",new ChessGame());
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DROP TABLE game")) {
+                preparedStatement.executeUpdate();
+                Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
+                    gameDB.updateGame(1,new GameData(1,"newwhite","newblack","game2",new ChessGame()));
+                });
+                Assertions.assertEquals("java.sql.SQLSyntaxErrorException: Table 'chess.game' doesn't exist",
+                        e.getMessage());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);} catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    //positive
+    @Test
+    void testGetGame() throws DataAccessException {
+        gameDB.createGame("white","black","game1",new ChessGame());
         GameData data = gameDB.getGame(1);
-        System.out.print(data.gameName());
+        Assertions.assertEquals("white",data.whiteUsername());
+        Assertions.assertEquals("black",data.blackUsername());
+        Assertions.assertEquals("game1",data.gameName());
+    }
+
+    //negative
+    @Test
+    void testGetGameInvalidId() throws DataAccessException {
+        gameDB.createGame(null,null,"game1",new ChessGame());
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DROP TABLE game")) {
+                preparedStatement.executeUpdate();
+                Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
+                    gameDB.getGame(1);
+                });
+                Assertions.assertEquals("Table 'chess.game' doesn't exist",
+                        e.getMessage());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);} catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
