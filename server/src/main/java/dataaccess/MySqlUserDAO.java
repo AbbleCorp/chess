@@ -43,10 +43,8 @@ public class MySqlUserDAO implements UserDAO {
                 }
                 return data;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
         // SELECT * FROM user WHERE username='user1';
     }

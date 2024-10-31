@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import model.GameData;
 import model.UserData;
 
+import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -48,10 +49,8 @@ public class MySqlGameDAO implements GameDAO {
                 }
                 return id;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -67,10 +66,8 @@ public class MySqlGameDAO implements GameDAO {
                 }
                 return data;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -98,7 +95,7 @@ public class MySqlGameDAO implements GameDAO {
                 }
                 return gameList;
             }
-        } catch (SQLException e) {
+    } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);

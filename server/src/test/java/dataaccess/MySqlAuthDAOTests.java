@@ -12,6 +12,7 @@ public class MySqlAuthDAOTests {
     @BeforeEach
     void setUp() {
         authDB = new MySqlAuthDAO();
+
     }
 
     @Test

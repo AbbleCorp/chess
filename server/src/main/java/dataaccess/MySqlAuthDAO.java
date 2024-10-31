@@ -92,10 +92,8 @@ public class MySqlAuthDAO implements AuthDAO {
                 }
                 return username;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+    } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -106,8 +104,8 @@ public class MySqlAuthDAO implements AuthDAO {
                 preparedStatement.setString(1, authToken);
                 preparedStatement.executeUpdate();
                 }
-            } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
         }
     }
 }
