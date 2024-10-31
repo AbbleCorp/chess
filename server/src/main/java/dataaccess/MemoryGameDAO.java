@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     Map<Integer, GameData> gameList;
+    int gameId = 0;
 
     public MemoryGameDAO() {
         gameList = new HashMap<>();
@@ -19,10 +20,14 @@ public class MemoryGameDAO implements GameDAO {
         gameList.clear();
     }
 
+    int gameIDinc() {
+        return ++gameId;
+    }
+
     @Override
-    public int createGame(int gameId, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
+    public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
         if (!gameList.containsKey(gameId)) {
-            gameList.put(gameId, new GameData(gameId, whiteUsername, blackUsername, gameName, game));
+            gameList.put(gameIDinc(), new GameData(gameId, whiteUsername, blackUsername, gameName, game));
             return gameId;
         }
         else {throw new DataAccessException("Game already exists");}

@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.AuthData;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,19 +13,22 @@ public class MySqlAuthDAOTests {
     @BeforeEach
     void setUp() {
         authDB = new MySqlAuthDAO();
+        authDB.clear();
 
     }
 
     @Test
     void testClear() {
+        authDB.createAuth("user1");
+        authDB.createAuth("user2");
         authDB.clear();
+        Map<String,String> authList = authDB.listAuth();
+        Assertions.assertTrue(authList.isEmpty());
     }
 
     @Test
     void testCreateAuth() {
         AuthData data = authDB.createAuth("user1");
-        System.out.println(data.username());
-        System.out.println(data.authToken());
     }
 
     @Test

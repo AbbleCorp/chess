@@ -24,12 +24,12 @@ public class GameServiceTest {
     }
 
 
-    @Test
-    void testGameID() {
-        Assertions.assertEquals(1,gameService.gameIDinc());
-        Assertions.assertEquals(2,gameService.gameIDinc());
-        Assertions.assertEquals(3,gameService.gameIDinc());
-    }
+//    @Test
+//    void testGameID() {
+//        Assertions.assertEquals(1,gameService.gameIDinc());
+//        Assertions.assertEquals(2,gameService.gameIDinc());
+//        Assertions.assertEquals(3,gameService.gameIDinc());
+//    }
 
     //positive list games
     @Test

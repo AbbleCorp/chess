@@ -26,8 +26,8 @@ public class DataServiceTest {
         authDAO.createAuth("user2");
         userDAO.createUser(new UserData("user3", "password3", "email3"));
         userDAO.createUser(new UserData("user4","password4", "email4"));
-        gameDAO.createGame(0001, "white1", "black2", "game1", new ChessGame());
-        gameDAO.createGame(0002, null,null, "game2", new ChessGame());
+        gameDAO.createGame( "white1", "black2", "game1", new ChessGame());
+        gameDAO.createGame( null,null, "game2", new ChessGame());
         dataServ = new DataService(userDAO,gameDAO,authDAO);
     }
 

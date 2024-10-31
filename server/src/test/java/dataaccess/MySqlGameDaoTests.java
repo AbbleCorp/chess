@@ -22,9 +22,9 @@ public class MySqlGameDaoTests {
 
     @Test
     void createGame() throws DataAccessException {
-        int game1 = gameDB.createGame(0,"white1",null,"game1", new ChessGame());
+        int game1 = gameDB.createGame("white1",null,"game1", new ChessGame());
         System.out.print(game1);
-        int game2 = gameDB.createGame(1,null,null,"game2",new ChessGame());
+        int game2 = gameDB.createGame(null,null,"game2",new ChessGame());
         System.out.print(game2);
     }
 

@@ -16,7 +16,6 @@ import java.util.Objects;
 public class GameService {
     private final GameDAO gameData;
     private final AuthDAO authData;
-    int gameID = 0;
 
     public GameService(GameDAO gameData, AuthDAO authData) {
         this.gameData = gameData;
@@ -28,6 +27,7 @@ public class GameService {
         if (request.getAuthorization() == null || request.getPlayerColor() == null || request.getGameID() == null) {
             throw new Exception("Error: bad request"); }
         if (authData.getAuth(request.getAuthorization()) != null) {
+            int gameID = request.getGameID();
             String username = authData.getUsername(request.getAuthorization());
             GameData originalGame = gameData.getGame(gameID);
             if (Objects.equals(request.getPlayerColor(), "WHITE") && originalGame.whiteUsername()==null) {
@@ -46,9 +46,8 @@ public class GameService {
         if (request.getAuthorization() == null || request.getGameName() == null)
         {throw new Exception("Error: bad request");}
         if (authData.getAuth(request.getAuthorization()) != null) {
-            int id = gameIDinc();
-            gameData.createGame(id, null, null, request.getGameName(), new ChessGame());
-            return gameID;
+            int gameId = gameData.createGame( null, null, request.getGameName(), new ChessGame());
+            return gameId;
         } else {throw new DataAccessException("Error: unauthorized");}
     }
 
@@ -59,8 +58,6 @@ public class GameService {
         else {throw new DataAccessException("Error: unauthorized");}
     }
 
-    int gameIDinc() {
-        return ++gameID;
-    }
+
 
 }

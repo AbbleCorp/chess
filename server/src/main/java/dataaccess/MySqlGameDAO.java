@@ -16,7 +16,7 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public void clear() {
-        String[] clearStatements = {"DELETE FROM game", "ALTER TABLE game AUTO_INCREMENT = 1"};
+        String[] clearStatements = {"DELETE FROM game"};
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : clearStatements) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
@@ -30,7 +30,7 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
-    public int createGame(int gameId, String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
+    public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(
                     "INSERT INTO game (whiteUsername, blackUsername, gameName,game) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
