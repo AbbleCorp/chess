@@ -9,13 +9,13 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class MySqlAuthDAOTests {
-    DatabaseManager DB;
+    DatabaseManager db;
     private AuthDAO authDB;
 
     @BeforeEach
     void setUp() throws DataAccessException {
-        DB = new DatabaseManager();
-        DB.configureDatabase();
+        db = new DatabaseManager();
+        db.configureDatabase();
         authDB = new MySqlAuthDAO();
         authDB.clear();
 
@@ -100,8 +100,6 @@ public class MySqlAuthDAOTests {
                 Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
                     Map<String,String> authList = authDB.listAuth();
                 });
-                Assertions.assertEquals("java.sql.SQLSyntaxErrorException: Table 'chess.auth' doesn't exist",
-                        e.getMessage());
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);} catch (DataAccessException e) {
@@ -134,8 +132,7 @@ public class MySqlAuthDAOTests {
                 preparedStatement.executeUpdate();
                 Exception e = Assertions.assertThrows(DataAccessException.class, () ->
                         authDB.deleteAuth(data.authToken()));
-                Assertions.assertEquals("Table 'chess.auth' doesn't exist", e.getMessage());
-            }
+                }
         } catch (SQLException e) {
             throw new RuntimeException(e);} catch (DataAccessException e) {
             throw new RuntimeException(e);

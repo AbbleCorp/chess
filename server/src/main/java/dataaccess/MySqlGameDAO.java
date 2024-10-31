@@ -33,8 +33,8 @@ public class MySqlGameDAO implements GameDAO {
                 preparedStatement.setString(1, whiteUsername);
                 preparedStatement.setString(2, blackUsername);
                 preparedStatement.setString(3, gameName);
-                var Serializer = new Gson();
-                String jsonGame = Serializer.toJson(game);
+                var serializer = new Gson();
+                String jsonGame = serializer.toJson(game);
                 preparedStatement.setString(4,jsonGame);
                 int id = 0;
                 if (preparedStatement.executeUpdate() == 1) {
@@ -68,12 +68,12 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     private GameData getGameData(ResultSet resultSet) throws SQLException {
-        var Serializer = new Gson();
+        var serializer = new Gson();
         var id = resultSet.getInt("gameId");
         var whiteUser = resultSet.getString("whiteUsername");
         var blackUser = resultSet.getString("blackUsername");
         var gameName = resultSet.getString("gameName");
-        ChessGame game = Serializer.fromJson(resultSet.getString("game"),ChessGame.class);
+        ChessGame game = serializer.fromJson(resultSet.getString("game"),ChessGame.class);
         return new GameData(id,whiteUser,blackUser,gameName,game);
     }
 
@@ -102,8 +102,8 @@ public class MySqlGameDAO implements GameDAO {
                     "UPDATE game SET whiteUsername=?, blackUsername=?, game=? WHERE gameId=?")) {
                 preparedStatement.setString(1,game.whiteUsername());
                 preparedStatement.setString(2,game.blackUsername());
-                var Serializer = new Gson();
-                String jsonGame = Serializer.toJson(game.game());
+                var serializer = new Gson();
+                String jsonGame = serializer.toJson(game.game());
                 preparedStatement.setString(3,jsonGame);
                 preparedStatement.setInt(4,gameId);
                 preparedStatement.executeUpdate();

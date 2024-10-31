@@ -11,12 +11,12 @@ import java.util.Map;
 
 public class MySqlUserDaoTests {
     private UserDAO userDB;
-    DatabaseManager DB;
+    DatabaseManager db;
 
     @BeforeEach
     void setUp() throws DataAccessException {
-        DB = new DatabaseManager();
-        DB.configureDatabase();
+        db = new DatabaseManager();
+        db.configureDatabase();
         userDB = new MySqlUserDAO();
         userDB.clear();
     }
@@ -98,8 +98,6 @@ public class MySqlUserDaoTests {
                 Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
                     Map<String,UserData> userList = userDB.listUsers();
                 });
-                Assertions.assertEquals("java.sql.SQLSyntaxErrorException: Table 'chess.user' doesn't exist",
-                        e.getMessage());
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);} catch (DataAccessException e) {

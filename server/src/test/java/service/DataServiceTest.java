@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class DataServiceTest {
-    DatabaseManager DB;
+    DatabaseManager db;
     private DataService dataServ;
     private AuthDAO authDAO;
     private UserDAO userDAO;
@@ -18,8 +18,8 @@ public class DataServiceTest {
 
     @BeforeEach
     public void setUp() throws DataAccessException {
-        DB = new DatabaseManager();
-        DB.configureDatabase();
+        db = new DatabaseManager();
+        db.configureDatabase();
         authDAO = new MySqlAuthDAO();
         userDAO = new MySqlUserDAO();
         gameDAO = new MySqlGameDAO();

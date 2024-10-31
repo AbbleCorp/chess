@@ -12,15 +12,15 @@ import java.util.Map;
 //assert throws
 
 public class UserServiceTest {
-    DatabaseManager DB;
+    DatabaseManager db;
     private UserService userService;
     private UserDAO userDAO;
     private AuthDAO authDAO;
 
     @BeforeEach
     void setUp() throws DataAccessException {
-        DB = new DatabaseManager();
-        DB.configureDatabase();
+        db = new DatabaseManager();
+        db.configureDatabase();
         userDAO = new MySqlUserDAO();
         authDAO = new MySqlAuthDAO();
         userDAO.clear();

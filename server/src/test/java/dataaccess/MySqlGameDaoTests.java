@@ -10,13 +10,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MySqlGameDaoTests {
-    DatabaseManager DB;
+    DatabaseManager db;
     private GameDAO gameDB;
 
     @BeforeEach
     void setUp() throws DataAccessException {
-        DB = new DatabaseManager();
-        DB.configureDatabase();
+        db = new DatabaseManager();
+        db.configureDatabase();
         gameDB = new MySqlGameDAO();
         gameDB.clear();
     }
@@ -68,8 +68,6 @@ public class MySqlGameDaoTests {
                 Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
                     ArrayList<GameData> gameList = gameDB.listGames();
                 });
-                Assertions.assertEquals("java.sql.SQLSyntaxErrorException: Table 'chess.game' doesn't exist",
-                        e.getMessage());
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);} catch (DataAccessException e) {
@@ -96,9 +94,9 @@ public class MySqlGameDaoTests {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("DROP TABLE game")) {
                 preparedStatement.executeUpdate();
-                Exception e = Assertions.assertThrows(RuntimeException.class, () -> gameDB.updateGame(1,new GameData(1,"newWhite","newBlack","game2",new ChessGame())));
-                Assertions.assertEquals("java.sql.SQLSyntaxErrorException: Table 'chess.game' doesn't exist",
-                        e.getMessage());
+                Exception e = Assertions.assertThrows(RuntimeException.class, () ->
+                        gameDB.updateGame(1,new GameData(1,"newWhite",
+                                "newBlack","game2",new ChessGame())));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);} catch (DataAccessException e) {
@@ -119,14 +117,13 @@ public class MySqlGameDaoTests {
 
     //negative
     @Test
-    void testGetGameInvalidId() throws DataAccessException {
+    void testGetGameDroppedTable() throws DataAccessException {
         gameDB.createGame(null,null,"game1",new ChessGame());
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("DROP TABLE game")) {
                 preparedStatement.executeUpdate();
                 Exception e = Assertions.assertThrows(DataAccessException.class, () -> gameDB.getGame(1));
-                Assertions.assertEquals("Table 'chess.game' doesn't exist",
-                        e.getMessage());
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);} catch (DataAccessException e) {

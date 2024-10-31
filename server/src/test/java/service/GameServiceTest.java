@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class GameServiceTest {
-    DatabaseManager DB;
+    DatabaseManager db;
     private GameService gameService;
     private GameDAO gameDAO;
     private AuthData auth1;
@@ -17,8 +17,8 @@ public class GameServiceTest {
 
     @BeforeEach
     void setUp() throws DataAccessException {
-        DB = new DatabaseManager();
-        DB.configureDatabase();
+        db = new DatabaseManager();
+        db.configureDatabase();
         gameDAO = new MySqlGameDAO();
         AuthDAO authDAO = new MySqlAuthDAO();
         gameDAO.clear();
@@ -29,12 +29,7 @@ public class GameServiceTest {
     }
 
 
-//    @Test
-//    void testGameID() {
-//        Assertions.assertEquals(1,gameService.gameIDinc());
-//        Assertions.assertEquals(2,gameService.gameIDinc());
-//        Assertions.assertEquals(3,gameService.gameIDinc());
-//    }
+
 
     //positive list games
     @Test
