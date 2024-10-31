@@ -48,9 +48,8 @@ public class GameServiceTest {
     //negative listGames test
     @Test
     void testListGamesNeg() {
-        Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            gameService.listGames(new ListGamesRequest("incorrect"));
-        });
+        Exception e = Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.listGames(new ListGamesRequest("incorrect")));
         Assertions.assertEquals("Error: unauthorized", e.getMessage());
     }
 
@@ -67,9 +66,8 @@ public class GameServiceTest {
     //negativeCreateGame
     @Test
     void testCreateGameNegative() {
-        Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            gameService.createGame(new CreateGameRequest("incorrect", "game1"));
-        });
+        Exception e = Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.createGame(new CreateGameRequest("incorrect", "game1")));
         Assertions.assertEquals("Error: unauthorized", e.getMessage());
     }
 
@@ -101,9 +99,8 @@ public class GameServiceTest {
     void testJoinGameSpotTaken() throws Exception {
         gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
         gameService.joinGame(new JoinGameRequest(auth1.authToken(),"WHITE", 1));
-        Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-            gameService.joinGame(new JoinGameRequest(auth2.authToken(),"WHITE", 1));
-        });
+        Exception e = Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.joinGame(new JoinGameRequest(auth2.authToken(),"WHITE", 1)));
         Assertions.assertEquals("Error: already taken",e.getMessage());
     }
 
@@ -111,9 +108,8 @@ public class GameServiceTest {
     @Test
     void testJoinGameInvalidAuth() throws Exception {
         gameService.createGame(new CreateGameRequest(auth1.authToken(),"game1"));
-        Exception e = Assertions.assertThrows(Exception.class, () -> {
-            gameService.joinGame(new JoinGameRequest("incorrect","WHITE", 1));
-        });
+        Exception e = Assertions.assertThrows(Exception.class, () ->
+                gameService.joinGame(new JoinGameRequest("incorrect","WHITE", 1)));
         Assertions.assertEquals("Error: unauthorized",e.getMessage());
     }
 

@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 //one positive negative for each service method
 //assert throws
@@ -43,7 +41,7 @@ public class UserServiceTest {
 
     //register negative test
     @Test
-    void testRegisterNeg() throws DataAccessException {
+    void testRegisterNeg() {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             userService.register(new RegisterRequest("user1", "password1", "email1"));
         });
@@ -54,12 +52,12 @@ public class UserServiceTest {
     @Test
     void testLoginPos() throws DataAccessException {
         AuthData auth = userService.login(new LoginRequest("user1","password1"));
-        Assertions.assertTrue(auth instanceof AuthData);
+        Assertions.assertTrue(auth != null);
     }
 
     //login negative test, not auth
     @Test
-    void testLoginNotAuth() throws DataAccessException {
+    void testLoginNotAuth() {
         Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
             userService.login(new LoginRequest("user1", "incorrect"));
         });

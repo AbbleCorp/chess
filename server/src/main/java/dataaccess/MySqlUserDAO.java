@@ -3,7 +3,6 @@ package dataaccess;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -23,9 +22,7 @@ public class MySqlUserDAO implements UserDAO {
                 preparedStatement.setString(3, u.email());
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -55,9 +52,7 @@ public class MySqlUserDAO implements UserDAO {
             try (var preparedStatement = conn.prepareStatement("DELETE FROM user")) {
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -68,16 +63,14 @@ public class MySqlUserDAO implements UserDAO {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM user", Statement.RETURN_GENERATED_KEYS)) {
                 var resultSet = preparedStatement.executeQuery();
                 Map<String, UserData> userList = new HashMap<>();
-                UserData data = null;
+                UserData data;
                 while (resultSet.next()) {
                     data = new UserData(resultSet.getString("username"), resultSet.getString("password"), resultSet.getString("email"));
                     userList.put(resultSet.getString("username"), data);
                 }
                 return userList;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }

@@ -1,10 +1,7 @@
 package dataaccess;
 
-import chess.ChessGame;
-import dataaccess.*;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
@@ -50,7 +47,7 @@ public class MySqlUserDaoTests {
 
     //negative
     @Test
-    void testCreateUserExistingUsername() throws DataAccessException {
+    void testCreateUserExistingUsername() {
         Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
             userDB.createUser(new UserData("user1", "password1", "email1"));
             userDB.createUser(new UserData("user1", "password2", "email2"));
@@ -94,7 +91,7 @@ public class MySqlUserDaoTests {
 
     //negative
     @Test
-    void testListUsersTableDropped() throws DataAccessException {
+    void testListUsersTableDropped() {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("DROP TABLE user")) {
                 preparedStatement.executeUpdate();

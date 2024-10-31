@@ -3,9 +3,7 @@ package dataaccess;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
-import model.UserData;
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,9 +20,7 @@ public class MySqlGameDAO implements GameDAO {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }}
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -87,17 +83,14 @@ public class MySqlGameDAO implements GameDAO {
             try (var preparedStatement = conn.prepareStatement("SELECT * FROM game", Statement.RETURN_GENERATED_KEYS)) {
                 var resultSet = preparedStatement.executeQuery();
                 ArrayList<GameData> gameList = new ArrayList<>();
-                GameData data = null;
-                var Serializer = new Gson();
+                GameData data;
                 while (resultSet.next()) {
                     data = getGameData(resultSet);
                     gameList.add(data);
                 }
                 return gameList;
             }
-    } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+    } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -115,9 +108,7 @@ public class MySqlGameDAO implements GameDAO {
                 preparedStatement.setInt(4,gameId);
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }

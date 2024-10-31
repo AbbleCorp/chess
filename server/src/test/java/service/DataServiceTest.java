@@ -4,11 +4,9 @@ import chess.ChessGame;
 import dataaccess.*;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
 
 public class DataServiceTest {
     DatabaseManager DB;

@@ -41,9 +41,7 @@ public class MySqlAuthDAOTests {
     //negative
     @Test
     void testCreateNullUsername() {
-        Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
-            authDB.createAuth(null);
-        });
+        Exception e = Assertions.assertThrows(RuntimeException.class, () -> authDB.createAuth(null));
         Assertions.assertEquals(
                 "java.sql.SQLIntegrityConstraintViolationException: Column 'username' cannot be null",
                 e.getMessage());
@@ -134,9 +132,8 @@ public class MySqlAuthDAOTests {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement("DROP TABLE auth")) {
                 preparedStatement.executeUpdate();
-                Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
-                    authDB.deleteAuth(data.authToken());
-                });
+                Exception e = Assertions.assertThrows(DataAccessException.class, () ->
+                        authDB.deleteAuth(data.authToken()));
                 Assertions.assertEquals("Table 'chess.auth' doesn't exist", e.getMessage());
             }
         } catch (SQLException e) {

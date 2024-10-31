@@ -1,8 +1,6 @@
 package dataaccess;
 
 import model.AuthData;
-import model.UserData;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -19,9 +17,7 @@ public class MySqlAuthDAO implements AuthDAO {
             try (var preparedStatement = conn.prepareStatement("DELETE FROM auth")) {
                 preparedStatement.executeUpdate();
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -37,9 +33,7 @@ public class MySqlAuthDAO implements AuthDAO {
                 }
                 return authList;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -55,9 +49,7 @@ public class MySqlAuthDAO implements AuthDAO {
                 preparedStatement.executeUpdate();
                 return new AuthData(username, token);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -74,9 +66,7 @@ public class MySqlAuthDAO implements AuthDAO {
                 }
                 return token;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
