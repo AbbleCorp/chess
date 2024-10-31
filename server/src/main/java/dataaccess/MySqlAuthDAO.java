@@ -47,10 +47,11 @@ public class MySqlAuthDAO implements AuthDAO {
     @Override
     public AuthData createAuth(String username) {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES(?, ?)")) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES(?, ?)" + "ON DUPLICATE KEY UPDATE authToken=?")) {
                 String token = UUID.randomUUID().toString();
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, token);
+                preparedStatement.setString(3,token);
                 preparedStatement.executeUpdate();
                 return new AuthData(username, token);
             }
