@@ -9,15 +9,20 @@ import org.junit.jupiter.api.Test;
 
 
 public class GameServiceTest {
+    DatabaseManager DB;
     private GameService gameService;
     private GameDAO gameDAO;
     private AuthData auth1;
     private AuthData auth2;
 
     @BeforeEach
-    void setUp() {
-        gameDAO = new MemoryGameDAO();
-        AuthDAO authDAO = new MemoryAuthDAO();
+    void setUp() throws DataAccessException {
+        DB = new DatabaseManager();
+        DB.configureDatabase();
+        gameDAO = new MySqlGameDAO();
+        AuthDAO authDAO = new MySqlAuthDAO();
+        gameDAO.clear();
+        authDAO.clear();
         auth1 = authDAO.createAuth("user1");
         auth2 = authDAO.createAuth("user2");
         gameService = new GameService(gameDAO, authDAO);

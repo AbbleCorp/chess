@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 public class DataServiceTest {
+    DatabaseManager DB;
     private DataService dataServ;
     private AuthDAO authDAO;
     private UserDAO userDAO;
@@ -19,9 +20,11 @@ public class DataServiceTest {
 
     @BeforeEach
     public void setUp() throws DataAccessException {
-        authDAO = new MemoryAuthDAO();
-        userDAO = new MemoryUserDAO();
-        gameDAO = new MemoryGameDAO();
+        DB = new DatabaseManager();
+        DB.configureDatabase();
+        authDAO = new MySqlAuthDAO();
+        userDAO = new MySqlUserDAO();
+        gameDAO = new MySqlGameDAO();
         authDAO.createAuth("user1");
         authDAO.createAuth("user2");
         userDAO.createUser(new UserData("user3", "password3", "email3"));

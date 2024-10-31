@@ -7,20 +7,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 //one positive negative for each service method
 //assert throws
 
 public class UserServiceTest {
+    DatabaseManager DB;
     private UserService userService;
     private UserDAO userDAO;
     private AuthDAO authDAO;
 
     @BeforeEach
-    void setUp() {
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
+    void setUp() throws DataAccessException {
+        DB = new DatabaseManager();
+        DB.configureDatabase();
+        userDAO = new MySqlUserDAO();
+        authDAO = new MySqlAuthDAO();
+        userDAO.clear();
+        authDAO.clear();
         authDAO.createAuth("user1");
         authDAO.createAuth("user2");
         userDAO.createUser(new UserData("user1", "password1", "email1"));
@@ -71,10 +77,9 @@ public class UserServiceTest {
 
     //logout positive
     @Test
-    void testLogoutPosition() throws Exception {
-        Set<String> authTokens = authDAO.listAuth().keySet();
-        Iterator<String> it = authTokens.iterator();
-        String auth = it.next();
+    void testLogoutPos() throws Exception {
+        Map<String,String> authTokens = authDAO.listAuth();
+        String auth = authTokens.get("user1");
         userService.logout(new LogoutRequest(auth));
         Assertions.assertFalse(authDAO.listAuth().containsKey(auth));
     }

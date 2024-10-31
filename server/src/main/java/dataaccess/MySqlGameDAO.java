@@ -16,7 +16,7 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public void clear() {
-        String[] clearStatements = {"DELETE FROM game"};
+        String[] clearStatements = {"DELETE FROM game","ALTER TABLE game AUTO_INCREMENT = 1"};
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : clearStatements) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
