@@ -26,6 +26,8 @@ public class Board {
         drawHeader(color);
         drawBoardSquares(color);
         drawHeader(color);
+        newLine();
+        newLine();
     }
 
 
@@ -62,7 +64,7 @@ public class Board {
 
     private void drawWhiteRow(String color, int i) {
         drawEdge(i);
-        if (color.equals("WHITE")) {
+        if (color.equals("BLACK")) {
         for (int j = 8; j > 0; j -= 2) {
             drawWhiteSquare(i, j);
             drawBlackSquare(i, j - 1);
@@ -70,7 +72,7 @@ public class Board {
         else {
             for (int j = 1; j < 9; j += 2) {
                 drawWhiteSquare(i, j);
-                drawBlackSquare(i, i + 1);
+                drawBlackSquare(i, j + 1);
             }
         }
         drawEdge(i);
@@ -79,7 +81,7 @@ public class Board {
 
     private void drawBlackRow(String color, int i) {
         drawEdge(i);
-        if (color.equals("WHITE")) {
+        if (color.equals("BLACK")) {
             for (int j = 8; j > 0; j -= 2) {
                 drawBlackSquare(i, j);
                 drawWhiteSquare(i, j - 1);
@@ -87,7 +89,7 @@ public class Board {
         else {
             for (int j = 1; j < 9; j += 2) {
                 drawBlackSquare(i, j);
-                drawWhiteSquare(i, i + 1);
+                drawWhiteSquare(i, j + 1);
             }
         }
         drawEdge(i);

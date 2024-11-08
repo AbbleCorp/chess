@@ -9,6 +9,7 @@ public class Main {
         game.resetBoard();
         Board board = new Board(game.getBoard());
         board.drawBoard("WHITE");
-//        board.drawBoard("BLACK");
+        board.drawBoard("BLACK");
+
     }
 }
