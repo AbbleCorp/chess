@@ -10,13 +10,13 @@ public class Board {
     private final ChessPiece[][] pieceList;
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
+
     Board(ChessPiece[][] pieceList) {
         this.pieceList = pieceList;
     }
 
     public void main(String[] args) {
         out.print(ERASE_SCREEN);
-
 
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);

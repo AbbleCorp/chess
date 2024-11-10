@@ -8,8 +8,9 @@ public class Main {
         ChessBoard game = new ChessBoard();
         game.resetBoard();
         Board board = new Board(game.getBoard());
-        board.drawBoard("WHITE");
-        board.drawBoard("BLACK");
+//        board.drawBoard("WHITE");
+//        board.drawBoard("BLACK");
+        client.preLoginMenu();
 
     }
 }
