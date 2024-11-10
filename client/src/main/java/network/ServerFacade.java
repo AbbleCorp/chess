@@ -20,6 +20,11 @@ public class ServerFacade {
         return null;
     }
 
+    public ListGamesResult listGames(ListGamesRequest req) {
+        //TODO: implement
+        return null;
+    }
+
 
 
 }

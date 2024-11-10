@@ -119,15 +119,27 @@ public class Client {
 
 
     private void playGame() {
+        //TODO: implement
     }
 
 
     private void observeGame() {
+        //TODO: implement
 
     }
 
     private void listGames() {
-
+        ListGamesResult result =  serverFacade.listGames(new ListGamesRequest(authToken));
+        gameList.clear();
+        int i = 1;
+        for (GameData game : result.games()) {
+            gameList.put(i, game);
+            i++;
+        }
+        System.out.println("Games: ");
+        for (int key : gameList.keySet()) {
+            System.out.println(key + " : " + gameList.get(key).toString());
+        }
     }
 
 
