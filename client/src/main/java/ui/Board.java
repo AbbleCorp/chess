@@ -1,3 +1,5 @@
+package ui;
+
 import chess.ChessGame;
 import chess.ChessPiece;
 
@@ -11,7 +13,7 @@ public class Board {
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
 
-    Board(ChessPiece[][] pieceList) {
+    public Board(ChessPiece[][] pieceList) {
         this.pieceList = pieceList;
     }
 
