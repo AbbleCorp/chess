@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import model.*;
 import network.ServerFacade;
 
@@ -44,15 +45,16 @@ public class Client {
         String username = scanner.next();
         System.out.print("Password: ");
         String password = scanner.next();
+        try {
         LoginResult result = serverFacade.login(new LoginRequest(username,password));
         //login attempt may fail, if so return error message and call prelogin menu again
         if (result != null) {
             authToken = result.authToken();
-            postLoginMenu(); }
-        else {
-            System.out.println("Login failed");
+            postLoginMenu(); } }
+        catch (Exception e){
+            System.out.println("Login failed"); }
         preLoginMenu(); }
-    }
+
 
     private void register() {
         System.out.print("Username: ");
@@ -62,13 +64,17 @@ public class Client {
         String password = scanner.next();
         System.out.print("Email: ");
         String email = scanner.next();
-        LoginResult result = serverFacade.register(new RegisterRequest(username,password,email));
-        if (result != null) {
-            authToken = result.authToken();
-            postLoginMenu(); }
-        else {
+        try {
+            LoginResult result = serverFacade.register(new RegisterRequest(username, password, email));
+            if (result != null) {
+                authToken = result.authToken();
+                postLoginMenu();
+            }
+        }
+        catch (Exception e) {
             System.out.println("Registration failed");
-            preLoginMenu(); }
+        }
+        preLoginMenu();
     }
 
     private void quit() {
@@ -105,7 +111,6 @@ public class Client {
                 System.out.println("Please enter a valid menu option.");
                 postLoginMenu();
             }
-
         }}
 
     private void createGame() {
@@ -119,12 +124,22 @@ public class Client {
 
 
     private void playGame() {
-        //TODO: implement
+        ChessBoard game = new ChessBoard();
+        game.resetBoard();
+        Board board = new Board(game.getBoard());
+        board.drawBoard("WHITE");
+        board.drawBoard("BLACK");
+        postLoginMenu();
     }
 
 
     private void observeGame() {
-        //TODO: implement
+        ChessBoard game = new ChessBoard();
+        game.resetBoard();
+        Board board = new Board(game.getBoard());
+        board.drawBoard("WHITE");
+        board.drawBoard("BLACK");
+        postLoginMenu();
 
     }
 
@@ -144,7 +159,7 @@ public class Client {
 
 
     private void logout() {
-        //serverFacade.logout();
+        serverFacade.logout(new LogoutRequest(authToken));
         authToken = null;
         preLoginMenu();
     }
