@@ -4,13 +4,14 @@ import chess.ChessBoard;
 import model.*;
 import network.ServerFacade;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class Client {
     private String authToken;
     private ServerFacade serverFacade;
-    private Map<Integer, GameData> gameList;
+    private Map<Integer, GameData> gameList = new HashMap<>();
 
     public Client() {
         serverFacade = new ServerFacade();
@@ -157,11 +158,25 @@ public class Client {
         }
         System.out.println("Games: ");
         for (int key : gameList.keySet()) {
-            System.out.println(key + " : " + gameList.get(key).toString());
+            printGameInfo(key);
         } }
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void printGameInfo(int key) {
+        String white = "No player";
+        String black = "No player";
+        if (gameList.get(key).whiteUsername() != null) {
+            white = gameList.get(key).whiteUsername();
+        }
+        if (gameList.get(key).blackUsername() != null) {
+            white = gameList.get(key).blackUsername();
+        }
+        System.out.println(key + " : " + gameList.get(key).gameName());
+        System.out.println("White Player: " + white);
+        System.out.println("Black Player: " + black);
     }
 
 
