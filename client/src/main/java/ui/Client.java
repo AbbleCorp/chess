@@ -54,7 +54,11 @@ public class Client {
             System.out.println("Login successful.");
             postLoginMenu(); } }
         catch (Exception e){
-            System.out.println("Login failed"); }
+            String message = "";
+            if (e.getMessage().equals("failure: 401")) {
+                message = "unauthorized";
+            }
+            System.out.println("Login failed: "+message); }
         preLoginMenu(); }
 
 
@@ -75,7 +79,14 @@ public class Client {
             }
         }
         catch (Exception e) {
-            System.out.println("Registration failed");
+            String message = "";
+            if (e.getMessage().equals("failure: 403")) {
+                message = "Username already taken.";
+            }
+            else if (e.getMessage().equals("failure: 400")) {
+                message = "Please enter a valid username, password, and email.";
+            }
+            System.out.println("Registration failed: " + message);
         }
         preLoginMenu();
     }
@@ -159,7 +170,8 @@ public class Client {
         System.out.println("Games: ");
         for (int key : gameList.keySet()) {
             printGameInfo(key);
-        } }
+        }
+        postLoginMenu();}
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
