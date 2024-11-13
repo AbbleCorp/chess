@@ -110,6 +110,7 @@ public class Client {
         for (String i : info) {
             System.out.println(i);
         }
+        System.out.println();
         preLoginMenu();
     }
 
@@ -162,6 +163,9 @@ public class Client {
     }
 
     private void validGame(Integer gameId) {
+        if (gameId == null) {
+            System.out.println("Please enter a valid game number");
+        }
         if (gameList.isEmpty()) {
             System.out.println("Game list is empty. Please create a game first.");
             postLoginMenu();
@@ -172,10 +176,30 @@ public class Client {
         }
     }
 
+    private boolean isInt(String id) {
+        if (id == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(id);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
     private void playGame() {
         System.out.print("Enter the number of the game you would like to join: ");
         Scanner scanner = new Scanner(System.in);
-        Integer gameId = Integer.parseInt(scanner.next());
+        String gameIdString = scanner.next();
+        Integer gameId = null;
+        if (isInt(gameIdString)) {
+            gameId = Integer.parseInt(gameIdString);
+        }
+        else {
+            System.out.println("Please enter a valid game number.");
+            postLoginMenu();
+        }
         validGame(gameId);
         System.out.println("1 - White");
         System.out.println("2 - Black");
@@ -190,7 +214,7 @@ public class Client {
         }
         try {
             serverFacade.joinGame(new JoinGameRequest(authToken, playerColor,gameId));
-            System.out.println("You have joined " + gameList.get(gameId) + " as " + playerColor + ".");
+            System.out.println("You have joined " + gameList.get(gameId).gameName() + " as " + playerColor + ".");
         } catch (Exception e) {
             if (e.getMessage().contains("401")) {
                 System.out.println("Failed to join game: unauthorized.");
@@ -212,7 +236,7 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
         Integer gameId = Integer.parseInt(scanner.next());
         validGame(gameId);
-        System.out.println("You are now observing " + gameList.get(gameId)+ ".");
+        System.out.println("You are now observing " + gameList.get(gameId).gameName() + ".");
         printBoards();
     }
 
@@ -226,6 +250,10 @@ public class Client {
                 i++;
             }
             System.out.println("Games: ");
+            if (gameList.isEmpty()) {
+                System.out.println("No games found.");
+                postLoginMenu();
+            }
             for (int key : gameList.keySet()) {
                 printGameInfo(key);
             }
@@ -276,6 +304,7 @@ public class Client {
         for (String i : info) {
             System.out.println(i);
         }
+        System.out.println();
         postLoginMenu();
     }
 }
