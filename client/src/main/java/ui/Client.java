@@ -43,9 +43,13 @@ public class Client {
     private void login() {
         System.out.print("Username: ");
         Scanner scanner = new Scanner(System.in);
-        String username = scanner.next();
+        String username = scanner.nextLine();
         System.out.print("Password: ");
-        String password = scanner.next();
+        String password = scanner.nextLine();
+        if (username.contains(" ") || password.contains(" ")) {
+            System.out.println("Please enter a valid username and password without spaces.");
+            preLoginMenu();
+        }
         try {
         LoginResult result = serverFacade.login(new LoginRequest(username,password));
         //login attempt may fail, if so return error message and call prelogin menu again
@@ -65,11 +69,15 @@ public class Client {
     private void register() {
         System.out.print("Username: ");
         Scanner scanner = new Scanner(System.in);
-        String username = scanner.next();
+        String username = scanner.nextLine();
         System.out.print("Password: ");
-        String password = scanner.next();
+        String password = scanner.nextLine();
         System.out.print("Email: ");
-        String email = scanner.next();
+        String email = scanner.nextLine();
+        if (username.contains(" ") || password.contains(" ") || email.contains(" ")) {
+            System.out.println("Please enter a valid username, password, and email without spaces.");
+            preLoginMenu();
+        }
         try {
             LoginResult result = serverFacade.register(new RegisterRequest(username, password, email));
             if (result != null) {
