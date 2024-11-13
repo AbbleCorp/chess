@@ -161,13 +161,56 @@ public class Client {
         postLoginMenu();
     }
 
+    private void validGame(Integer gameId) {
+        if (gameList.isEmpty()) {
+            System.out.println("Game list is empty. Please create a game first.");
+            postLoginMenu();
+        }
+        else if (!gameList.containsKey(gameId)) {
+            System.out.println("Invalid game number. Please enter the number of an existing game.");
+            postLoginMenu();
+        }
+    }
 
     private void playGame() {
+        System.out.print("Enter the number of the game you would like to join: ");
+        Scanner scanner = new Scanner(System.in);
+        Integer gameId = Integer.parseInt(scanner.next());
+        validGame(gameId);
+        System.out.println("1 - White");
+        System.out.println("2 - Black");
+        System.out.print("Enter the number of the color you would like to play as: ");
+        String colorNum = scanner.next();
+        String playerColor = null;
+        if (colorNum.equals("1")) {playerColor = "WHITE";}
+        else if (colorNum.equals("2")) {playerColor = "BLACK";}
+        else {
+            System.out.println("Please enter a valid number corresponding to either White or Black.");
+            postLoginMenu();
+        }
+        try {
+            serverFacade.joinGame(new JoinGameRequest(authToken, playerColor,gameId));
+        } catch (Exception e) {
+            if (e.getMessage().contains("401")) {
+                System.out.println("Failed to join game: unauthorized.");
+            }
+            else if (e.getMessage().contains("403")) {
+                System.out.println("That color is already taken, please choose a different color or game.");
+            }
+            else if (e.getMessage().contains("400")) {
+                System.out.println("Something went wrong, please try again with valid inputs.");
+            }
+            postLoginMenu();
+        }
         printBoards();
     }
 
 
     private void observeGame() {
+        System.out.print("Enter the number of the game you would like to observe: ");
+        Scanner scanner = new Scanner(System.in);
+        Integer gameId = Integer.parseInt(scanner.next());
+        validGame(gameId);
         printBoards();
     }
 
