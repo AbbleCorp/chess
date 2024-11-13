@@ -212,6 +212,7 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
         Integer gameId = Integer.parseInt(scanner.next());
         validGame(gameId);
+        System.out.println("You are now observing " + gameList.get(gameId)+ ".");
         printBoards();
     }
 
