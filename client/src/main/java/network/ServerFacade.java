@@ -1,12 +1,6 @@
 package network;
 
-import com.google.gson.Gson;
 import model.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 
 public class ServerFacade {
     private ClientCommunicator clientComm;
@@ -17,69 +11,46 @@ public class ServerFacade {
 
 
     public LoginResult login(LoginRequest req) throws Exception {
-        HttpURLConnection http = clientComm.createConnection("login");
-        writeBody(req, http);
-        http.connect();
-        LoginResult result = readBody(http, LoginResult.class);
+        LoginResult result = clientComm.makeRequestWithBody("POST","/session", req, LoginResult.class);
         return result;
     }
 
     public LoginResult register(RegisterRequest req) throws Exception {
-        HttpURLConnection http = clientComm.createConnection("register");
-        writeBody(req, http);
-        http.connect();
-        LoginResult result = readBody(http, LoginResult.class);
+        LoginResult result = clientComm.makeRequestWithBody("POST","/user", req, LoginResult.class);
         return result;
     }
 
     public CreateGameResult createGame(CreateGameRequest req) {
-        //TODO: implement
+        try {
+            CreateGameResult result = clientComm.makeRequestWithBoth("POST", "/game", req, req.getAuthorization(), CreateGameResult.class);
+            return result;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return null;
-    }
+        }
 
     public ListGamesResult listGames(ListGamesRequest req) {
-        //TODO: implement
+        try {
+            ListGamesResult result = clientComm.makeRequestWithHeader("GET", "/game", req, req.authorization(), ListGamesResult.class);
+            return result;
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
     public void logout(LogoutRequest req) {
-        //TODO: implement
-    }
-
-
-    private static void writeBody(Object request, HttpURLConnection http) throws IOException {
-        if (request != null) {
-            http.addRequestProperty("Content-Type", "application/json");
-            String reqData = new Gson().toJson(request);
-            try (OutputStream reqBody = http.getOutputStream()) {
-                reqBody.write(reqData.getBytes());
-            }
+        try {
+        clientComm.makeRequestWithBoth("DELETE","/session", req, req.authorization(), null); }
+        catch (Exception e) {
+            System.out.print(e.getMessage());
         }
     }
 
-    private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        T response = null;
-        if (http.getContentLength() < 0) {
-            try (InputStream respBody = http.getInputStream()) {
-                InputStreamReader reader = new InputStreamReader(respBody);
-                if (responseClass != null) {
-                    response = new Gson().fromJson(reader, responseClass);
-                }
-            }
-        }
-        return response;
-    }
 
 
-//    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException {
-//        var status = http.getResponseCode();
-//        if (!isSuccessful(status)) {
-//            throw new ResponseException(status, "failure: " + status);
-//        }
-//    }
 
-
-    private boolean isSuccessful(int status) {
-        return status / 100 == 2;
-    }
 }

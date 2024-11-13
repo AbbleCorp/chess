@@ -50,6 +50,7 @@ public class Client {
         //login attempt may fail, if so return error message and call prelogin menu again
         if (result != null) {
             authToken = result.authToken();
+            System.out.println("Login successful.");
             postLoginMenu(); } }
         catch (Exception e){
             System.out.println("Login failed"); }
@@ -68,6 +69,7 @@ public class Client {
             LoginResult result = serverFacade.register(new RegisterRequest(username, password, email));
             if (result != null) {
                 authToken = result.authToken();
+                System.out.println("Registration successful.");
                 postLoginMenu();
             }
         }
@@ -98,6 +100,7 @@ public class Client {
         for (String opt : options) {
             System.out.println(opt);
         }
+        System.out.print("Enter a menu option: ");
         Scanner scanner = new Scanner(System.in);
         String input = scanner.next();
         switch (input) {
@@ -144,6 +147,7 @@ public class Client {
     }
 
     private void listGames() {
+        try {
         ListGamesResult result =  serverFacade.listGames(new ListGamesRequest(authToken));
         gameList.clear();
         int i = 1;
@@ -154,6 +158,9 @@ public class Client {
         System.out.println("Games: ");
         for (int key : gameList.keySet()) {
             System.out.println(key + " : " + gameList.get(key).toString());
+        } }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -161,6 +168,7 @@ public class Client {
     private void logout() {
         serverFacade.logout(new LogoutRequest(authToken));
         authToken = null;
+        System.out.println("Logout successful.");
         preLoginMenu();
     }
 
