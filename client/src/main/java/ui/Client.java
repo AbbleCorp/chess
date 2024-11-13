@@ -10,8 +10,8 @@ import java.util.Scanner;
 
 public class Client {
     private String authToken;
-    private ServerFacade serverFacade;
-    private Map<Integer, GameData> gameList = new HashMap<>();
+    private final ServerFacade serverFacade;
+    private final Map<Integer, GameData> gameList = new HashMap<>();
 
     public Client() {
         serverFacade = new ServerFacade();
@@ -23,21 +23,19 @@ public class Client {
             System.out.println(opt);
         }
         System.out.print("Enter a menu option: ");
-    Scanner scanner = new Scanner(System.in);
-    String input = scanner.next();
-    switch (input) {
-        case ("1") -> login();
-        case ("2") -> register();
-        case ("3") -> helpPreLogin();
-        case ("4") -> quit();
-        case null, default -> {
-            System.out.println("Please enter a valid menu option.");
-            preLoginMenu();
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.next();
+        switch (input) {
+            case ("1") -> login();
+            case ("2") -> register();
+            case ("3") -> helpPreLogin();
+            case ("4") -> quit();
+            case null, default -> {
+                System.out.println("Please enter a valid menu option.");
+                preLoginMenu();
+            }
         }
     }
-    }
-
-
 
 
     private void login() {
@@ -51,19 +49,22 @@ public class Client {
             preLoginMenu();
         }
         try {
-        LoginResult result = serverFacade.login(new LoginRequest(username,password));
-        //login attempt may fail, if so return error message and call prelogin menu again
-        if (result != null) {
-            authToken = result.authToken();
-            System.out.println("Login successful.");
-            postLoginMenu(); } }
-        catch (Exception e){
+            LoginResult result = serverFacade.login(new LoginRequest(username, password));
+            //login attempt may fail, if so return error message and call prelogin menu again
+            if (result != null) {
+                authToken = result.authToken();
+                System.out.println("Login successful.");
+                postLoginMenu();
+            }
+        } catch (Exception e) {
             String message = "";
             if (e.getMessage().equals("failure: 401")) {
                 message = "unauthorized";
             }
-            System.out.println("Login failed: "+message); }
-        preLoginMenu(); }
+            System.out.println("Login failed: " + message);
+        }
+        preLoginMenu();
+    }
 
 
     private void register() {
@@ -85,13 +86,11 @@ public class Client {
                 System.out.println("Registration successful.");
                 postLoginMenu();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             String message = "";
             if (e.getMessage().equals("failure: 403")) {
                 message = "Username already taken.";
-            }
-            else if (e.getMessage().equals("failure: 400")) {
+            } else if (e.getMessage().equals("failure: 400")) {
                 message = "Please enter a valid username, password, and email.";
             }
             System.out.println("Registration failed: " + message);
@@ -134,15 +133,23 @@ public class Client {
                 System.out.println("Please enter a valid menu option.");
                 postLoginMenu();
             }
-        }}
+        }
+    }
 
     private void createGame() {
         System.out.print("Enter name for new game: ");
         Scanner scanner = new Scanner(System.in);
         String gameName = scanner.next();
-        serverFacade.createGame(new CreateGameRequest(authToken,gameName));
-        System.out.println("Game created successfully.");
-        postLoginMenu();
+        try {
+            serverFacade.createGame(new CreateGameRequest(authToken, gameName));
+            System.out.println("Game created successfully.");
+            postLoginMenu();
+        } catch (Exception e) {
+            if (e.getMessage().equals("failure: 401")) {
+                System.out.print("Game creation failed: unauthorized.");
+                postLoginMenu();
+            }
+        }
     }
 
 
@@ -168,20 +175,23 @@ public class Client {
 
     private void listGames() {
         try {
-        ListGamesResult result =  serverFacade.listGames(new ListGamesRequest(authToken));
-        gameList.clear();
-        int i = 1;
-        for (GameData game : result.games()) {
-            gameList.put(i, game);
-            i++;
-        }
-        System.out.println("Games: ");
-        for (int key : gameList.keySet()) {
-            printGameInfo(key);
-        }
-        postLoginMenu();}
-        catch (Exception e) {
-            System.out.println(e.getMessage());
+            ListGamesResult result = serverFacade.listGames(new ListGamesRequest(authToken));
+            gameList.clear();
+            int i = 1;
+            for (GameData game : result.games()) {
+                gameList.put(i, game);
+                i++;
+            }
+            System.out.println("Games: ");
+            for (int key : gameList.keySet()) {
+                printGameInfo(key);
+            }
+            postLoginMenu();
+        } catch (Exception e) {
+            if (e.getMessage().equals("failure: 401")) {
+                System.out.print("Failed to list games: unauthorized.");
+                postLoginMenu();
+            }
         }
     }
 
@@ -201,10 +211,17 @@ public class Client {
 
 
     private void logout() {
-        serverFacade.logout(new LogoutRequest(authToken));
-        authToken = null;
-        System.out.println("Logout successful.");
-        preLoginMenu();
+        try {
+            serverFacade.logout(new LogoutRequest(authToken));
+            authToken = null;
+            System.out.println("Logout successful.");
+            preLoginMenu();
+        } catch (Exception e) {
+            if (e.getMessage().equals("failure: 401")) {
+                System.out.print("Logout failed: unauthorized.");
+                postLoginMenu();
+            }
+        }
     }
 
 
