@@ -160,8 +160,4 @@ public class Board {
     }
 
 
-    private void setBlack() {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLACK);
-    }
 }
