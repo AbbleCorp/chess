@@ -190,6 +190,7 @@ public class Client {
         }
         try {
             serverFacade.joinGame(new JoinGameRequest(authToken, playerColor,gameId));
+            System.out.println("You have joined " + gameList.get(gameId) + " as " + playerColor + ".");
         } catch (Exception e) {
             if (e.getMessage().contains("401")) {
                 System.out.println("Failed to join game: unauthorized.");
