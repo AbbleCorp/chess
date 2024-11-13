@@ -44,10 +44,6 @@ public class ServerFacadeTests {
     }
 
 
-    @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
-    }
 
     @Test
     void testPosRegister() throws Exception {

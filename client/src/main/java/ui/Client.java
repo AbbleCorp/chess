@@ -152,8 +152,7 @@ public class Client {
         }
     }
 
-
-    private void playGame() {
+    private void printBoards() {
         ChessBoard game = new ChessBoard();
         game.resetBoard();
         Board board = new Board(game.getBoard());
@@ -163,14 +162,13 @@ public class Client {
     }
 
 
-    private void observeGame() {
-        ChessBoard game = new ChessBoard();
-        game.resetBoard();
-        Board board = new Board(game.getBoard());
-        board.drawBoard("WHITE");
-        board.drawBoard("BLACK");
-        postLoginMenu();
+    private void playGame() {
+        printBoards();
+    }
 
+
+    private void observeGame() {
+        printBoards();
     }
 
     private void listGames() {

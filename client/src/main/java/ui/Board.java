@@ -34,7 +34,6 @@ public class Board {
 
 
     private void drawHeader(String color) {
-        //TODO: implement
         String[] header = {" ", "a", "b", "c", "d", "e", "f", "g", "h", " "};
         setBorderColor();
         if (color.equals("WHITE")) {

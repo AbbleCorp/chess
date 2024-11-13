@@ -14,18 +14,6 @@ public class ClientCommunicator {
         serverUrl = url;
     }
 
-//    public HttpURLConnection createConnection(String type) throws Exception {
-//        HttpURLConnection http = null;
-//        switch (type) {
-//            case "login" -> http = makeRequest("POST", "/session");
-//            case "register" -> http = makeRequest("POST", "/user");
-//            case "logout" -> http = makeRequest("DELETE", "/session");
-//            case "list" -> http = makeRequest("GET", "/game");
-//            case "create" -> http = makeRequest("POST", "/game");
-//            case "join" -> http = makeRequest("PUT", "game");
-//        }
-//        return http;
-//    }
 
     public <T> T makeRequestWithBody(String method, String path, Object request, Class<T> responseClass) throws Exception {
         try {
