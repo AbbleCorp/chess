@@ -126,4 +126,31 @@ public class ServerFacadeTests {
          facade.listGames(new ListGamesRequest("invalid")));
         Assertions.assertEquals("failure: 401",  e.getMessage());}
 
+    @Test
+    void testPosJoinGame() throws Exception{
+        var auth = facade.register(new RegisterRequest("user1","password", "email"));
+        var game = facade.createGame(new CreateGameRequest(auth.authToken(),"game1"));
+        facade.joinGame(new JoinGameRequest(auth.authToken(), "WHITE", game.gameID()));
+        Assertions.assertEquals(gameDb.getGame(game.gameID()).whiteUsername(),"user1");
+    }
+
+    @Test
+    void testNegJoinGame() throws Exception {
+        var auth = facade.register(new RegisterRequest("user1","password", "email"));
+        var game = facade.createGame(new CreateGameRequest(auth.authToken(),"game1"));
+        Exception e = Assertions.assertThrows(Exception.class, () ->
+                facade.joinGame(new JoinGameRequest("invalid", "WHITE", game.gameID())));
+        Assertions.assertEquals("failure: 401", e.getMessage());
+    }
+
+    @Test
+    void testNegJoinTakenGame() throws Exception {
+        var auth = facade.register(new RegisterRequest("user1","password", "email"));
+        var auth1 = facade.register(new RegisterRequest("user2","password2", "email2"));
+        var game = facade.createGame(new CreateGameRequest(auth.authToken(),"game1"));
+        facade.joinGame(new JoinGameRequest(auth.authToken(), "WHITE", game.gameID()));
+        Exception e = Assertions.assertThrows(Exception.class, () ->
+                facade.joinGame(new JoinGameRequest(auth1.authToken(), "WHITE", game.gameID())));
+        Assertions.assertEquals("failure: 403", e.getMessage());
+    }
 }

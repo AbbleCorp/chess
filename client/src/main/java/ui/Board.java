@@ -155,7 +155,7 @@ public class Board {
 
 
     void newLine() {
-        setBlack();
+        out.print(RESET_BG_COLOR);
         out.println();
     }
 

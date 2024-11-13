@@ -58,6 +58,22 @@ public class ServerFacade {
         }
     }
 
+    public void joinGame(JoinGameRequest req) throws Exception {
+        try {
+            clientComm.makeRequestWithBoth("PUT","/game",req, req.getAuthorization(),JoinGameResult.class);
+        } catch (Exception e) {
+            if (e.getMessage().contains("400")) {
+                throw new Exception("failure: 400");
+            }
+            else if (e.getMessage().contains("401")) {
+                throw new Exception("failure: 401");
+            }
+            else if (e.getMessage().contains("403")) {
+                throw new Exception("failure: 403");
+            }
+        }
+    }
+
 
 
 
