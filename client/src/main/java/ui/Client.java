@@ -273,7 +273,7 @@ public class Client {
             white = gameList.get(key).whiteUsername();
         }
         if (gameList.get(key).blackUsername() != null) {
-            white = gameList.get(key).blackUsername();
+            black = gameList.get(key).blackUsername();
         }
         System.out.println(key + " : " + gameList.get(key).gameName());
         System.out.println("White Player: " + white);
