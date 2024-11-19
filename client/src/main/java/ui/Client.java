@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessPosition;
 import model.*;
 import network.ServerFacade;
 
@@ -12,6 +13,7 @@ public class Client {
     private String authToken;
     private final ServerFacade serverFacade;
     private final Map<Integer, GameData> gameList = new HashMap<>();
+    private String playerColor;
 
     public Client() {
         serverFacade = new ServerFacade();
@@ -215,6 +217,8 @@ public class Client {
         try {
             serverFacade.joinGame(new JoinGameRequest(authToken, playerColor,gameId));
             System.out.println("You have joined " + gameList.get(gameId).gameName() + " as " + playerColor + ".");
+            this.playerColor = playerColor;
+            gamePlayMenu();
         } catch (Exception e) {
             if (e.getMessage().contains("401")) {
                 System.out.println("Failed to join game: unauthorized.");
@@ -306,5 +310,86 @@ public class Client {
         }
         System.out.println();
         postLoginMenu();
+    }
+
+    private void gamePlayMenu() {
+        String[] options = {"1 - Redraw Chessboard", "2 - Make Move", "3 - Highlight Legal Moves",
+                "4 - Leave", "5 - Resign", "6 - Help"};
+        for (String opt : options) {
+            System.out.println(opt);
+        }
+        System.out.print("Enter a menu option: ");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.next();
+        switch (input) {
+            case ("1") -> redrawChessboard();
+            case ("2") -> makeMove();
+            case ("3") -> highlightLegalMoves();
+            case ("4") -> leaveGame();
+            case ("5") -> resign();
+            case ("6") -> helpGamePlay();
+            case null, default -> {
+                System.out.println("Please enter a valid menu option.");
+                postLoginMenu();
+            }
+        }
+    }
+
+    private void redrawChessboard() {
+        //call printBoard(playerColor) to reprint board
+        //how to get game?
+    }
+
+    private void makeMove() {
+        //TODO: implement
+    }
+
+    private ChessPosition parsePosition(String coord) {
+        String alphaChar = coord.substring(0,1);
+        int intChar =Integer.parseInt(coord.substring(1));
+        if (!"abcdefgh".contains(alphaChar) || (intChar < 0) || (intChar > 8)) {
+            System.out.println("Please enter valid coordinates.");
+            gamePlayMenu();
+        }
+        int x = 0;
+        switch (alphaChar) {
+            case "a" -> x = 1;
+            case "b" -> x = 2;
+            case "c" -> x = 3;
+            case "d" -> x = 4;
+            case "e" -> x = 5;
+            case "f" -> x = 6;
+            case "g" -> x = 7;
+            case "h" -> x = 8;
+        }
+        return new ChessPosition(x, intChar);
+    }
+
+    private void highlightLegalMoves() {
+        System.out.print("Enter the coordinates of the piece you would like to see legal moves for: ");
+        Scanner scanner = new Scanner(System.in);
+        String coord = scanner.next();
+        ChessPosition pos = parsePosition(coord);
+        //TODO: implement
+    }
+
+    private void leaveGame() {
+        //TODO: implement
+    }
+
+    private void resign() {
+        //TODO: implement
+    }
+
+    private void helpGamePlay() {
+        String[] info = {"1 - Redraw Chessboard: Redraw the chessboard to view current state of game.", "2 - Make " +
+                "Move: Enter coordinates of piece to move, followed by ending position of piece.", "3 - Highlight Legal Moves: See all legal moves " +
+                "for the selected piece.", "4 - Leave: Leave the game to come back to later.", "5 - Resign: Forfeit " +
+                "the game.", "6 - Help: See this message again."};
+        for (String i : info) {
+            System.out.println(i);
+        }
+        System.out.println();
+        gamePlayMenu();
     }
 }
