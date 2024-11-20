@@ -4,7 +4,8 @@ import chess.ChessBoard;
 import chess.ChessPosition;
 import model.*;
 import network.ServerFacade;
-import websocket.messages.ServerMessage;
+import websocket.messages.*;
+import websocket.messages.ErrorMessage;
 
 import java.util.HashMap;
 import java.util.Map;
