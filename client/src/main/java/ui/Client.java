@@ -3,6 +3,7 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessPosition;
 import model.*;
+import network.ResponseException;
 import network.ServerFacade;
 import websocket.messages.*;
 import websocket.messages.ErrorMessage;
@@ -16,9 +17,10 @@ public class Client implements ServerMessageObserver {
     private final ServerFacade serverFacade;
     private final Map<Integer, GameData> gameList = new HashMap<>();
     private String playerColor;
+    private GameData currentGame;
 
-    public Client() {
-        serverFacade = new ServerFacade();
+    public Client() throws ResponseException {
+        serverFacade = new ServerFacade(this);
     }
 
     public void preLoginMenu() {

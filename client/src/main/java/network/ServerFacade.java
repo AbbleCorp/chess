@@ -1,12 +1,15 @@
 package network;
 
 import model.*;
+import ui.ServerMessageObserver;
 
 public class ServerFacade {
     private HttpCommunicator clientComm;
+    private WebSocketCommunicator WebSocketComm;
 
-    public ServerFacade() {
+    public ServerFacade(ServerMessageObserver SMO) throws ResponseException {
         clientComm = new HttpCommunicator("http://localhost:8080");
+        WebSocketComm = new WebSocketCommunicator(SMO);
     }
 
     public ServerFacade(int port) {
