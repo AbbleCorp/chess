@@ -7,10 +7,10 @@ import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
 
-public class ClientCommunicator {
+public class HttpCommunicator {
     private final String serverUrl;
 
-    public ClientCommunicator(String url) {
+    public HttpCommunicator(String url) {
         serverUrl = url;
     }
 

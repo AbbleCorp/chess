@@ -4,12 +4,13 @@ import chess.ChessBoard;
 import chess.ChessPosition;
 import model.*;
 import network.ServerFacade;
+import websocket.messages.ServerMessage;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Client {
+public class Client implements ServerMessageObserver {
     private String authToken;
     private final ServerFacade serverFacade;
     private final Map<Integer, GameData> gameList = new HashMap<>();
@@ -392,4 +393,28 @@ public class Client {
         System.out.println();
         gamePlayMenu();
     }
+
+    private void displayNotification(String message) {
+        //TODO: implement
+    }
+
+    private void displayError(String message) {
+        //TODO: implement
+    }
+
+    private void loadGame(GameData game) {
+        //TODO: implement - what does this do?
+    }
+
+    @Override
+    public void notify(ServerMessage message) {
+        switch (message.getServerMessageType()) {
+            case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
+            case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
+            case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+        }
+
+    }
+
+
 }

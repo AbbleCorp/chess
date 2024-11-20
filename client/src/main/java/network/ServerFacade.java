@@ -3,14 +3,14 @@ package network;
 import model.*;
 
 public class ServerFacade {
-    private ClientCommunicator clientComm;
+    private HttpCommunicator clientComm;
 
     public ServerFacade() {
-        clientComm = new ClientCommunicator("http://localhost:8080");
+        clientComm = new HttpCommunicator("http://localhost:8080");
     }
 
     public ServerFacade(int port) {
-        clientComm = new ClientCommunicator("http://localhost:" + port);
+        clientComm = new HttpCommunicator("http://localhost:" + port);
     }
 
 
