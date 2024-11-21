@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessPosition;
 import model.*;
 import network.ResponseException;
@@ -160,9 +161,9 @@ public class Client implements ServerMessageObserver {
     }
 
     private void printBoards() {
-        ChessBoard game = new ChessBoard();
-        game.resetBoard();
-        Board board = new Board(game.getBoard());
+        ChessGame game = new ChessGame();
+        game.getBoard().resetBoard();
+        Board board = new Board(game);
         board.drawBoard("WHITE");
         board.drawBoard("BLACK");
         postLoginMenu();
@@ -339,7 +340,7 @@ public class Client implements ServerMessageObserver {
     }
 
     private void redrawChessboard() {
-        Board board = new Board(currentGame.game().getBoard().getBoard());
+        Board board = new Board(currentGame.game());
         board.drawBoard(playerColor);
     }
 

@@ -1,20 +1,28 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
+import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static ui.EscapeSequences.*;
 
 public class Board {
-    private final ChessPiece[][] pieceList;
+    private ChessPiece[][] pieceList;
+    private boolean[][] validMoves;
+    private ChessGame game;
     private final PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
 
-    public Board(ChessPiece[][] pieceList) {
-        this.pieceList = pieceList;
+    public Board(ChessGame game) {
+        this.pieceList = game.getBoard().getBoard();
+        validMoves = new boolean[8][8];
+        this.game = game;
     }
 
     public void main(String[] args) {
@@ -33,6 +41,21 @@ public class Board {
     }
 
 
+    private void setValidMoves(ChessPosition pos) {
+        Collection<ChessMove> moves = game.validMoves(pos);
+        for (var move : moves) {
+            validMoves[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1] = true;
+        }
+    }
+
+    public void highlightLegalMoves(String color, ChessPosition pos) {
+        setValidMoves(pos);
+        drawHeader(color);
+        drawHighlightedSquares(color,pos);
+        drawHeader(color);
+    }
+
+
     private void drawHeader(String color) {
         String[] header = {" ", "a", "b", "c", "d", "e", "f", "g", "h", " "};
         setBorderColor();
@@ -46,6 +69,75 @@ public class Board {
             }
         }
         newLine();
+    }
+
+    private void drawHighlightedSquares(String color, ChessPosition pos) {
+        if (color.equals("WHITE")) {
+            for (int i = 8; i > 0; i -= 2) {
+                drawHighlightedWhiteRow(color, i,pos);
+                drawHighlightedBlackRow(color, i - 1,pos);
+            }
+        } else {
+            for (int i = 1; i < 9; i += 2) {
+                drawHighlightedWhiteRow(color, i,pos);
+                drawHighlightedBlackRow(color, i + 1,pos);
+            }
+        }
+    }
+
+    private void drawHighlightedWhiteRow(String color, int i, ChessPosition pos) {
+        drawEdge(i);
+        if (color.equals("BLACK")) {
+            for (int j = 8; j > 0; j -= 2) {
+                drawHighlightedWhiteSquare(i, j,pos);
+                drawHighlightedBlackSquare(i, j - 1,pos);
+            }
+        } else {
+            for (int j = 1; j < 9; j += 2) {
+                drawHighlightedWhiteSquare(i, j,pos);
+                drawHighlightedBlackSquare(i, j + 1,pos);
+            }
+        }
+        drawEdge(i);
+        newLine();
+    }
+
+    private void drawHighlightedBlackRow(String color, int i, ChessPosition pos) {
+        drawEdge(i);
+        if (color.equals("BLACK")) {
+            for (int j = 8; j > 0; j -= 2) {
+                drawHighlightedBlackSquare(i, j, pos);
+                drawHighlightedWhiteSquare(i, j - 1,pos);
+            }
+        } else {
+            for (int j = 1; j < 9; j += 2) {
+                drawHighlightedBlackSquare(i, j,pos);
+                drawHighlightedWhiteSquare(i, j + 1,pos);
+            }
+        }
+        drawEdge(i);
+        newLine();
+    }
+
+    private void drawHighlightedWhiteSquare(int i, int j, ChessPosition pos) {
+        if (validMoves[i-1][j-1] == true) {
+            setLightGreen();
+        } else if ((pos.getRow() == i) && (pos.getColumn()==j)) {
+            setYellow();
+        } else {
+        out.print(SET_BG_COLOR_LIGHT_GREY); }
+        out.print(printPiece(i - 1, j - 1));
+
+    }
+
+    private void drawHighlightedBlackSquare(int i, int j, ChessPosition pos) {
+        if (validMoves[i-1][j-1] == true) {
+            setDarkGreen();
+        } else if ((pos.getRow() == i) && (pos.getColumn()==j)) {
+            setYellow();
+        } else {
+        out.print(SET_BG_COLOR_DARK_GREY); }
+        out.print(printPiece(i - 1, j - 1));
     }
 
     private void drawBoardSquares(String color) {
@@ -155,6 +247,24 @@ public class Board {
     void newLine() {
         out.print(RESET_BG_COLOR);
         out.println();
+    }
+
+    void setDarkGreen() {
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_TEXT_BOLD);
+        out.print(SET_TEXT_COLOR_BLACK);
+    }
+
+    void setLightGreen() {
+        out.print(SET_BG_COLOR_GREEN);
+        out.print(SET_TEXT_BOLD);
+        out.print(SET_TEXT_COLOR_BLACK);
+    }
+
+    void setYellow() {
+        out.print(SET_BG_COLOR_YELLOW);
+        out.print(SET_TEXT_BOLD);
+        out.print(SET_TEXT_COLOR_BLACK);
     }
 
 
