@@ -10,19 +10,19 @@ public class MemoryAuthDAO implements AuthDAO {
     Map<String, String> authList; //auth is key, username is value
 
     public MemoryAuthDAO() {
-        authList = new HashMap<>();
+        authList=new HashMap<>();
     }
 
 
     @Override
     public AuthData createAuth(String username) {
-        String token = UUID.randomUUID().toString();
-        authList.put(token,username);
-        return new AuthData(username,token);
+        String token=UUID.randomUUID().toString();
+        authList.put(token, username);
+        return new AuthData(username, token);
     }
 
     @Override
-    public Map<String,String> listAuth() {
+    public Map<String, String> listAuth() {
         return authList;
     }
 
@@ -39,16 +39,19 @@ public class MemoryAuthDAO implements AuthDAO {
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
         if (authList.containsKey(authToken)) {
-            authList.remove(authToken); }
-        else {throw new DataAccessException("Not authorized");}
+            authList.remove(authToken);
+        } else {
+            throw new DataAccessException("Not authorized");
+        }
     }
 
     @Override
     public String getUsername(String authToken) throws DataAccessException {
         if (authList.containsKey(authToken)) {
             return authList.get(authToken);
+        } else {
+            throw new DataAccessException("Not authorized");
         }
-        else {throw new DataAccessException("Not authorized");}
     }
 
 }

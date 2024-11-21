@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryUserDAO implements UserDAO {
-    Map<String,UserData> userList;
+    Map<String, UserData> userList;
 
     public MemoryUserDAO() {
-        userList = new HashMap<>();
+        userList=new HashMap<>();
     }
 
     @Override
@@ -26,13 +26,15 @@ public class MemoryUserDAO implements UserDAO {
     @Override
     public UserData getUser(String username) {
         if (userList.containsKey(username)) {
-            return userList.get(username); }
-        else {return null;}
+            return userList.get(username);
+        } else {
+            return null;
+        }
     }
 
 
     @Override
-    public Map<String,UserData> listUsers() {
+    public Map<String, UserData> listUsers() {
         return userList;
     }
 

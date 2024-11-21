@@ -13,40 +13,40 @@ import java.lang.reflect.Type;
 
 //this one opens the connection, handles server messages
 public class WebSocketCommunicator extends Endpoint {
-  private ServerMessageObserver SMO;
-  private Gson serializer;
+    private ServerMessageObserver SMO;
+    private Gson serializer;
 
 
-  public WebSocketCommunicator(ServerMessageObserver SMO) throws ResponseException {
-    this.SMO = SMO;
-    gsonSetup();
-  }
+    public WebSocketCommunicator(ServerMessageObserver SMO) throws ResponseException {
+        this.SMO=SMO;
+        gsonSetup();
+    }
 
-
-  @Override
-  public void onOpen(Session session, EndpointConfig endpointConfig) {
-
-  }
-
-  private void gsonSetup() {
-    GsonBuilder builder = new GsonBuilder();
-    builder.registerTypeAdapter(ServerMessage.class, new ServerMessageDeserializer());
-    serializer = builder.create();
-  }
-
-  private static class ServerMessageDeserializer implements JsonDeserializer<ServerMessage> {
 
     @Override
-    public ServerMessage deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
-      JsonObject jsonObject = jsonElement.getAsJsonObject();
-      String typeString = jsonObject.get("serverMessageType").getAsString();
-      ServerMessage.ServerMessageType messageType = ServerMessage.ServerMessageType.valueOf(typeString);
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
 
-      return switch(messageType) {
-        case ERROR -> context.deserialize(jsonElement, ErrorMessage.class);
-        case LOAD_GAME -> context.deserialize(jsonElement, LoadGameMessage.class);
-        case NOTIFICATION -> context.deserialize(jsonElement, NotificationMessage.class);
-      };
     }
-  }
+
+    private void gsonSetup() {
+        GsonBuilder builder=new GsonBuilder();
+        builder.registerTypeAdapter(ServerMessage.class, new ServerMessageDeserializer());
+        serializer=builder.create();
+    }
+
+    private static class ServerMessageDeserializer implements JsonDeserializer<ServerMessage> {
+
+        @Override
+        public ServerMessage deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject=jsonElement.getAsJsonObject();
+            String typeString=jsonObject.get("serverMessageType").getAsString();
+            ServerMessage.ServerMessageType messageType=ServerMessage.ServerMessageType.valueOf(typeString);
+
+            return switch (messageType) {
+                case ERROR -> context.deserialize(jsonElement, ErrorMessage.class);
+                case LOAD_GAME -> context.deserialize(jsonElement, LoadGameMessage.class);
+                case NOTIFICATION -> context.deserialize(jsonElement, NotificationMessage.class);
+            };
+        }
+    }
 }

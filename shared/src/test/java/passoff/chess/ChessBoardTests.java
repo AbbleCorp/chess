@@ -15,13 +15,13 @@ public class ChessBoardTests {
     @Test
     @DisplayName("Add and Get Piece")
     public void getAddPiece() {
-        ChessPosition position = new ChessPosition(4, 4);
-        ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        ChessPosition position=new ChessPosition(4, 4);
+        ChessPiece piece=new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
 
-        var board = new ChessBoard();
+        var board=new ChessBoard();
         board.addPiece(position, piece);
 
-        ChessPiece foundPiece = board.getPiece(position);
+        ChessPiece foundPiece=board.getPiece(position);
 
         Assertions.assertEquals(piece.getPieceType(), foundPiece.getPieceType(),
                 "ChessPiece returned by getPiece had the wrong piece type");
@@ -33,7 +33,7 @@ public class ChessBoardTests {
     @Test
     @DisplayName("Reset Board")
     public void defaultGameBoard() {
-        var expectedBoard = loadBoard("""
+        var expectedBoard=loadBoard("""
                 |r|n|b|q|k|b|n|r|
                 |p|p|p|p|p|p|p|p|
                 | | | | | | | | |
@@ -44,7 +44,7 @@ public class ChessBoardTests {
                 |R|N|B|Q|K|B|N|R|
                 """);
 
-        var actualBoard = new ChessBoard();
+        var actualBoard=new ChessBoard();
         actualBoard.resetBoard();
 
         Assertions.assertEquals(expectedBoard, actualBoard);
@@ -54,13 +54,13 @@ public class ChessBoardTests {
     @Test
     @DisplayName("Piece Move on All Pieces")
     public void pieceMoveAllPieces() {
-        var board = new ChessBoard();
+        var board=new ChessBoard();
         board.resetBoard();
-        for(int i = 1; i <= 8; i++) {
-            for(int j = 1; j <= 8; j++) {
-                ChessPosition position = new ChessPosition(i, j);
-                ChessPiece piece = board.getPiece(position);
-                if(piece != null) {
+        for (int i=1; i <= 8; i++) {
+            for (int j=1; j <= 8; j++) {
+                ChessPosition position=new ChessPosition(i, j);
+                ChessPiece piece=board.getPiece(position);
+                if (piece != null) {
                     Assertions.assertDoesNotThrow(() -> piece.pieceMoves(board, position));
                 }
             }

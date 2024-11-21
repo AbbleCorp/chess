@@ -241,11 +241,11 @@ public class PawnMoveTests {
     }
 
     private void validatePromotion(String boardText, ChessPosition startingPosition, int[][] endPositions) {
-        var board = loadBoard(boardText);
-        var testPiece = board.getPiece(startingPosition);
-        var validMoves = new HashSet<ChessMove>();
+        var board=loadBoard(boardText);
+        var testPiece=board.getPiece(startingPosition);
+        var validMoves=new HashSet<ChessMove>();
         for (var endPosition : endPositions) {
-            var end = new ChessPosition(endPosition[0], endPosition[1]);
+            var end=new ChessPosition(endPosition[0], endPosition[1]);
             validMoves.add(new ChessMove(startingPosition, end, ChessPiece.PieceType.QUEEN));
             validMoves.add(new ChessMove(startingPosition, end, ChessPiece.PieceType.BISHOP));
             validMoves.add(new ChessMove(startingPosition, end, ChessPiece.PieceType.ROOK));

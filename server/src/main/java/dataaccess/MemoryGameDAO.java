@@ -9,10 +9,10 @@ import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     Map<Integer, GameData> gameList;
-    int gameId = 0;
+    int gameId=0;
 
     public MemoryGameDAO() {
-        gameList = new HashMap<>();
+        gameList=new HashMap<>();
     }
 
     @Override
@@ -29,16 +29,18 @@ public class MemoryGameDAO implements GameDAO {
         if (!gameList.containsKey(gameId)) {
             gameList.put(gameIDinc(), new GameData(gameId, whiteUsername, blackUsername, gameName, game));
             return gameId;
+        } else {
+            throw new DataAccessException("Game already exists");
         }
-        else {throw new DataAccessException("Game already exists");}
     }
 
     @Override
     public GameData getGame(int gameId) throws DataAccessException {
         if (gameList.containsKey(gameId)) {
             return gameList.get(gameId);
+        } else {
+            throw new DataAccessException("Game not found");
         }
-        else {throw new DataAccessException("Game not found");}
     }
 
     @Override

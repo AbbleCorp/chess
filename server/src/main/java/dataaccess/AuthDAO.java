@@ -9,7 +9,7 @@ public interface AuthDAO {
 
     void clear();
 
-    Map<String,String> listAuth();
+    Map<String, String> listAuth();
 
     AuthData createAuth(String username);
 

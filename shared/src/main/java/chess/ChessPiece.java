@@ -15,20 +15,24 @@ public class ChessPiece {
     private final PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        this.pieceColor = pieceColor;
-        this.type = type;
+        this.pieceColor=pieceColor;
+        this.type=type;
     }
 
     public ChessPiece(ChessPiece copy) {
-        this.pieceColor = copy.getTeamColor();
-        this.type = copy.getPieceType();
+        this.pieceColor=copy.getTeamColor();
+        this.type=copy.getPieceType();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {return true;}
-        if (o == null || getClass() != o.getClass()) {return false;}
-        ChessPiece that = (ChessPiece) o;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that=(ChessPiece) o;
         return pieceColor == that.pieceColor && type == that.type;
     }
 
@@ -71,8 +75,8 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        PieceMoveCalc calc = new PieceMoveCalc(myPosition, pieceColor, type, board);
-        Collection<ChessMove> movesList = calc.calcPieceMoves(type);
+        PieceMoveCalc calc=new PieceMoveCalc(myPosition, pieceColor, type, board);
+        Collection<ChessMove> movesList=calc.calcPieceMoves(type);
         //create PieceMoveCalc object, takes in pos, type, color, board
         //returns array list
         return movesList;

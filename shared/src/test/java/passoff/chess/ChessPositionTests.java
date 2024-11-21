@@ -13,11 +13,12 @@ public class ChessPositionTests {
     private ChessPosition original;
     private ChessPosition equal;
     private ChessPosition different;
+
     @BeforeEach
     public void setUp() {
-        original = new ChessPosition(3, 7);
-        equal = new ChessPosition(3, 7);
-        different = new ChessPosition(7, 3);
+        original=new ChessPosition(3, 7);
+        equal=new ChessPosition(3, 7);
+        different=new ChessPosition(7, 3);
     }
 
     @Test
@@ -39,7 +40,7 @@ public class ChessPositionTests {
     @Test
     @DisplayName("Combined Testing")
     public void hashSetTest() {
-        Set<ChessPosition> set = new HashSet<>();
+        Set<ChessPosition> set=new HashSet<>();
         set.add(original);
 
         Assertions.assertTrue(set.contains(original));

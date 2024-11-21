@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) throws ResponseException {
 //        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
 //        System.out.println("♕ 240 Chess ui.Client: " + piece);
-        Client client = new Client();
+        Client client=new Client();
         client.preLoginMenu();
 
     }

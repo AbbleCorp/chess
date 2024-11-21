@@ -5,7 +5,7 @@ import model.UserData;
 import java.util.Map;
 
 public interface UserDAO {
-    
+
     void createUser(UserData u);
 
 
@@ -13,5 +13,5 @@ public interface UserDAO {
 
     void clear();
 
-    Map<String,UserData> listUsers();
+    Map<String, UserData> listUsers();
 }

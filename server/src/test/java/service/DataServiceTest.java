@@ -18,18 +18,18 @@ public class DataServiceTest {
 
     @BeforeEach
     public void setUp() throws DataAccessException {
-        db = new DatabaseManager();
+        db=new DatabaseManager();
         db.configureDatabase();
-        authDAO = new MySqlAuthDAO();
-        userDAO = new MySqlUserDAO();
-        gameDAO = new MySqlGameDAO();
+        authDAO=new MySqlAuthDAO();
+        userDAO=new MySqlUserDAO();
+        gameDAO=new MySqlGameDAO();
         authDAO.createAuth("user1");
         authDAO.createAuth("user2");
         userDAO.createUser(new UserData("user3", "password3", "email3"));
-        userDAO.createUser(new UserData("user4","password4", "email4"));
-        gameDAO.createGame( "white1", "black2", "game1", new ChessGame());
-        gameDAO.createGame( null,null, "game2", new ChessGame());
-        dataServ = new DataService(userDAO,gameDAO,authDAO);
+        userDAO.createUser(new UserData("user4", "password4", "email4"));
+        gameDAO.createGame("white1", "black2", "game1", new ChessGame());
+        gameDAO.createGame(null, null, "game2", new ChessGame());
+        dataServ=new DataService(userDAO, gameDAO, authDAO);
     }
 
     @Test
