@@ -3,17 +3,25 @@ package server.websocket;
 import chess.ChessMove;
 import com.google.gson.*;
 import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
+import model.GameData;
+import model.UserData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.*;
 
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 //this one handles gameCommand, deserializes those
 @WebSocket
@@ -22,6 +30,7 @@ public class WebSocketServer {
     private final ConnectionManager connections = new ConnectionManager();
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
+    private Map<Integer, List<Session>> openGames = new HashMap<>();
 
 
     public WebSocketServer(GameDAO gameDAO, AuthDAO authDAO) {
@@ -41,11 +50,9 @@ public class WebSocketServer {
     public void onMessage(Session session, String message) throws Exception {
         try {
             UserGameCommand command = serializer.fromJson(message, UserGameCommand.class);
-            String username = "IMPLEMENT";
-            //TODO: find how to get username
-            // String username = getUsername(command.getAuthToken()); ?
+            String username = authDAO.getUsername(command.getAuthToken());
             switch (command.getCommandType()) {
-                case CONNECT -> connect(username, session);
+                case CONNECT -> connect(command.getGameID(),username, session);
                 case LEAVE -> leave(username);
                 case MAKE_MOVE -> makeMove(username, (MakeMoveCommand) command);
                 case RESIGN -> resign(username);
@@ -55,13 +62,50 @@ public class WebSocketServer {
         }
     }
 
-    private void connect(String username, Session session) throws IOException {
-        connections.add(username, session);
-        String playerColor = "IMPLEMENT";
-        //TODO: find way to get color?
+    private void broadcastAll(int gameId, ServerMessage message) throws IOException {
+        for (var client : openGames.get(gameId)) {
+            if (client.isOpen()) {
+                client.getRemote().sendString(serializer.toJson(message));
+            }}
+    }
+
+    private void broadcastToOthers(int gameId, ServerMessage message, Session session) throws IOException {
+        for (var client : openGames.get(gameId)) {
+            if (client.isOpen() && !client.equals(session)) {
+                client.getRemote().sendString(serializer.toJson(message));
+            }}
+    }
+
+
+    private String getPlayerColor(int gameID, String username) throws DataAccessException {
+        GameData game = gameDAO.getGame(gameID);
+        String playerColor = "";
+        if (game.whiteUsername().equals(username)) {
+            playerColor = "white";
+        } else if (game.blackUsername().equals(username)) {
+            playerColor = "black";
+        }
+        return playerColor;
+    }
+
+    private void addToOpenGames(int gameId, Session session) {
+        if (openGames.containsKey(gameId)) {
+            openGames.get(gameId).add(session);
+        } else {
+            List<Session> sessionList = new ArrayList<>();
+            sessionList.add(session);
+            openGames.put(gameId,sessionList);
+        }
+    }
+
+    private void connect(int gameId, String username, Session session) throws IOException, DataAccessException {
+        addToOpenGames(gameId,session);
+        String playerColor = getPlayerColor(gameId,username);
         var message = String.format("%s has joined the game as %s", username, playerColor);
         var notification = new NotificationMessage(message);
-        connections.broadcast(username, notification);
+        broadcastToOthers(gameId,notification,session);
+        session.getRemote().sendString(serializer.toJson(new LoadGameMessage(gameDAO.getGame(gameId))));
+
     }
 
     private void leave(String username) {
