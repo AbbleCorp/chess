@@ -220,6 +220,7 @@ public class Client implements ServerMessageObserver {
         }
         try {
             serverFacade.joinGame(new JoinGameRequest(authToken, playerColor, gameId));
+            currentGame = gameList.get(gameId);
             System.out.println("You have joined " + gameList.get(gameId).gameName() + " as " + playerColor + ".");
             this.playerColor=playerColor;
             gamePlayMenu();
@@ -338,8 +339,8 @@ public class Client implements ServerMessageObserver {
     }
 
     private void redrawChessboard() {
-        //call printBoard(playerColor) to reprint board
-        //how to get game?
+        Board board = new Board(currentGame.game().getBoard().getBoard());
+        board.drawBoard(playerColor);
     }
 
     private void makeMove() {

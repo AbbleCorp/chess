@@ -49,7 +49,7 @@ public class WebSocketServer {
 
 
         } catch (Exception e) {
-
+            session.getRemote().sendString("Error: unauthorized");
         }
     }
 
