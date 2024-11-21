@@ -13,15 +13,15 @@ public class UserHandler {
     private final UserService userService;
 
     public UserHandler(UserService userService) {
-        this.userService=userService;
+        this.userService = userService;
     }
 
 
     public String register(Request req, Response res) {
-        var serializer=new Gson();
-        RegisterRequest request=serializer.fromJson(req.body(), RegisterRequest.class);
+        var serializer = new Gson();
+        RegisterRequest request = serializer.fromJson(req.body(), RegisterRequest.class);
         try {
-            AuthData auth=userService.register(request);
+            AuthData auth = userService.register(request);
             return serializer.toJson(auth);
         } catch (DataAccessException e) {
             res.status(403);
@@ -34,10 +34,10 @@ public class UserHandler {
     }
 
     public String login(Request req, Response res) {
-        var serializer=new Gson();
-        LoginRequest request=serializer.fromJson(req.body(), LoginRequest.class);
+        var serializer = new Gson();
+        LoginRequest request = serializer.fromJson(req.body(), LoginRequest.class);
         try {
-            AuthData auth=userService.login(request);
+            AuthData auth = userService.login(request);
             return serializer.toJson(new LoginResult(auth.username(), auth.authToken()));
         } catch (DataAccessException e) {
             res.status(401);
@@ -50,8 +50,8 @@ public class UserHandler {
     }
 
     public String logout(Request req, Response res) {
-        var serializer=new Gson();
-        LogoutRequest request=new LogoutRequest(req.headers("authorization"));
+        var serializer = new Gson();
+        LogoutRequest request = new LogoutRequest(req.headers("authorization"));
         try {
             userService.logout(request);
             return "{}";

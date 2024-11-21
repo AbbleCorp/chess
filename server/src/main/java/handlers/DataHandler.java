@@ -8,7 +8,7 @@ public class DataHandler {
     private final DataService dataService;
 
     public DataHandler(DataService dataService) {
-        this.dataService=dataService;
+        this.dataService = dataService;
     }
 
     public String clear(Request req, Response res) {

@@ -15,9 +15,9 @@ public class MySqlUserDaoTests {
 
     @BeforeEach
     void setUp() throws DataAccessException {
-        db=new DatabaseManager();
+        db = new DatabaseManager();
         db.configureDatabase();
-        userDB=new MySqlUserDAO();
+        userDB = new MySqlUserDAO();
         userDB.clear();
     }
 
@@ -26,10 +26,10 @@ public class MySqlUserDaoTests {
     void testClear() {
         userDB.createUser(new UserData("user1", "pw1", "email1"));
         userDB.createUser(new UserData("user2", "pw2", "email2"));
-        Map<String, UserData> userList=userDB.listUsers();
+        Map<String, UserData> userList = userDB.listUsers();
         Assertions.assertEquals(2, userList.size());
         userDB.clear();
-        userList=userDB.listUsers();
+        userList = userDB.listUsers();
         Assertions.assertTrue(userList.isEmpty());
     }
 
@@ -38,7 +38,7 @@ public class MySqlUserDaoTests {
     @Test
     void testCreateUser() throws DataAccessException {
         userDB.createUser(new UserData("user1", "password1", "email1"));
-        UserData data=userDB.getUser("user1");
+        UserData data = userDB.getUser("user1");
         Assertions.assertEquals("user1", data.username());
         Assertions.assertTrue(BCrypt.checkpw("password1", data.password()));
         Assertions.assertEquals("email1", data.email());
@@ -47,11 +47,11 @@ public class MySqlUserDaoTests {
     //negative
     @Test
     void testCreateUserExistingUsername() {
-        Exception e=Assertions.assertThrows(RuntimeException.class, () -> {
+        Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
             userDB.createUser(new UserData("user1", "password1", "email1"));
             userDB.createUser(new UserData("user1", "password2", "email2"));
         });
-        String s="java.sql.SQLIntegrityConstraintViolationException: Duplicate entry 'user1' for key 'user.PRIMARY'";
+        String s = "java.sql.SQLIntegrityConstraintViolationException: Duplicate entry 'user1' for key 'user.PRIMARY'";
         Assertions.assertEquals(s, e.getMessage());
     }
 
@@ -60,7 +60,7 @@ public class MySqlUserDaoTests {
     void testGetUser() throws DataAccessException {
         userDB.createUser(new UserData("user1", "password1", "email1"));
         userDB.createUser(new UserData("user2", "password2", "email2"));
-        UserData result=userDB.getUser("user1");
+        UserData result = userDB.getUser("user1");
         Assertions.assertEquals("user1", result.username());
         Assertions.assertTrue(BCrypt.checkpw("password1", result.password()));
         Assertions.assertEquals("email1", result.email());
@@ -70,7 +70,7 @@ public class MySqlUserDaoTests {
     @Test
     void testGetUserNonExistentUser() throws DataAccessException {
         userDB.createUser(new UserData("user1", "password1", "email1"));
-        UserData result=userDB.getUser("user2");
+        UserData result = userDB.getUser("user2");
         Assertions.assertNull(result);
     }
 
@@ -81,7 +81,7 @@ public class MySqlUserDaoTests {
         userDB.createUser(new UserData("user1", "password1", "email1"));
         userDB.createUser(new UserData("user2", "password2", "email2"));
         userDB.createUser(new UserData("user3", "password3", "email3"));
-        Map<String, UserData> userList=userDB.listUsers();
+        Map<String, UserData> userList = userDB.listUsers();
         Assertions.assertEquals(3, userList.size());
         Assertions.assertTrue(userList.containsKey("user1"));
         Assertions.assertTrue(userList.containsKey("user2"));
@@ -91,11 +91,11 @@ public class MySqlUserDaoTests {
     //negative
     @Test
     void testListUsersTableDropped() {
-        try (var conn=DatabaseManager.getConnection()) {
-            try (var preparedStatement=conn.prepareStatement("DROP TABLE user")) {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DROP TABLE user")) {
                 preparedStatement.executeUpdate();
-                Exception e=Assertions.assertThrows(RuntimeException.class, () -> {
-                    Map<String, UserData> userList=userDB.listUsers();
+                Exception e = Assertions.assertThrows(RuntimeException.class, () -> {
+                    Map<String, UserData> userList = userDB.listUsers();
                 });
             }
         } catch (SQLException e) {

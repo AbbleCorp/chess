@@ -10,9 +10,9 @@ public class DataService {
     AuthDAO authData;
 
     public DataService(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) {
-        this.userData=userDAO;
-        this.gameData=gameDAO;
-        this.authData=authDAO;
+        this.userData = userDAO;
+        this.gameData = gameDAO;
+        this.authData = authDAO;
     }
 
     public void clearDatabase() {

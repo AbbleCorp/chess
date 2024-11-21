@@ -9,7 +9,7 @@ public class MemoryUserDAO implements UserDAO {
     Map<String, UserData> userList;
 
     public MemoryUserDAO() {
-        userList=new HashMap<>();
+        userList = new HashMap<>();
     }
 
     @Override

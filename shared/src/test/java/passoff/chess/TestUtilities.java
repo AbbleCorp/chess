@@ -10,14 +10,14 @@ import java.util.Set;
 
 public class TestUtilities {
     static public void validateMoves(String boardText, ChessPosition startPosition, int[][] endPositions) {
-        var board=loadBoard(boardText);
-        var testPiece=board.getPiece(startPosition);
-        var validMoves=loadMoves(startPosition, endPositions);
+        var board = loadBoard(boardText);
+        var testPiece = board.getPiece(startPosition);
+        var validMoves = loadMoves(startPosition, endPositions);
         validateMoves(board, testPiece, startPosition, validMoves);
     }
 
     static public void validateMoves(ChessBoard board, ChessPiece testPiece, ChessPosition startPosition, Set<ChessMove> validMoves) {
-        var pieceMoves=new HashSet<>(testPiece.pieceMoves(board, startPosition));
+        var pieceMoves = new HashSet<>(testPiece.pieceMoves(board, startPosition));
         assertCollectionsEquals(validMoves, pieceMoves, "Wrong moves");
     }
 
@@ -26,7 +26,7 @@ public class TestUtilities {
         Assertions.assertEquals(first.size(), second.size(), "Collections not the same size");
     }
 
-    final static Map<Character, ChessPiece.PieceType> CHAR_TO_TYPE_MAP=Map.of(
+    final static Map<Character, ChessPiece.PieceType> CHAR_TO_TYPE_MAP = Map.of(
             'p', ChessPiece.PieceType.PAWN,
             'n', ChessPiece.PieceType.KNIGHT,
             'r', ChessPiece.PieceType.ROOK,
@@ -35,24 +35,24 @@ public class TestUtilities {
             'b', ChessPiece.PieceType.BISHOP);
 
     public static ChessBoard loadBoard(String boardText) {
-        var board=new ChessBoard();
-        int row=8;
-        int column=1;
+        var board = new ChessBoard();
+        int row = 8;
+        int column = 1;
         for (var c : boardText.toCharArray()) {
             switch (c) {
                 case '\n' -> {
-                    column=1;
+                    column = 1;
                     row--;
                 }
                 case ' ' -> column++;
                 case '|' -> {
                 }
                 default -> {
-                    ChessGame.TeamColor color=Character.isLowerCase(c) ? ChessGame.TeamColor.BLACK
+                    ChessGame.TeamColor color = Character.isLowerCase(c) ? ChessGame.TeamColor.BLACK
                             : ChessGame.TeamColor.WHITE;
-                    var type=CHAR_TO_TYPE_MAP.get(Character.toLowerCase(c));
-                    var position=new ChessPosition(row, column);
-                    var piece=new ChessPiece(color, type);
+                    var type = CHAR_TO_TYPE_MAP.get(Character.toLowerCase(c));
+                    var position = new ChessPosition(row, column);
+                    var piece = new ChessPiece(color, type);
                     board.addPiece(position, piece);
                     column++;
                 }
@@ -62,7 +62,7 @@ public class TestUtilities {
     }
 
     public static Set<ChessMove> loadMoves(ChessPosition startPosition, int[][] endPositions) {
-        var validMoves=new HashSet<ChessMove>();
+        var validMoves = new HashSet<ChessMove>();
         for (var endPosition : endPositions) {
             validMoves.add(new ChessMove(startPosition,
                     new ChessPosition(endPosition[0], endPosition[1]), null));
@@ -71,8 +71,8 @@ public class TestUtilities {
     }
 
     public static void assertMoves(ChessGame game, Set<ChessMove> validMoves, ChessPosition position) {
-        var generatedMoves=game.validMoves(position);
-        var actualMoves=new HashSet<>(generatedMoves);
+        var generatedMoves = game.validMoves(position);
+        var actualMoves = new HashSet<>(generatedMoves);
         Assertions.assertEquals(generatedMoves.size(), actualMoves.size(), "Duplicate move");
         Assertions.assertEquals(validMoves, actualMoves,
                 "ChessGame validMoves did not return the correct moves");

@@ -18,7 +18,7 @@ public class ServerMessage {
     }
 
     public ServerMessage(ServerMessageType type) {
-        this.serverMessageType=type;
+        this.serverMessageType = type;
     }
 
     public ServerMessageType getServerMessageType() {
@@ -33,7 +33,7 @@ public class ServerMessage {
         if (!(o instanceof ServerMessage)) {
             return false;
         }
-        ServerMessage that=(ServerMessage) o;
+        ServerMessage that = (ServerMessage) o;
         return getServerMessageType() == that.getServerMessageType();
     }
 

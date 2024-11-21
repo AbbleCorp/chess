@@ -8,28 +8,28 @@ public class ServerFacade {
     private WebSocketCommunicator WebSocketComm;
 
     public ServerFacade(ServerMessageObserver SMO) throws ResponseException {
-        clientComm=new HttpCommunicator("http://localhost:8080");
-        WebSocketComm=new WebSocketCommunicator(SMO);
+        clientComm = new HttpCommunicator("http://localhost:8080");
+        WebSocketComm = new WebSocketCommunicator(SMO);
     }
 
     public ServerFacade(int port) {
-        clientComm=new HttpCommunicator("http://localhost:" + port);
+        clientComm = new HttpCommunicator("http://localhost:" + port);
     }
 
 
     public LoginResult login(LoginRequest req) throws Exception {
-        LoginResult result=clientComm.makeRequestWithBody("POST", "/session", req, LoginResult.class);
+        LoginResult result = clientComm.makeRequestWithBody("POST", "/session", req, LoginResult.class);
         return result;
     }
 
     public LoginResult register(RegisterRequest req) throws Exception {
-        LoginResult result=clientComm.makeRequestWithBody("POST", "/user", req, LoginResult.class);
+        LoginResult result = clientComm.makeRequestWithBody("POST", "/user", req, LoginResult.class);
         return result;
     }
 
     public CreateGameResult createGame(CreateGameRequest req) throws Exception {
         try {
-            CreateGameResult result=clientComm.makeRequestWithBoth("POST", "/game", req, req.getAuthorization(), CreateGameResult.class);
+            CreateGameResult result = clientComm.makeRequestWithBoth("POST", "/game", req, req.getAuthorization(), CreateGameResult.class);
             return result;
         } catch (Exception e) {
             if (e.getMessage().contains("401")) {
@@ -41,7 +41,7 @@ public class ServerFacade {
 
     public ListGamesResult listGames(ListGamesRequest req) throws Exception {
         try {
-            ListGamesResult result=clientComm.makeRequestWithHeader("GET", "/game", req, req.authorization(), ListGamesResult.class);
+            ListGamesResult result = clientComm.makeRequestWithHeader("GET", "/game", req, req.authorization(), ListGamesResult.class);
             return result;
         } catch (Exception e) {
             if (e.getMessage().contains("401")) {

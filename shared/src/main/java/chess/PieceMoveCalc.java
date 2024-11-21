@@ -13,21 +13,21 @@ public class PieceMoveCalc {
     private ChessBoard board;
 
     public PieceMoveCalc(ChessPosition position, ChessGame.TeamColor color, ChessPiece.PieceType type, ChessBoard board) {
-        this.pos=position;
-        this.color=color;
-        this.type=type;
-        this.board=board;
+        this.pos = position;
+        this.color = color;
+        this.type = type;
+        this.board = board;
     }
 
     public ArrayList<ChessMove> calcPieceMoves(ChessPiece.PieceType type) {
-        ArrayList<ChessMove> movesList=new ArrayList<ChessMove>();
+        ArrayList<ChessMove> movesList = new ArrayList<ChessMove>();
         switch (type) {
-            case KING -> movesList=kingMoves();
-            case KNIGHT -> movesList=knightMoves();
-            case BISHOP -> movesList=bishopMoves();
-            case ROOK -> movesList=rookMoves();
-            case QUEEN -> movesList=queenMoves();
-            case PAWN -> movesList=pawnMoves();
+            case KING -> movesList = kingMoves();
+            case KNIGHT -> movesList = knightMoves();
+            case BISHOP -> movesList = bishopMoves();
+            case ROOK -> movesList = rookMoves();
+            case QUEEN -> movesList = queenMoves();
+            case PAWN -> movesList = pawnMoves();
         }
         return movesList;
     }
@@ -59,7 +59,7 @@ public class PieceMoveCalc {
     }
 
     public ArrayList<ChessMove> addPromoMoves(ChessPosition newPosition) {
-        ArrayList<ChessMove> movesList=new ArrayList<>();
+        ArrayList<ChessMove> movesList = new ArrayList<>();
         movesList.add(new ChessMove(pos, newPosition, ChessPiece.PieceType.QUEEN));
         movesList.add(new ChessMove(pos, newPosition, ChessPiece.PieceType.ROOK));
         movesList.add(new ChessMove(pos, newPosition, ChessPiece.PieceType.KNIGHT));
@@ -68,7 +68,7 @@ public class PieceMoveCalc {
     }
 
     public ArrayList<ChessMove> kingMoves() {
-        ArrayList<ChessMove> movesList=new ArrayList<>();
+        ArrayList<ChessMove> movesList = new ArrayList<>();
         //up
         if (emptyOrEnemy(pos.getRow() + 1, pos.getColumn())) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow() + 1, pos.getColumn()), null));
@@ -99,7 +99,7 @@ public class PieceMoveCalc {
     }
 
     public ArrayList<ChessMove> knightMoves() {
-        ArrayList<ChessMove> movesList=new ArrayList<>();
+        ArrayList<ChessMove> movesList = new ArrayList<>();
         //upper left corner
         if (emptyOrEnemy(pos.getRow() + 1, pos.getColumn() - 2)) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow() + 1, pos.getColumn() - 2), null));
@@ -129,9 +129,9 @@ public class PieceMoveCalc {
     }
 
     public ArrayList<ChessMove> bishopMoves() {
-        ArrayList<ChessMove> movesList=new ArrayList<>();
+        ArrayList<ChessMove> movesList = new ArrayList<>();
         //upper left
-        int i=1;
+        int i = 1;
         while (emptyOrEnemy(pos.getRow() + i, pos.getColumn() - i)) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow() + i, pos.getColumn() - i), null));
             if (pieceFound(pos.getRow() + i, pos.getColumn() - i)) {
@@ -139,7 +139,7 @@ public class PieceMoveCalc {
             }
             i++;
         }//upper right
-        i=1;
+        i = 1;
         while (emptyOrEnemy(pos.getRow() + i, pos.getColumn() + i)) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow() + i, pos.getColumn() + i), null));
             if (pieceFound(pos.getRow() + i, pos.getColumn() + i)) {
@@ -147,7 +147,7 @@ public class PieceMoveCalc {
             }
             i++;
         }//lower left
-        i=1;
+        i = 1;
         while (emptyOrEnemy(pos.getRow() - i, pos.getColumn() - i)) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow() - i, pos.getColumn() - i), null));
             if (pieceFound(pos.getRow() - i, pos.getColumn() - i)) {
@@ -155,7 +155,7 @@ public class PieceMoveCalc {
             }
             i++;
         }//lower right
-        i=1;
+        i = 1;
         while (emptyOrEnemy(pos.getRow() - i, pos.getColumn() + i)) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow() - i, pos.getColumn() + i), null));
             if (pieceFound(pos.getRow() - i, pos.getColumn() + i)) {
@@ -167,9 +167,9 @@ public class PieceMoveCalc {
     }
 
     public ArrayList<ChessMove> rookMoves() {
-        ArrayList<ChessMove> movesList=new ArrayList<>();
+        ArrayList<ChessMove> movesList = new ArrayList<>();
         //up
-        int i=1;
+        int i = 1;
         while (emptyOrEnemy(pos.getRow() + i, pos.getColumn())) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow() + i, pos.getColumn()), null));
             if (pieceFound(pos.getRow() + i, pos.getColumn())) {
@@ -177,7 +177,7 @@ public class PieceMoveCalc {
             }
             i++;
         }//down
-        i=1;
+        i = 1;
         while (emptyOrEnemy(pos.getRow() - i, pos.getColumn())) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow() - i, pos.getColumn()), null));
             if (pieceFound(pos.getRow() - i, pos.getColumn())) {
@@ -185,7 +185,7 @@ public class PieceMoveCalc {
             }
             i++;
         }//left
-        i=1;
+        i = 1;
         while (emptyOrEnemy(pos.getRow(), pos.getColumn() - i)) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow(), pos.getColumn() - i), null));
             if (pieceFound(pos.getRow(), pos.getColumn() - i)) {
@@ -193,7 +193,7 @@ public class PieceMoveCalc {
             }
             i++;
         }//right
-        i=1;
+        i = 1;
         while (emptyOrEnemy(pos.getRow(), pos.getColumn() + i)) {
             movesList.add(new ChessMove(pos, new ChessPosition(pos.getRow(), pos.getColumn() + i), null));
             if (pieceFound(pos.getRow(), pos.getColumn() + i)) {
@@ -205,13 +205,13 @@ public class PieceMoveCalc {
     }
 
     public ArrayList<ChessMove> queenMoves() {
-        ArrayList<ChessMove> movesList=bishopMoves();
+        ArrayList<ChessMove> movesList = bishopMoves();
         movesList.addAll(rookMoves());
         return movesList;
     }
 
     public ArrayList<ChessMove> pawnMoves() {
-        ArrayList<ChessMove> movesList=new ArrayList<>();
+        ArrayList<ChessMove> movesList = new ArrayList<>();
         //BLACK
         if (color == ChessGame.TeamColor.BLACK) {
             //eligible for Promo

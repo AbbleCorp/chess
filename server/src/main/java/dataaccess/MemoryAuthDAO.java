@@ -10,13 +10,13 @@ public class MemoryAuthDAO implements AuthDAO {
     Map<String, String> authList; //auth is key, username is value
 
     public MemoryAuthDAO() {
-        authList=new HashMap<>();
+        authList = new HashMap<>();
     }
 
 
     @Override
     public AuthData createAuth(String username) {
-        String token=UUID.randomUUID().toString();
+        String token = UUID.randomUUID().toString();
         authList.put(token, username);
         return new AuthData(username, token);
     }

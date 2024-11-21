@@ -17,9 +17,9 @@ public class UserGameCommand {
     private final Integer gameID;
 
     public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
-        this.commandType=commandType;
-        this.authToken=authToken;
-        this.gameID=gameID;
+        this.commandType = commandType;
+        this.authToken = authToken;
+        this.gameID = gameID;
     }
 
     public enum CommandType {
@@ -49,7 +49,7 @@ public class UserGameCommand {
         if (!(o instanceof UserGameCommand)) {
             return false;
         }
-        UserGameCommand that=(UserGameCommand) o;
+        UserGameCommand that = (UserGameCommand) o;
         return getCommandType() == that.getCommandType() &&
                 Objects.equals(getAuthToken(), that.getAuthToken()) &&
                 Objects.equals(getGameID(), that.getGameID());

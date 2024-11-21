@@ -13,8 +13,8 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public void clear() {
-        try (var conn=DatabaseManager.getConnection()) {
-            try (var preparedStatement=conn.prepareStatement("DELETE FROM auth")) {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM auth")) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
@@ -24,10 +24,10 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public Map<String, String> listAuth() {
-        try (var conn=DatabaseManager.getConnection()) {
-            try (var preparedStatement=conn.prepareStatement("SELECT * FROM auth", Statement.RETURN_GENERATED_KEYS)) {
-                var resultSet=preparedStatement.executeQuery();
-                Map<String, String> authList=new HashMap<>();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT * FROM auth", Statement.RETURN_GENERATED_KEYS)) {
+                var resultSet = preparedStatement.executeQuery();
+                Map<String, String> authList = new HashMap<>();
                 while (resultSet.next()) {
                     authList.put(resultSet.getString("username"), resultSet.getString("authToken"));
                 }
@@ -40,11 +40,11 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public AuthData createAuth(String username) {
-        try (var conn=DatabaseManager.getConnection()) {
-            try (var preparedStatement=conn.prepareStatement(
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(
                     "INSERT INTO auth (username, authToken) VALUES(?, ?)" +
                             "ON DUPLICATE KEY UPDATE authToken=?")) {
-                String token=UUID.randomUUID().toString();
+                String token = UUID.randomUUID().toString();
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, token);
                 preparedStatement.setString(3, token);
@@ -58,13 +58,13 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public String getAuth(String authToken) {
-        try (var conn=DatabaseManager.getConnection()) {
-            try (var preparedStatement=conn.prepareStatement("SELECT authToken FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT authToken FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, authToken);
-                var resultSet=preparedStatement.executeQuery();
-                String token=null;
+                var resultSet = preparedStatement.executeQuery();
+                String token = null;
                 if (resultSet.next()) {
-                    token=resultSet.getString("authToken");
+                    token = resultSet.getString("authToken");
                 }
                 return token;
             }
@@ -75,13 +75,13 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public String getUsername(String authToken) throws DataAccessException {
-        try (var conn=DatabaseManager.getConnection()) {
-            try (var preparedStatement=conn.prepareStatement("SELECT username FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT username FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, authToken);
-                var resultSet=preparedStatement.executeQuery();
-                String username=null;
+                var resultSet = preparedStatement.executeQuery();
+                String username = null;
                 if (resultSet.next()) {
-                    username=resultSet.getString("username");
+                    username = resultSet.getString("username");
                 }
                 return username;
             }
@@ -92,8 +92,8 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        try (var conn=DatabaseManager.getConnection()) {
-            try (var preparedStatement=conn.prepareStatement("DELETE FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("DELETE FROM auth WHERE authToken=?", Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, authToken);
                 preparedStatement.executeUpdate();
             }

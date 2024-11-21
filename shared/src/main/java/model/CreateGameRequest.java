@@ -9,7 +9,7 @@ public class CreateGameRequest {
     }
 
     public void setAuthorization(String authorization) {
-        this.authorization=authorization;
+        this.authorization = authorization;
     }
 
     public String getGameName() {
@@ -17,8 +17,8 @@ public class CreateGameRequest {
     }
 
     public CreateGameRequest(String authorization, String gameName) {
-        this.authorization=authorization;
-        this.gameName=gameName;
+        this.authorization = authorization;
+        this.gameName = gameName;
 
     }
 

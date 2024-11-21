@@ -12,8 +12,8 @@ public class UserService {
     private final AuthDAO auths;
 
     public UserService(UserDAO userdata, AuthDAO authData) {
-        this.users=userdata;
-        this.auths=authData;
+        this.users = userdata;
+        this.auths = authData;
     }
 
 

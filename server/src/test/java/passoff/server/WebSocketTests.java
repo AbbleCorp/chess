@@ -32,24 +32,24 @@ public class WebSocketTests {
 
     @BeforeAll
     public static void init() throws URISyntaxException {
-        server=new Server();
-        var port=Integer.toString(server.run(0));
+        server = new Server();
+        var port = Integer.toString(server.run(0));
         System.out.println("Started test HTTP server on " + port);
 
-        serverFacade=new TestServerFacade("localhost", port);
+        serverFacade = new TestServerFacade("localhost", port);
         serverFacade.clear();
-        environment=new WebsocketTestingEnvironment("localhost", port, "/ws", TestFactory.getGsonBuilder());
-        waitTime=TestFactory.getMessageTime();
+        environment = new WebsocketTestingEnvironment("localhost", port, "/ws", TestFactory.getGsonBuilder());
+        waitTime = TestFactory.getMessageTime();
     }
 
     @BeforeEach
     public void setup() {
         //populate database with HTTP calls
         serverFacade.clear();
-        white=registerUser("white", "WHITE", "white@chess.com");
-        black=registerUser("black", "BLACK", "black@chess.com");
-        observer=registerUser("observer", "OBSERVER", "observer@chess.com");
-        gameID=createGame(white, "testGame");
+        white = registerUser("white", "WHITE", "white@chess.com");
+        black = registerUser("black", "BLACK", "black@chess.com");
+        observer = registerUser("observer", "OBSERVER", "observer@chess.com");
+        gameID = createGame(white, "testGame");
         joinGame(gameID, white, ChessGame.TeamColor.WHITE);
         joinGame(gameID, black, ChessGame.TeamColor.BLACK);
     }
@@ -89,7 +89,7 @@ public class WebSocketTests {
         setupNormalGame();
 
         //make a valid pawn move
-        ChessMove move=new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
+        ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
         makeMove(white, gameID, move, true, false, Set.of(black, observer), Set.of());
     }
 
@@ -100,7 +100,7 @@ public class WebSocketTests {
         setupNormalGame();
 
         //make valid move command with wrong authtoken
-        ChessMove move=new ChessMove(new ChessPosition(2, 6), new ChessPosition(4, 6), null);
+        ChessMove move = new ChessMove(new ChessPosition(2, 6), new ChessPosition(4, 6), null);
         makeMove(new WebsocketUser(white.username(), "badAuth"), gameID, move, false, false, Set.of(black, observer), Set.of());
     }
 
@@ -111,7 +111,7 @@ public class WebSocketTests {
         setupNormalGame();
 
         //try to move rook through a pawn - invalid move
-        ChessMove move=new ChessMove(new ChessPosition(1, 1), new ChessPosition(1, 5), null);
+        ChessMove move = new ChessMove(new ChessPosition(1, 1), new ChessPosition(1, 5), null);
         makeMove(white, gameID, move, false, false, Set.of(black, observer), Set.of());
     }
 
@@ -122,7 +122,7 @@ public class WebSocketTests {
         setupNormalGame();
 
         //try to move pawn out of turn - would be valid if in turn
-        ChessMove move=new ChessMove(new ChessPosition(7, 5), new ChessPosition(5, 5), null);
+        ChessMove move = new ChessMove(new ChessPosition(7, 5), new ChessPosition(5, 5), null);
         makeMove(black, gameID, move, false, false, Set.of(white, observer), Set.of());
     }
 
@@ -133,7 +133,7 @@ public class WebSocketTests {
         setupNormalGame();
 
         //attempt to have black player move white piece
-        ChessMove move=new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
+        ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
         makeMove(black, gameID, move, false, false, Set.of(white, observer), Set.of());
     }
 
@@ -144,7 +144,7 @@ public class WebSocketTests {
         setupNormalGame();
 
         //have observer attempt to make an otherwise valid move
-        ChessMove move=new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
+        ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
         makeMove(observer, gameID, move, false, false, Set.of(white, black), Set.of());
     }
 
@@ -155,16 +155,16 @@ public class WebSocketTests {
         setupNormalGame();
 
         //Fools mate setup
-        ChessMove move=new ChessMove(new ChessPosition(2, 7), new ChessPosition(4, 7), null);
+        ChessMove move = new ChessMove(new ChessPosition(2, 7), new ChessPosition(4, 7), null);
         makeMove(white, gameID, move, true, false, Set.of(black, observer), Set.of());
-        move=new ChessMove(new ChessPosition(7, 5), new ChessPosition(6, 5), null);
+        move = new ChessMove(new ChessPosition(7, 5), new ChessPosition(6, 5), null);
         makeMove(black, gameID, move, true, false, Set.of(white, observer), Set.of());
-        move=new ChessMove(new ChessPosition(2, 6), new ChessPosition(3, 6), null);
+        move = new ChessMove(new ChessPosition(2, 6), new ChessPosition(3, 6), null);
         makeMove(white, gameID, move, true, false, Set.of(black, observer), Set.of());
-        move=new ChessMove(new ChessPosition(8, 4), new ChessPosition(4, 8), null);
+        move = new ChessMove(new ChessPosition(8, 4), new ChessPosition(4, 8), null);
         makeMove(black, gameID, move, true, true, Set.of(white, observer), Set.of());
         //checkmate--attempt another move
-        move=new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
+        move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
         makeMove(white, gameID, move, false, false, Set.of(black, observer), Set.of());
     }
 
@@ -184,7 +184,7 @@ public class WebSocketTests {
         resign(black, gameID, true, Set.of(white, observer), Set.of());
 
         //attempt to make a move after other player resigns
-        ChessMove move=new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
+        ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null);
         makeMove(white, gameID, move, false, false, Set.of(black, observer), Set.of());
     }
 
@@ -232,12 +232,12 @@ public class WebSocketTests {
         leave(white, gameID, Set.of(black, observer), Set.of());
 
         //replace white player with a different player
-        WebsocketUser white2=registerUser("white2", "WHITE", "white2@chess.com");
+        WebsocketUser white2 = registerUser("white2", "WHITE", "white2@chess.com");
         joinGame(gameID, white2, ChessGame.TeamColor.WHITE);
         connectToGame(white2, gameID, true, Set.of(black, observer), Set.of(white));
 
         //new white player can make move
-        ChessMove move=new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
+        ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
         makeMove(white2, gameID, move, true, false, Set.of(black, observer), Set.of(white));
     }
 
@@ -248,10 +248,10 @@ public class WebSocketTests {
         setupNormalGame();
 
         //setup parallel game
-        WebsocketUser white2=registerUser("white2", "WHITE", "white2@chess.com");
-        WebsocketUser black2=registerUser("black2", "BLACK", "black2@chess.com");
-        WebsocketUser observer2=registerUser("observer2", "OBSERVER", "observer2@chess.com");
-        int otherGameID=createGame(white, "testGame2");
+        WebsocketUser white2 = registerUser("white2", "WHITE", "white2@chess.com");
+        WebsocketUser black2 = registerUser("black2", "BLACK", "black2@chess.com");
+        WebsocketUser observer2 = registerUser("observer2", "OBSERVER", "observer2@chess.com");
+        int otherGameID = createGame(white, "testGame2");
         joinGame(otherGameID, white2, ChessGame.TeamColor.WHITE);
         joinGame(otherGameID, black2, ChessGame.TeamColor.BLACK);
         connectToGame(white2, otherGameID, true, Set.of(), Set.of(white, black, observer));
@@ -259,7 +259,7 @@ public class WebSocketTests {
         connectToGame(observer2, otherGameID, true, Set.of(white2, black2), Set.of(white, black, observer));
 
         //make move in first game - only users in first game should be notified
-        ChessMove move=new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
+        ChessMove move = new ChessMove(new ChessPosition(2, 5), new ChessPosition(3, 5), null);
         makeMove(white, gameID, move, true, false, Set.of(black, observer), Set.of(white2, black2, observer2));
 
         //resign in second game - only users in second game should be notified
@@ -276,19 +276,19 @@ public class WebSocketTests {
     }
 
     private WebsocketUser registerUser(String name, String password, String email) {
-        TestAuthResult authResult=serverFacade.register(new TestUser(name, password, email));
+        TestAuthResult authResult = serverFacade.register(new TestUser(name, password, email));
         assertHttpOk(authResult, "registering a new user");
         return new WebsocketUser(authResult.getUsername(), authResult.getAuthToken());
     }
 
     private int createGame(WebsocketUser user, String name) {
-        TestCreateResult createResult=serverFacade.createGame(new TestCreateRequest(name), user.authToken());
+        TestCreateResult createResult = serverFacade.createGame(new TestCreateRequest(name), user.authToken());
         assertHttpOk(createResult, "creating a new game");
         return createResult.getGameID();
     }
 
     private void joinGame(int gameID, WebsocketUser user, ChessGame.TeamColor color) {
-        TestResult result=serverFacade.joinPlayer(new TestJoinRequest(color, gameID), user.authToken());
+        TestResult result = serverFacade.joinPlayer(new TestJoinRequest(color, gameID), user.authToken());
         assertHttpOk(result, "joining a player to a game");
     }
 
@@ -300,18 +300,18 @@ public class WebSocketTests {
 
     private void connectToGame(WebsocketUser sender, int gameID, boolean expectSuccess,
                                Set<WebsocketUser> inGame, Set<WebsocketUser> otherClients) {
-        TestCommand connectCommand=new TestCommand(UserGameCommand.CommandType.CONNECT, sender.authToken(), gameID);
-        Map<String, Integer> numExpectedMessages=expectedMessages(sender, 1, inGame, (expectSuccess ? 1 : 0), otherClients);
-        Map<String, List<TestMessage>> actualMessages=environment.exchange(sender.username(), connectCommand, numExpectedMessages, waitTime);
+        TestCommand connectCommand = new TestCommand(UserGameCommand.CommandType.CONNECT, sender.authToken(), gameID);
+        Map<String, Integer> numExpectedMessages = expectedMessages(sender, 1, inGame, (expectSuccess ? 1 : 0), otherClients);
+        Map<String, List<TestMessage>> actualMessages = environment.exchange(sender.username(), connectCommand, numExpectedMessages, waitTime);
 
         assertCommandMessages(actualMessages, expectSuccess, sender, types(LOAD_GAME), inGame, types(NOTIFICATION), otherClients);
     }
 
     private void makeMove(WebsocketUser sender, int gameID, ChessMove move, boolean expectSuccess,
                           boolean extraNotification, Set<WebsocketUser> inGame, Set<WebsocketUser> otherClients) {
-        TestCommand moveCommand=new TestCommand(sender.authToken(), gameID, move);
-        Map<String, Integer> numExpectedMessages=expectedMessages(sender, 1, inGame, (expectSuccess ? 2 : 0), otherClients);
-        Map<String, List<TestMessage>> actualMessages=environment.exchange(sender.username(), moveCommand, numExpectedMessages, waitTime);
+        TestCommand moveCommand = new TestCommand(sender.authToken(), gameID, move);
+        Map<String, Integer> numExpectedMessages = expectedMessages(sender, 1, inGame, (expectSuccess ? 2 : 0), otherClients);
+        Map<String, List<TestMessage>> actualMessages = environment.exchange(sender.username(), moveCommand, numExpectedMessages, waitTime);
 
         if (extraNotification && actualMessages.get(sender.username()).size() > 1) {
             assertCommandMessages(actualMessages, expectSuccess, sender, types(LOAD_GAME, NOTIFICATION),
@@ -324,25 +324,25 @@ public class WebSocketTests {
 
     private void resign(WebsocketUser sender, int gameID, boolean expectSuccess,
                         Set<WebsocketUser> inGame, Set<WebsocketUser> otherClients) {
-        TestCommand resignCommand=new TestCommand(UserGameCommand.CommandType.RESIGN, sender.authToken(), gameID);
-        Map<String, Integer> numExpectedMessages=expectedMessages(sender, 1, inGame, (expectSuccess ? 1 : 0), otherClients);
-        Map<String, List<TestMessage>> actualMessages=environment.exchange(sender.username(), resignCommand, numExpectedMessages, waitTime);
+        TestCommand resignCommand = new TestCommand(UserGameCommand.CommandType.RESIGN, sender.authToken(), gameID);
+        Map<String, Integer> numExpectedMessages = expectedMessages(sender, 1, inGame, (expectSuccess ? 1 : 0), otherClients);
+        Map<String, List<TestMessage>> actualMessages = environment.exchange(sender.username(), resignCommand, numExpectedMessages, waitTime);
 
         assertCommandMessages(actualMessages, expectSuccess, sender, types(NOTIFICATION),
                 inGame, types(NOTIFICATION), otherClients);
     }
 
     private void leave(WebsocketUser sender, int gameID, Set<WebsocketUser> inGame, Set<WebsocketUser> otherClients) {
-        TestCommand leaveCommand=new TestCommand(UserGameCommand.CommandType.LEAVE, sender.authToken(), gameID);
-        Map<String, Integer> numExpectedMessages=expectedMessages(sender, 0, inGame, 1, otherClients);
-        Map<String, List<TestMessage>> actualMessages=environment.exchange(sender.username(), leaveCommand, numExpectedMessages, waitTime);
+        TestCommand leaveCommand = new TestCommand(UserGameCommand.CommandType.LEAVE, sender.authToken(), gameID);
+        Map<String, Integer> numExpectedMessages = expectedMessages(sender, 0, inGame, 1, otherClients);
+        Map<String, List<TestMessage>> actualMessages = environment.exchange(sender.username(), leaveCommand, numExpectedMessages, waitTime);
 
         assertCommandMessages(actualMessages, true, sender, types(), inGame, types(NOTIFICATION), otherClients);
     }
 
     private Map<String, Integer> expectedMessages(WebsocketUser sender, int senderExpected,
                                                   Set<WebsocketUser> inGame, int inGameExpected, Set<WebsocketUser> otherClients) {
-        Map<String, Integer> expectedMessages=new HashMap<>();
+        Map<String, Integer> expectedMessages = new HashMap<>();
         expectedMessages.put(sender.username(), senderExpected);
         expectedMessages.putAll(inGame.stream().collect(Collectors.toMap(WebsocketUser::username, s -> inGameExpected)));
         expectedMessages.putAll(otherClients.stream().collect(Collectors.toMap(WebsocketUser::username, s -> 0)));
@@ -354,8 +354,8 @@ public class WebSocketTests {
                                        Set<WebsocketUser> inGame, ServerMessage.ServerMessageType[] inGameExpectedTypes,
                                        Set<WebsocketUser> otherClients) {
         if (!expectSuccess) {
-            userExpectedTypes=new ServerMessage.ServerMessageType[]{ERROR};
-            inGameExpectedTypes=new ServerMessage.ServerMessageType[0];
+            userExpectedTypes = new ServerMessage.ServerMessageType[]{ERROR};
+            inGameExpectedTypes = new ServerMessage.ServerMessageType[0];
         }
         assertMessages(user.username(), userExpectedTypes, messages.get(user.username()));
         for (WebsocketUser inGameUser : inGame) {
@@ -372,7 +372,7 @@ public class WebSocketTests {
         Arrays.sort(expectedTypes);
         messages.sort(Comparator.comparing(TestMessage::getServerMessageType));
         try {
-            for (int i=0; i < expectedTypes.length; i++) {
+            for (int i = 0; i < expectedTypes.length; i++) {
                 switch (expectedTypes[i]) {
                     case LOAD_GAME -> assertLoadGame(username, messages.get(i));
                     case NOTIFICATION -> assertNotification(username, messages.get(i));

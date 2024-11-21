@@ -25,22 +25,22 @@ public class WebSocketServer {
 
 
     public WebSocketServer(GameDAO gameDAO, AuthDAO authDAO) {
-        this.gameDAO=gameDAO;
+        this.gameDAO = gameDAO;
         this.authDAO = authDAO;
         gsonSetup();
     }
 
     private static void gsonSetup() {
-        GsonBuilder builder=new GsonBuilder();
+        GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(UserGameCommand.class, new GameCommandDeserializer());
-        serializer=builder.create();
+        serializer = builder.create();
     }
 
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
         try {
-            UserGameCommand command=serializer.fromJson(message, UserGameCommand.class);
+            UserGameCommand command = serializer.fromJson(message, UserGameCommand.class);
             String username = "IMPLEMENT";
             //TODO: find how to get username
             // String username = getUsername(command.getAuthToken()); ?
@@ -59,9 +59,9 @@ public class WebSocketServer {
         connections.add(username, session);
         String playerColor = "IMPLEMENT";
         //TODO: find way to get color?
-        var message = String.format("%s has joined the game as %s", username,playerColor);
+        var message = String.format("%s has joined the game as %s", username, playerColor);
         var notification = new NotificationMessage(message);
-        connections.broadcast(username,notification);
+        connections.broadcast(username, notification);
     }
 
     private void leave(String username) {
@@ -81,9 +81,9 @@ public class WebSocketServer {
         @Override
         public UserGameCommand deserialize(JsonElement jsonElement, Type type,
                                            JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject=jsonElement.getAsJsonObject();
-            String typeString=jsonObject.get("commandType").getAsString();
-            UserGameCommand.CommandType commandType=UserGameCommand.CommandType.valueOf(typeString);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            String typeString = jsonObject.get("commandType").getAsString();
+            UserGameCommand.CommandType commandType = UserGameCommand.CommandType.valueOf(typeString);
 
             return switch (commandType) {
                 case CONNECT -> context.deserialize(jsonElement, ConnectCommand.class);

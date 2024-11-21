@@ -10,8 +10,8 @@ public class GameStatusTests {
     @Test
     @DisplayName("New Game sets up default values")
     public void newGame() {
-        var game=new ChessGame();
-        var expectedBoard=loadBoard("""
+        var game = new ChessGame();
+        var expectedBoard = loadBoard("""
                 |r|n|b|q|k|b|n|r|
                 |p|p|p|p|p|p|p|p|
                 | | | | | | | | |
@@ -28,7 +28,7 @@ public class GameStatusTests {
     @Test
     @DisplayName("New Game No Statuses")
     public void noGameStatuses() {
-        var game=new ChessGame();
+        var game = new ChessGame();
 
         Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.BLACK),
                 "Black is not in check but isInCheck returned true");
@@ -48,7 +48,7 @@ public class GameStatusTests {
     @Test
     @DisplayName("White in Check")
     public void whiteCheck() {
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | | | |k|
                 | | | | | | | | |
@@ -70,7 +70,7 @@ public class GameStatusTests {
     @Test
     @DisplayName("Black in Check")
     public void blackCheck() {
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | |K| | | | |
                 | | | | | | | | |
@@ -93,7 +93,7 @@ public class GameStatusTests {
     @DisplayName("White in Checkmate")
     public void whiteTeamCheckmate() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | | | | |
                 | | |b|q| | | | |
@@ -116,7 +116,7 @@ public class GameStatusTests {
     @Test
     @DisplayName("Black in Checkmate by Pawns")
     public void blackTeamPawnCheckmate() {
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | |k| | | | |
                 | | | |P|P| | | |
@@ -140,7 +140,7 @@ public class GameStatusTests {
     @DisplayName("Black can escape Check by capturing")
     public void escapeCheckByCapturingThreateningPiece() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | |r|k| |
                 | | | | | |P| |p|
@@ -164,7 +164,7 @@ public class GameStatusTests {
     @DisplayName("Black CANNOT escape Check by capturing")
     public void cannotEscapeCheckByCapturingThreateningPiece() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | |r|k| |
                 | | | | | |P| |p|
@@ -188,7 +188,7 @@ public class GameStatusTests {
     @DisplayName("Checkmate, where blocking a threat reveals a new threat")
     public void checkmateWhereBlockingThreateningPieceOpensNewThreat() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | | |r|k|
                 | | |R| | | | | |
@@ -211,7 +211,7 @@ public class GameStatusTests {
     @Test
     @DisplayName("Pinned King Causes Stalemate")
     public void stalemate() {
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 |k| | | | | | | |
                 | | | | | | | |r|

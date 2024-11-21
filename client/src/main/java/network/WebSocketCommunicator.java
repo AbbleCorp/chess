@@ -18,7 +18,7 @@ public class WebSocketCommunicator extends Endpoint {
 
 
     public WebSocketCommunicator(ServerMessageObserver SMO) throws ResponseException {
-        this.SMO=SMO;
+        this.SMO = SMO;
         gsonSetup();
     }
 
@@ -29,18 +29,18 @@ public class WebSocketCommunicator extends Endpoint {
     }
 
     private void gsonSetup() {
-        GsonBuilder builder=new GsonBuilder();
+        GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ServerMessage.class, new ServerMessageDeserializer());
-        serializer=builder.create();
+        serializer = builder.create();
     }
 
     private static class ServerMessageDeserializer implements JsonDeserializer<ServerMessage> {
 
         @Override
         public ServerMessage deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject=jsonElement.getAsJsonObject();
-            String typeString=jsonObject.get("serverMessageType").getAsString();
-            ServerMessage.ServerMessageType messageType=ServerMessage.ServerMessageType.valueOf(typeString);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            String typeString = jsonObject.get("serverMessageType").getAsString();
+            ServerMessage.ServerMessageType messageType = ServerMessage.ServerMessageType.valueOf(typeString);
 
             return switch (messageType) {
                 case ERROR -> context.deserialize(jsonElement, ErrorMessage.class);

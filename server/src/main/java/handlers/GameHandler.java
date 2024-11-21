@@ -14,14 +14,14 @@ public class GameHandler {
     private final GameService gameService;
 
     public GameHandler(GameService gameService) {
-        this.gameService=gameService;
+        this.gameService = gameService;
     }
 
     public String listGames(Request req, Response res) {
-        var serializer=new Gson();
-        ListGamesRequest request=new ListGamesRequest(req.headers("authorization"));
+        var serializer = new Gson();
+        ListGamesRequest request = new ListGamesRequest(req.headers("authorization"));
         try {
-            ArrayList<GameData> gamesList=gameService.listGames(request);
+            ArrayList<GameData> gamesList = gameService.listGames(request);
             return serializer.toJson(new ListGamesResult(gamesList));
         } catch (DataAccessException e) {
             res.status(401);
@@ -33,12 +33,12 @@ public class GameHandler {
     }
 
     public String createGame(Request req, Response res) throws Exception {
-        var serializer=new Gson();
-        String auth=req.headers("authorization");
-        CreateGameRequest request=serializer.fromJson(req.body(), CreateGameRequest.class);
+        var serializer = new Gson();
+        String auth = req.headers("authorization");
+        CreateGameRequest request = serializer.fromJson(req.body(), CreateGameRequest.class);
         request.setAuthorization(auth);
         try {
-            CreateGameResult gameID=new CreateGameResult(gameService.createGame(request));
+            CreateGameResult gameID = new CreateGameResult(gameService.createGame(request));
             return serializer.toJson(gameID);
         } catch (DataAccessException e) {
             res.status(401);
@@ -49,9 +49,9 @@ public class GameHandler {
     }
 
     public String joinGame(Request req, Response res) {
-        var serializer=new Gson();
-        String auth=req.headers("authorization");
-        JoinGameRequest request=serializer.fromJson(req.body(), JoinGameRequest.class);
+        var serializer = new Gson();
+        String auth = req.headers("authorization");
+        JoinGameRequest request = serializer.fromJson(req.body(), JoinGameRequest.class);
         request.setAuthorization(auth);
         try {
             gameService.joinGame(request);
@@ -69,7 +69,7 @@ public class GameHandler {
     }
 
     public String catchBadRequest(Exception e, Response res) {
-        var serializer=new Gson();
+        var serializer = new Gson();
         if (Objects.equals(e.getMessage(), "Error: bad request")) {
             res.status(400);
         } else {

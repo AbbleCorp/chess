@@ -12,7 +12,7 @@ public class FullGameTest {
     @Test
     @DisplayName("Full Game Checkmate")
     public void scholarsMate() throws InvalidMoveException {
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.makeMove(new ChessMove(new ChessPosition(2, 5), new ChessPosition(4, 5), null));
         /*
         |r|n|b|q|k|b|n|r|

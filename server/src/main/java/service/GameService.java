@@ -18,8 +18,8 @@ public class GameService {
     private final AuthDAO authData;
 
     public GameService(GameDAO gameData, AuthDAO authData) {
-        this.gameData=gameData;
-        this.authData=authData;
+        this.gameData = gameData;
+        this.authData = authData;
     }
 
 
@@ -28,9 +28,9 @@ public class GameService {
             throw new Exception("Error: bad request");
         }
         if (authData.getAuth(request.getAuthorization()) != null) {
-            int gameID=request.getGameID();
-            String username=authData.getUsername(request.getAuthorization());
-            GameData originalGame=gameData.getGame(gameID);
+            int gameID = request.getGameID();
+            String username = authData.getUsername(request.getAuthorization());
+            GameData originalGame = gameData.getGame(gameID);
             if (Objects.equals(request.getPlayerColor(), "WHITE") && originalGame.whiteUsername() == null) {
                 gameData.updateGame(gameID, new GameData(gameID, username, originalGame.blackUsername(),
                         originalGame.gameName(), originalGame.game()));
@@ -50,7 +50,7 @@ public class GameService {
             throw new Exception("Error: bad request");
         }
         if (authData.getAuth(request.getAuthorization()) != null) {
-            int gameId=gameData.createGame(null, null, request.getGameName(), new ChessGame());
+            int gameId = gameData.createGame(null, null, request.getGameName(), new ChessGame());
             return gameId;
         } else {
             throw new DataAccessException("Error: unauthorized");

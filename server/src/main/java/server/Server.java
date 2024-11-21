@@ -21,7 +21,7 @@ public class Server {
     }
 
     private void createDatabase() {
-        DatabaseManager databaseManager=new DatabaseManager();
+        DatabaseManager databaseManager = new DatabaseManager();
         try {
             databaseManager.configureDatabase();
         } catch (DataAccessException e) {
@@ -30,16 +30,16 @@ public class Server {
     }
 
     private void constructHandlers() {
-        UserDAO userData=new MySqlUserDAO();
-        GameDAO gameData=new MySqlGameDAO();
-        AuthDAO authData=new MySqlAuthDAO();
-        UserService userService=new UserService(userData, authData);
-        GameService gameService=new GameService(gameData, authData);
-        DataService dataService=new DataService(userData, gameData, authData);
-        userHandler=new UserHandler(userService);
-        gameHandler=new GameHandler(gameService);
-        dataHandler=new DataHandler(dataService);
-        webSocketServer = new WebSocketServer(gameData,authData);
+        UserDAO userData = new MySqlUserDAO();
+        GameDAO gameData = new MySqlGameDAO();
+        AuthDAO authData = new MySqlAuthDAO();
+        UserService userService = new UserService(userData, authData);
+        GameService gameService = new GameService(gameData, authData);
+        DataService dataService = new DataService(userData, gameData, authData);
+        userHandler = new UserHandler(userService);
+        gameHandler = new GameHandler(gameService);
+        dataHandler = new DataHandler(dataService);
+        webSocketServer = new WebSocketServer(gameData, authData);
 
     }
 
@@ -68,7 +68,7 @@ public class Server {
     }
 
     public void setRoutes() {
-        Spark.webSocket("/ws",webSocketServer);
+        Spark.webSocket("/ws", webSocketServer);
         Spark.delete("/db", dataHandler::clear); //clear database
         Spark.post("/user", userHandler::register); //register
         Spark.post("/session", userHandler::login); //login

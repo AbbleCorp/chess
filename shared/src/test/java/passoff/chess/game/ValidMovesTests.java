@@ -13,7 +13,7 @@ public class ValidMovesTests {
     @DisplayName("Check Forces Movement")
     public void forcedMove() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | | | | |
                 | | | | | | | | |
@@ -26,13 +26,13 @@ public class ValidMovesTests {
                 """));
 
         // Knight moves
-        ChessPosition knightPosition=new ChessPosition(4, 3);
-        var validMoves=loadMoves(knightPosition, new int[][]{{3, 5}, {6, 2}});
+        ChessPosition knightPosition = new ChessPosition(4, 3);
+        var validMoves = loadMoves(knightPosition, new int[][]{{3, 5}, {6, 2}});
         assertMoves(game, validMoves, knightPosition);
 
         // Queen Moves
-        ChessPosition queenPosition=new ChessPosition(2, 4);
-        validMoves=loadMoves(queenPosition, new int[][]{{3, 5}, {4, 4}});
+        ChessPosition queenPosition = new ChessPosition(2, 4);
+        validMoves = loadMoves(queenPosition, new int[][]{{3, 5}, {4, 4}});
         assertMoves(game, validMoves, queenPosition);
     }
 
@@ -41,7 +41,7 @@ public class ValidMovesTests {
     @DisplayName("Piece Partially Trapped")
     public void moveIntoCheck() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | | | | |
                 | | | | | | | | |
@@ -53,8 +53,8 @@ public class ValidMovesTests {
                 | | | | | | | | |
                 """));
 
-        ChessPosition rookPosition=new ChessPosition(5, 6);
-        var validMoves=loadMoves(rookPosition, new int[][]{
+        ChessPosition rookPosition = new ChessPosition(5, 6);
+        var validMoves = loadMoves(rookPosition, new int[][]{
                 {5, 7}, {5, 5}, {5, 4}, {5, 3}, {5, 2}
         });
 
@@ -65,7 +65,7 @@ public class ValidMovesTests {
     @DisplayName("Piece Completely Trapped")
     public void rookPinnedToKing() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | | | |Q|
                 | | | | | | | | |
@@ -77,7 +77,7 @@ public class ValidMovesTests {
                 | | | | | | | | |
                 """));
 
-        ChessPosition position=new ChessPosition(4, 4);
+        ChessPosition position = new ChessPosition(4, 4);
         Assertions.assertTrue(game.validMoves(position).isEmpty(),
                 "ChessGame validMoves returned valid moves for a trapped piece");
     }
@@ -87,7 +87,7 @@ public class ValidMovesTests {
     @DisplayName("Pieces Cannot Eliminate Check")
     public void kingInDanger() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 |R| | | | | | | |
                 | | | |k| | | |b|
@@ -100,15 +100,15 @@ public class ValidMovesTests {
                 """));
 
         //get positions
-        ChessPosition kingPosition=new ChessPosition(7, 4);
-        ChessPosition pawnPosition=new ChessPosition(2, 6);
-        ChessPosition bishopPosition=new ChessPosition(7, 8);
-        ChessPosition queenPosition=new ChessPosition(1, 2);
-        ChessPosition knightPosition=new ChessPosition(5, 4);
-        ChessPosition rookPosition=new ChessPosition(3, 8);
+        ChessPosition kingPosition = new ChessPosition(7, 4);
+        ChessPosition pawnPosition = new ChessPosition(2, 6);
+        ChessPosition bishopPosition = new ChessPosition(7, 8);
+        ChessPosition queenPosition = new ChessPosition(1, 2);
+        ChessPosition knightPosition = new ChessPosition(5, 4);
+        ChessPosition rookPosition = new ChessPosition(3, 8);
 
 
-        var validMoves=loadMoves(kingPosition, new int[][]{{6, 5}});
+        var validMoves = loadMoves(kingPosition, new int[][]{{6, 5}});
 
         assertMoves(game, validMoves, kingPosition);
 
@@ -130,7 +130,7 @@ public class ValidMovesTests {
     @DisplayName("King Cannot Move Into Check")
     public void noPutSelfInDanger() {
 
-        var game=new ChessGame();
+        var game = new ChessGame();
         game.setBoard(loadBoard("""
                 | | | | | | | | |
                 | | | | | | | | |
@@ -142,8 +142,8 @@ public class ValidMovesTests {
                 | | | | | | | | |
                 """));
 
-        ChessPosition position=new ChessPosition(2, 6);
-        var validMoves=loadMoves(position, new int[][]{
+        ChessPosition position = new ChessPosition(2, 6);
+        var validMoves = loadMoves(position, new int[][]{
                 {1, 5}, {1, 6}, {1, 7}, {2, 5}, {2, 7},
         });
         assertMoves(game, validMoves, position);

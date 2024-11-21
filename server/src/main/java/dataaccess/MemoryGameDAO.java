@@ -9,10 +9,10 @@ import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     Map<Integer, GameData> gameList;
-    int gameId=0;
+    int gameId = 0;
 
     public MemoryGameDAO() {
-        gameList=new HashMap<>();
+        gameList = new HashMap<>();
     }
 
     @Override
