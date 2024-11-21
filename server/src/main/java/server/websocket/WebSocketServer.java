@@ -2,9 +2,10 @@ package server.websocket;
 
 import chess.ChessMove;
 import com.google.gson.*;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import spark.Spark;
 import websocket.commands.*;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -19,11 +20,14 @@ import java.lang.reflect.Type;
 public class WebSocketServer {
     private static Gson serializer;
     private final ConnectionManager connections = new ConnectionManager();
+    private final GameDAO gameDAO;
+    private final AuthDAO authDAO;
 
-    public static void main() {
+
+    public WebSocketServer(GameDAO gameDAO, AuthDAO authDAO) {
+        this.gameDAO=gameDAO;
+        this.authDAO = authDAO;
         gsonSetup();
-        Spark.port(8080);
-        Spark.webSocket("/ws", WebSocketServer.class);
     }
 
     private static void gsonSetup() {
@@ -46,8 +50,6 @@ public class WebSocketServer {
                 case MAKE_MOVE -> makeMove(username, (MakeMoveCommand) command);
                 case RESIGN -> resign(username);
             }
-
-
         } catch (Exception e) {
             session.getRemote().sendString("Error: unauthorized");
         }

@@ -1,16 +1,19 @@
 package server;
 
 import dataaccess.*;
+import server.websocket.WebSocketServer;
 import service.*;
 import handlers.*;
 import spark.*;
 
 import javax.xml.crypto.Data;
+import java.net.http.WebSocket;
 
 public class Server {
     private UserHandler userHandler;
     private GameHandler gameHandler;
     private DataHandler dataHandler;
+    private WebSocketServer webSocketServer;
 
     public Server() {
         createDatabase();
@@ -36,6 +39,8 @@ public class Server {
         userHandler=new UserHandler(userService);
         gameHandler=new GameHandler(gameService);
         dataHandler=new DataHandler(dataService);
+        webSocketServer = new WebSocketServer(gameData,authData);
+
     }
 
     public int run(int desiredPort) {
@@ -44,7 +49,6 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-
 
         setRoutes();
 
@@ -64,6 +68,7 @@ public class Server {
     }
 
     public void setRoutes() {
+        Spark.webSocket("/ws",webSocketServer);
         Spark.delete("/db", dataHandler::clear); //clear database
         Spark.post("/user", userHandler::register); //register
         Spark.post("/session", userHandler::login); //login
