@@ -12,6 +12,7 @@ import java.util.Collection;
 public class ChessGame {
     private ChessBoard chessboard = new ChessBoard();
     private TeamColor teamTurn = TeamColor.WHITE;
+    private boolean gameOver = false;
 
     public ChessGame() {
         chessboard.resetBoard();
@@ -85,8 +86,8 @@ public class ChessGame {
         //else return invalid move exception
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
         if (chessboard.pieceFound(move.getStartPosition()) &&
-                chessboard.getPiece(move.getStartPosition()).getTeamColor() == teamTurn &&
-                validMoves.contains(move)) {
+                (chessboard.getPiece(move.getStartPosition()).getTeamColor() == teamTurn) &&
+                validMoves.contains(move) && !gameOver) {
             chessboard.movePiece(move, chessboard.getPiece(move.getStartPosition()));
             if (teamTurn == TeamColor.BLACK) {
                 teamTurn = TeamColor.WHITE;
@@ -209,5 +210,13 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return chessboard;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 }

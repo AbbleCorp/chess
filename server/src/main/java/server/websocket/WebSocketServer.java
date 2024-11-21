@@ -53,7 +53,7 @@ public class WebSocketServer {
                 case CONNECT -> connect(command.getGameID(),username, session);
                 case LEAVE -> leave(command.getGameID(), username,session);
                 case MAKE_MOVE -> makeMove((MakeMoveCommand) command, username, session);
-                case RESIGN -> resign(username);
+                case RESIGN -> resign(command.getGameID(),username,session);
             } } else {
                 throw new Exception("Error: unauthorized.");
             }
@@ -163,6 +163,23 @@ public class WebSocketServer {
         return (game.getTeamTurn().equals(piece.getTeamColor())) && (playerColor.equals(teamTurn));
     }
 
+    private String gameStatusMessage(GameData gameData, String username) throws DataAccessException {
+        String statusMessage = null;
+        ChessGame game = gameData.game();
+        String playerColor = getPlayerColor(gameData.gameID(), username);
+        ChessGame.TeamColor teamColor = null;
+        if (playerColor.equals("white")) {teamColor = ChessGame.TeamColor.WHITE;}
+        else if (playerColor.equals("black")) {teamColor = ChessGame.TeamColor.BLACK;}
+        if (game.isInCheck(teamColor)) {
+            statusMessage = String.format("%s is in check.",username);
+        } else if (game.isInStalemate(teamColor)) {
+            statusMessage = "The game is at a stalemate.";
+        } else if (game.isInCheckmate(teamColor)) {
+            statusMessage = String.format("%s is in checkmate.");
+        }
+        return statusMessage;
+    }
+
     private void makeMove(MakeMoveCommand command, String username, Session session) throws DataAccessException, InvalidMoveException, IOException {
         ChessMove move = command.getMove();
         GameData gameData = gameDAO.getGame(command.getGameID());
@@ -181,10 +198,20 @@ public class WebSocketServer {
         String message = makeMoveString(username,move,piece);
         NotificationMessage notif = new NotificationMessage(message);
         broadcastToOthers(command.getGameID(),notif, session);
+        String statusMessage = gameStatusMessage(newGameData,username);
+        if (statusMessage != null) {
+            broadcastAll(command.getGameID(), new NotificationMessage(statusMessage));
+        }
     }
 
-    private void resign(String username) {
-        //TODO: implement
+    private void resign(int gameId, String username, Session session) throws DataAccessException, IOException {
+        GameData gameData = gameDAO.getGame(gameId);
+        ChessGame game = gameData.game();
+        game.setGameOver(true);
+        GameData newGameData = new GameData(gameId,gameData.whiteUsername(),gameData.blackUsername(), gameData.gameName(), game);
+        gameDAO.updateGame(gameId,newGameData);
+        NotificationMessage notif = new NotificationMessage(String.format("%s has resigned.",username));
+        broadcastAll(gameId,notif);
     }
 
     private static class GameCommandDeserializer implements JsonDeserializer<UserGameCommand> {
