@@ -72,10 +72,13 @@ public class WebSocketServer {
 
     private void broadcastToOthers(int gameId, ServerMessage message, Session session) throws IOException {
         for (var client : openGames.get(gameId)) {
-            if (client.isOpen() && !client.equals(session)) {
+            boolean clientOpen = client.isOpen();
+            if (clientOpen && !client.equals(session)) {
                 client.getRemote().sendString(serializer.toJson(message));
             }}
     }
+
+
 
 
     private String getPlayerColor(int gameID, String username) throws DataAccessException {
@@ -118,7 +121,6 @@ public class WebSocketServer {
 
     private void leave(int gameId, String username, Session session) throws DataAccessException, IOException {
         try {
-        openGames.get(gameId).remove(session);
         GameData game = gameDAO.getGame(gameId);
         GameData newGame = null;
         if (username.equals(game.whiteUsername())) {
@@ -128,7 +130,9 @@ public class WebSocketServer {
         }
         gameDAO.updateGame(gameId, newGame);
         NotificationMessage notification = new NotificationMessage(String.format("%s has left %s.",username,game.gameName()));
-        broadcastToOthers(gameId,notification,session); }
+        broadcastToOthers(gameId,notification,session);
+        openGames.get(gameId).remove(session);
+        }
         catch (Exception e){
             throw new DataAccessException("Error: game does not exist.");
         }
@@ -204,14 +208,30 @@ public class WebSocketServer {
         }
     }
 
+    private boolean validPlayer(GameData gameData, String username) {
+        return (username.equals(gameData.blackUsername()) || username.equals(gameData.whiteUsername()));
+    }
+
     private void resign(int gameId, String username, Session session) throws DataAccessException, IOException {
         GameData gameData = gameDAO.getGame(gameId);
         ChessGame game = gameData.game();
-        game.setGameOver(true);
+        try {
+            if (validPlayer(gameData,username) && !game.isGameOver()) {
+                game.setGameOver(true);
         GameData newGameData = new GameData(gameId,gameData.whiteUsername(),gameData.blackUsername(), gameData.gameName(), game);
         gameDAO.updateGame(gameId,newGameData);
         NotificationMessage notif = new NotificationMessage(String.format("%s has resigned.",username));
         broadcastAll(gameId,notif);
+            } else {
+                String message = "Error: ";
+                if (!validPlayer(gameData,username)) {message += "Observers cannot resign from the game.";}
+                else if (game.isGameOver()) {message += "The game has already ended.";}
+                throw new Exception(message);
+            }
+        }
+        catch (Exception e){
+            session.getRemote().sendString(serializer.toJson(new ErrorMessage(e.getMessage())));
+        }
     }
 
     private static class GameCommandDeserializer implements JsonDeserializer<UserGameCommand> {
