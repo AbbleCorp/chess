@@ -1,11 +1,11 @@
 package server.websocket;
 
-import chess.ChessMove;
+import chess.*;
 import com.google.gson.*;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
-import model.ErrorMessage;
+import websocket.messages.ErrorMessage;
 import model.GameData;
 import model.UserData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -19,16 +19,12 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //this one handles gameCommand, deserializes those
 @WebSocket
 public class WebSocketServer {
     private static Gson serializer;
-    private final ConnectionManager connections = new ConnectionManager();
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
     private Map<Integer, List<Session>> openGames = new HashMap<>();
@@ -52,11 +48,14 @@ public class WebSocketServer {
         try {
             UserGameCommand command = serializer.fromJson(message, UserGameCommand.class);
             String username = authDAO.getUsername(command.getAuthToken());
+            if (username != null) {
             switch (command.getCommandType()) {
                 case CONNECT -> connect(command.getGameID(),username, session);
-                case LEAVE -> leave(username);
-                case MAKE_MOVE -> makeMove(username, (MakeMoveCommand) command);
+                case LEAVE -> leave(command.getGameID(), username,session);
+                case MAKE_MOVE -> makeMove((MakeMoveCommand) command, username, session);
                 case RESIGN -> resign(username);
+            } } else {
+                throw new Exception("Error: unauthorized.");
             }
         } catch (Exception e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
@@ -100,14 +99,9 @@ public class WebSocketServer {
         }
     }
 
-    private void isValidGame(int gameID, Session session) throws IOException {
-        if (!gameDAO.listGames().contains(gameID)) {
-            session.getRemote().sendString(serializer.toJson(new ErrorMessage("Error: Game does not exist.")));
-        }
-    }
+
 
     private void connect(int gameId, String username, Session session) throws IOException, DataAccessException {
-        //isValidGame(gameId,session);
         try {
             addToOpenGames(gameId, session);
             String playerColor = getPlayerColor(gameId, username);
@@ -121,13 +115,72 @@ public class WebSocketServer {
         }
     }
 
-    private void leave(String username) {
-        //TODO: implement
+
+    private void leave(int gameId, String username, Session session) throws DataAccessException, IOException {
+        try {
+        openGames.get(gameId).remove(session);
+        GameData game = gameDAO.getGame(gameId);
+        GameData newGame = null;
+        if (username.equals(game.whiteUsername())) {
+            newGame = new GameData(gameId,null,game.blackUsername(),game.gameName(),game.game());
+        } else if (username.equals(game.blackUsername())) {
+            newGame = new GameData(gameId, game.whiteUsername(), null,game.gameName(),game.game());
+        }
+        gameDAO.updateGame(gameId, newGame);
+        NotificationMessage notification = new NotificationMessage(String.format("%s has left %s.",username,game.gameName()));
+        broadcastToOthers(gameId,notification,session); }
+        catch (Exception e){
+            throw new DataAccessException("Error: game does not exist.");
+        }
     }
 
-    private void makeMove(String username, MakeMoveCommand command) {
+    private String moveToString(ChessPosition pos) {
+        String posString = null;
+        switch (pos.getRow()) {
+            case 1 -> posString = "a" + pos.getColumn();
+            case 2 -> posString = "b" + pos.getColumn();
+            case 3 -> posString = "c" + pos.getColumn();
+            case 4 -> posString = "d" + pos.getColumn();
+            case 5 -> posString = "e" + pos.getColumn();
+            case 6 -> posString = "f" + pos.getColumn();
+            case 7 -> posString = "g" + pos.getColumn();
+            case 8 -> posString = "h" + pos.getColumn();
+        }
+        return posString;
+    }
+
+    private String makeMoveString(String username, ChessMove move, ChessPiece piece) {
+        String pieceType = piece.getPieceType().toString();
+        String startPos = moveToString(move.getStartPosition());
+        String endPos = moveToString(move.getEndPosition());
+        return String.format("%s has moved %s from %s to %s.", username, pieceType, startPos,endPos);
+    }
+
+    private boolean turnColorMatches(GameData gameData, ChessPiece piece, String username) throws DataAccessException {
+        ChessGame game = gameData.game();
+        String playerColor = getPlayerColor(gameData.gameID(),username);
+        String teamTurn = game.getTeamTurn().toString().toLowerCase();
+        return (game.getTeamTurn().equals(piece.getTeamColor())) && (playerColor.equals(teamTurn));
+    }
+
+    private void makeMove(MakeMoveCommand command, String username, Session session) throws DataAccessException, InvalidMoveException, IOException {
         ChessMove move = command.getMove();
-        //TODO: implement
+        GameData gameData = gameDAO.getGame(command.getGameID());
+        ChessGame game = gameData.game();
+        Collection<ChessMove> validMoves = game.validMoves(move.getStartPosition());
+        ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
+        if (validMoves.contains(move) && turnColorMatches(gameData,piece,username)) {
+            game.makeMove(move);
+        } else {
+            throw new InvalidMoveException("Error: Invalid Move");
+        }
+        GameData newGameData = new GameData(command.getGameID(),gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+        gameDAO.updateGame(command.getGameID(), newGameData);
+        LoadGameMessage loadGame = new LoadGameMessage(newGameData);
+        broadcastAll(command.getGameID(), loadGame);
+        String message = makeMoveString(username,move,piece);
+        NotificationMessage notif = new NotificationMessage(message);
+        broadcastToOthers(command.getGameID(),notif, session);
     }
 
     private void resign(String username) {

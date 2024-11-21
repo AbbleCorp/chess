@@ -25,10 +25,10 @@ public class UserHandler {
             return serializer.toJson(auth);
         } catch (DataAccessException e) {
             res.status(403);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         } catch (Exception e) {
             res.status(400);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         }
 
     }
@@ -41,10 +41,10 @@ public class UserHandler {
             return serializer.toJson(new LoginResult(auth.username(), auth.authToken()));
         } catch (DataAccessException e) {
             res.status(401);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         } catch (Exception e) {
             res.status(500);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         }
 
     }
@@ -57,10 +57,10 @@ public class UserHandler {
             return "{}";
         } catch (DataAccessException e) {
             res.status(401);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         } catch (Exception e) {
             res.status(500);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         }
     }
 }

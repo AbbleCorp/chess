@@ -25,10 +25,10 @@ public class GameHandler {
             return serializer.toJson(new ListGamesResult(gamesList));
         } catch (DataAccessException e) {
             res.status(401);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         } catch (Exception e) {
             res.status(500);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         }
     }
 
@@ -42,7 +42,7 @@ public class GameHandler {
             return serializer.toJson(gameID);
         } catch (DataAccessException e) {
             res.status(401);
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         } catch (Exception e) {
             return catchBadRequest(e, res);
         }
@@ -62,7 +62,7 @@ public class GameHandler {
             } else {
                 res.status(403);
             }
-            return serializer.toJson(new ErrorMessage(e.getMessage()));
+            return serializer.toJson(new ModelErrorMessage(e.getMessage()));
         } catch (Exception e) {
             return catchBadRequest(e, res);
         }
@@ -75,7 +75,7 @@ public class GameHandler {
         } else {
             res.status(500);
         }
-        return serializer.toJson(new ErrorMessage(e.getMessage()));
+        return serializer.toJson(new ModelErrorMessage(e.getMessage()));
     }
 
 }
