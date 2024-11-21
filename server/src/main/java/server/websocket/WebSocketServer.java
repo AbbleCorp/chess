@@ -5,6 +5,7 @@ import com.google.gson.*;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
+import model.ErrorMessage;
 import model.GameData;
 import model.UserData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -58,7 +59,8 @@ public class WebSocketServer {
                 case RESIGN -> resign(username);
             }
         } catch (Exception e) {
-            session.getRemote().sendString("Error: unauthorized");
+            ErrorMessage errorMessage = new ErrorMessage(e.getMessage());
+            session.getRemote().sendString(serializer.toJson(errorMessage));
         }
     }
 
@@ -98,14 +100,25 @@ public class WebSocketServer {
         }
     }
 
-    private void connect(int gameId, String username, Session session) throws IOException, DataAccessException {
-        addToOpenGames(gameId,session);
-        String playerColor = getPlayerColor(gameId,username);
-        var message = String.format("%s has joined the game as %s", username, playerColor);
-        var notification = new NotificationMessage(message);
-        broadcastToOthers(gameId,notification,session);
-        session.getRemote().sendString(serializer.toJson(new LoadGameMessage(gameDAO.getGame(gameId))));
+    private void isValidGame(int gameID, Session session) throws IOException {
+        if (!gameDAO.listGames().contains(gameID)) {
+            session.getRemote().sendString(serializer.toJson(new ErrorMessage("Error: Game does not exist.")));
+        }
+    }
 
+    private void connect(int gameId, String username, Session session) throws IOException, DataAccessException {
+        //isValidGame(gameId,session);
+        try {
+            addToOpenGames(gameId, session);
+            String playerColor = getPlayerColor(gameId, username);
+            var message = String.format("%s has joined the game as %s", username, playerColor);
+            var notification = new NotificationMessage(message);
+            broadcastToOthers(gameId, notification, session);
+            session.getRemote().sendString(serializer.toJson(new LoadGameMessage(gameDAO.getGame(gameId))));
+        }
+        catch (Exception e) {
+            throw new DataAccessException("Error: Game does not exist");
+        }
     }
 
     private void leave(String username) {
