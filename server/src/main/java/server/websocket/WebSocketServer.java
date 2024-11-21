@@ -1,12 +1,17 @@
 package server.websocket;
 
+import chess.ChessMove;
 import com.google.gson.*;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import spark.Spark;
 import websocket.commands.*;
 
-import javax.websocket.*;
+import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
+
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 //this one handles gameCommand, deserializes those
@@ -32,12 +37,14 @@ public class WebSocketServer {
     public void onMessage(Session session, String message) throws Exception {
         try {
             UserGameCommand command=serializer.fromJson(message, UserGameCommand.class);
-            //String username = getUsername(command.getAuthToken()); how to get username?
+            String username = "IMPLEMENT";
+            //TODO: find how to get username
+            // String username = getUsername(command.getAuthToken()); ?
             switch (command.getCommandType()) {
                 case CONNECT -> connect(username, session);
                 case LEAVE -> leave(username);
-                case MAKE_MOVE -> makeMove();
-                case RESIGN -> resign();
+                case MAKE_MOVE -> makeMove(username, (MakeMoveCommand) command);
+                case RESIGN -> resign(username);
             }
 
 
@@ -46,8 +53,26 @@ public class WebSocketServer {
         }
     }
 
-    private void connect(String username, Session session) {
+    private void connect(String username, Session session) throws IOException {
+        connections.add(username, session);
+        String playerColor = "IMPLEMENT";
+        //TODO: find way to get color?
+        var message = String.format("%s has joined the game as %s", username,playerColor);
+        var notification = new NotificationMessage(message);
+        connections.broadcast(username,notification);
+    }
 
+    private void leave(String username) {
+        //TODO: implement
+    }
+
+    private void makeMove(String username, MakeMoveCommand command) {
+        ChessMove move = command.getMove();
+        //TODO: implement
+    }
+
+    private void resign(String username) {
+        //TODO: implement
     }
 
     private static class GameCommandDeserializer implements JsonDeserializer<UserGameCommand> {
