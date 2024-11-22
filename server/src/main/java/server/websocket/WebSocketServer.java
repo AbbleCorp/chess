@@ -108,7 +108,7 @@ public class WebSocketServer {
         try {
             addToOpenGames(gameId, session);
             String playerColor = getPlayerColor(gameId, username);
-            var message = String.format("%s has joined the game as %s", username, playerColor);
+            var message = String.format("%s has joined the game as %s.", username, playerColor);
             var notification = new NotificationMessage(message);
             broadcastToOthers(gameId, notification, session);
             session.getRemote().sendString(serializer.toJson(new LoadGameMessage(gameDAO.getGame(gameId))));

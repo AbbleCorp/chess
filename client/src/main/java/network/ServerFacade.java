@@ -88,4 +88,8 @@ public class ServerFacade {
         webSocketComm.sendMessage(new LeaveCommand(authToken,gameId));
     }
 
+    public void resign(String authToken, int gameId) throws Exception {
+        webSocketComm.sendMessage(new ResignCommand(authToken,gameId));
+    }
+
 }

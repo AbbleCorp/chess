@@ -166,14 +166,6 @@ public class Client implements ServerMessageObserver {
         }
     }
 
-    private void printBoards() {
-        ChessGame game = new ChessGame();
-        game.getBoard().resetBoard();
-        Board board = new Board(game);
-        board.drawBoard("WHITE");
-        board.drawBoard("BLACK");
-        postLoginMenu();
-    }
 
     private void validGame(Integer gameId) {
         if (gameId == null) {
@@ -250,6 +242,7 @@ public class Client implements ServerMessageObserver {
         Integer gameId = Integer.parseInt(scanner.next());
         validGame(gameId);
         System.out.println("You are now observing " + gameList.get(gameId).gameName() + ".");
+        gamePlayMenu();
     }
 
     private void listGames() {
@@ -394,7 +387,22 @@ public class Client implements ServerMessageObserver {
     }
 
     private void resign() {
-        //TODO: implement
+        System.out.println("Are you sure you want to resign? Y/N: ");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.next();
+        if (!input.equals("Y") && !input.equals("N")) {
+            System.out.println("Please enter valid input.");
+            gamePlayMenu();
+        }
+        if (input.equals("Y")) {
+            try {
+                serverFacade.resign(authToken, currentGame.gameID());
+            } catch (Exception e) {
+                System.out.println("Error caught at Client.resign");
+            }
+        } else if (input.equals("N")) {
+            gamePlayMenu();
+        }
     }
 
     private void helpGamePlay() {
