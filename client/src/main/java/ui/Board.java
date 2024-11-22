@@ -37,7 +37,6 @@ public class Board {
         drawBoardSquares(color);
         drawHeader(color);
         newLine();
-        newLine();
     }
 
 
@@ -54,7 +53,6 @@ public class Board {
         drawHeader(color);
         drawHighlightedSquares(color,pos);
         drawHeader(color);
-        newLine();
         newLine();
     }
 

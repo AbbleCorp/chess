@@ -95,7 +95,13 @@ public class ChessGame {
                 teamTurn = TeamColor.BLACK;
             }
         } else {
-            throw new InvalidMoveException("Illegal Move");
+            String message = "Illegal Move";
+            if (gameOver) {
+                message = "The game is over.";
+            } else if (chessboard.getPiece(move.getStartPosition()).getTeamColor() != teamTurn){
+                message = "It is not your turn.";
+            }
+            throw new InvalidMoveException(message);
         }
     }
 
@@ -158,7 +164,9 @@ public class ChessGame {
         //iterate through board, find moves that teamColor could do
         //if empty, and isInCheck is true, then return true
         boolean hasMoves = teamHasMoves(teamColor);
-        return isInCheck(teamColor) && !hasMoves;
+        boolean checkmate = isInCheck(teamColor) && !hasMoves;
+        if (checkmate) {gameOver = true;}
+        return checkmate;
     }
 
     private boolean teamHasMoves(TeamColor teamColor) {
@@ -188,7 +196,9 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         //check for valid moves
         boolean hasMoves = teamHasMoves(teamColor);
-        return !isInCheck(teamColor) && !hasMoves;
+        boolean stalemate = !isInCheck(teamColor) && !hasMoves;
+        if (stalemate) {gameOver = true;}
+        return stalemate;
         //if not in check and validMoves returns empty
     }
 

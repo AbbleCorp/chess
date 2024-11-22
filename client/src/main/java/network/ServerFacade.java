@@ -1,5 +1,6 @@
 package network;
 
+import chess.ChessMove;
 import model.*;
 import ui.ServerMessageObserver;
 import websocket.commands.*;
@@ -94,6 +95,10 @@ public class ServerFacade {
 
     public void observe(String authToken, int gameId, ConnectCommand.JoinType joinType) throws Exception {
         webSocketComm.sendMessage(new ConnectCommand(authToken, gameId, joinType));
+    }
+
+    public void makeMove(String authToken, int gameId, ChessMove move) throws Exception {
+        webSocketComm.sendMessage(new MakeMoveCommand(authToken,gameId,move));
     }
 
 }

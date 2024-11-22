@@ -1,9 +1,8 @@
 package ui;
 
 import static ui.EscapeSequences.*;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+
+import chess.*;
 import model.*;
 import network.ResponseException;
 import network.ServerFacade;
@@ -367,6 +366,29 @@ public class Client implements ServerMessageObserver {
         return promotionEligible;
     }
 
+    private ChessPiece.PieceType getPromoPieceType() {
+        String[] promoOptions = {"1 - Queen","2 - Bishop", "3 - Knight", "4 - Rook"};
+        System.out.println("This piece is eligible for promotion. Enter the number corresponding to the " +
+                "piece you would like to promote it to:");
+        for (String option : promoOptions) {
+            System.out.println(option);
+        }
+        Scanner scanner = new Scanner(System.in);
+        String pieceInt = scanner.next();
+        ChessPiece.PieceType pieceType = null;
+        if ("1234".contains(pieceInt)) {
+            switch (pieceInt) {
+                case "1" -> pieceType = ChessPiece.PieceType.QUEEN;
+                case "2" -> pieceType = ChessPiece.PieceType.BISHOP;
+                case "3" -> pieceType = ChessPiece.PieceType.KNIGHT;
+                case "4" -> pieceType = ChessPiece.PieceType.ROOK;
+            }
+        } else {
+            System.out.println("Please enter valid input.");
+            gamePlayMenu();
+        }
+        return pieceType;
+    }
 
     private void makeMove() {
         if (joinType == OBSERVER) {
@@ -380,8 +402,20 @@ public class Client implements ServerMessageObserver {
         System.out.print("Enter coordinates of where you would like to move the piece to (e.g. a3): ");
         String endPosString = scanner.next();
         ChessPosition endPos = parsePosition(endPosString);
-
-
+        ChessPiece.PieceType promotionPiece = null;
+        if (isPromotionEligible(startPos,endPos)) {
+            promotionPiece = getPromoPieceType();
+        }
+        ChessMove move = new ChessMove(startPos,endPos,promotionPiece);
+        try {
+            serverFacade.makeMove(authToken, currentGame.gameID(), move);
+            gamePlayMenu();
+        } catch (InvalidMoveException e) {
+            displayError(e.getMessage());
+        }
+        catch (Exception e) {
+            displayError("Error caught in Client.makeMove: " + e.getMessage());
+        }
     }
 
     private ChessPosition parsePosition(String coord) {

@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import static chess.ChessGame.TeamColor.WHITE;
+import static chess.ChessGame.TeamColor.BLACK;
+
 //this one handles gameCommand, deserializes those
 @WebSocket
 public class WebSocketServer {
@@ -150,14 +153,14 @@ public class WebSocketServer {
     private String moveToString(ChessPosition pos) {
         String posString = null;
         switch (pos.getRow()) {
-            case 1 -> posString = "a" + pos.getColumn();
-            case 2 -> posString = "b" + pos.getColumn();
-            case 3 -> posString = "c" + pos.getColumn();
-            case 4 -> posString = "d" + pos.getColumn();
-            case 5 -> posString = "e" + pos.getColumn();
-            case 6 -> posString = "f" + pos.getColumn();
-            case 7 -> posString = "g" + pos.getColumn();
-            case 8 -> posString = "h" + pos.getColumn();
+            case 8 -> posString = "a" + pos.getColumn();
+            case 7 -> posString = "b" + pos.getColumn();
+            case 6 -> posString = "c" + pos.getColumn();
+            case 5 -> posString = "d" + pos.getColumn();
+            case 4 -> posString = "e" + pos.getColumn();
+            case 3 -> posString = "f" + pos.getColumn();
+            case 2 -> posString = "g" + pos.getColumn();
+            case 1 -> posString = "h" + pos.getColumn();
         }
         return posString;
     }
@@ -166,13 +169,13 @@ public class WebSocketServer {
         String pieceType = piece.getPieceType().toString();
         String startPos = moveToString(move.getStartPosition());
         String endPos = moveToString(move.getEndPosition());
-        return String.format("%s has moved %s from %s to %s.", username, pieceType, startPos,endPos);
+        return String.format("%s has moved their %s from %s to %s.", username, pieceType.toLowerCase(), startPos,endPos);
     }
 
     private boolean turnColorMatches(GameData gameData, ChessPiece piece, String username) throws DataAccessException {
         ChessGame game = gameData.game();
         String playerColor = getPlayerColor(gameData.gameID(),username);
-        String teamTurn = game.getTeamTurn().toString().toLowerCase();
+        String teamTurn = game.getTeamTurn().toString();
         return (game.getTeamTurn().equals(piece.getTeamColor())) && (playerColor.equals(teamTurn));
     }
 
@@ -181,13 +184,18 @@ public class WebSocketServer {
         ChessGame game = gameData.game();
         String playerColor = getPlayerColor(gameData.gameID(), username);
         ChessGame.TeamColor teamColor = null;
-        if (playerColor.equals("white")) {teamColor = ChessGame.TeamColor.WHITE;}
-        else if (playerColor.equals("black")) {teamColor = ChessGame.TeamColor.BLACK;}
-        if (game.isInCheck(teamColor)) {
+        ChessGame.TeamColor otherTeamColor = null;
+        if (playerColor.equals("WHITE")) {
+            teamColor = WHITE;
+            otherTeamColor = BLACK;}
+        else if (playerColor.equals("BLACK")) {
+            teamColor = BLACK;
+            otherTeamColor = WHITE;}
+        if (game.isInCheck(otherTeamColor)) {
             statusMessage = String.format("%s is in check.",username);
-        } else if (game.isInStalemate(teamColor)) {
+        } else if (game.isInStalemate(otherTeamColor)) {
             statusMessage = "The game is at a stalemate.";
-        } else if (game.isInCheckmate(teamColor)) {
+        } else if (game.isInCheckmate(otherTeamColor)) {
             statusMessage = String.format("%s is in checkmate.");
         }
         return statusMessage;
@@ -199,7 +207,7 @@ public class WebSocketServer {
         ChessGame game = gameData.game();
         Collection<ChessMove> validMoves = game.validMoves(move.getStartPosition());
         ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
-        if (validMoves.contains(move) && turnColorMatches(gameData,piece,username)) {
+        if (validMoves.contains(move)) {
             game.makeMove(move);
         } else {
             throw new InvalidMoveException("Error: Invalid Move");
