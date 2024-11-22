@@ -2,7 +2,7 @@ package network;
 
 import model.*;
 import ui.ServerMessageObserver;
-import websocket.commands.ConnectCommand;
+import websocket.commands.*;
 
 import javax.websocket.DeploymentException;
 import java.io.IOException;
@@ -84,5 +84,8 @@ public class ServerFacade {
         }
     }
 
+    public void leave(String authToken, int gameId) throws Exception {
+        webSocketComm.sendMessage(new LeaveCommand(authToken,gameId));
+    }
 
 }

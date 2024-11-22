@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import static websocket.commands.ConnectCommand.JoinType.OBSERVER;
 import static websocket.commands.ConnectCommand.JoinType.PLAYER;
 
 public class Client implements ServerMessageObserver {
@@ -249,7 +250,6 @@ public class Client implements ServerMessageObserver {
         Integer gameId = Integer.parseInt(scanner.next());
         validGame(gameId);
         System.out.println("You are now observing " + gameList.get(gameId).gameName() + ".");
-        printBoards();
     }
 
     private void listGames() {
@@ -385,7 +385,12 @@ public class Client implements ServerMessageObserver {
     }
 
     private void leaveGame() {
-        //TODO: implement
+        try {
+        serverFacade.leave(authToken,currentGame.gameID());
+        postLoginMenu(); }
+        catch (Exception e) {
+            displayError("Threw error in Client.leaveGame");
+        }
     }
 
     private void resign() {

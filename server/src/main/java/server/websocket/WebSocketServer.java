@@ -84,10 +84,10 @@ public class WebSocketServer {
     private String getPlayerColor(int gameID, String username) throws DataAccessException {
         GameData game = gameDAO.getGame(gameID);
         String playerColor = "";
-        if (game.whiteUsername().equals(username)) {
-            playerColor = "white";
-        } else if (game.blackUsername().equals(username)) {
-            playerColor = "black";
+        if (username.equals(game.whiteUsername())) {
+            playerColor = "WHITE";
+        } else if (username.equals(game.blackUsername())) {
+            playerColor = "BLACK";
         }
         return playerColor;
     }
@@ -113,8 +113,11 @@ public class WebSocketServer {
             broadcastToOthers(gameId, notification, session);
             session.getRemote().sendString(serializer.toJson(new LoadGameMessage(gameDAO.getGame(gameId))));
         }
-        catch (Exception e) {
+        catch (DataAccessException e) {
             throw new DataAccessException("Error: Game does not exist");
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -135,7 +138,7 @@ public class WebSocketServer {
         openGames.get(gameId).remove(session);
         }
         catch (Exception e){
-            throw new DataAccessException("Error: game does not exist.");
+            throw new DataAccessException("Error: game does not exist. (caught at WSS.leave)");
         }
     }
 
