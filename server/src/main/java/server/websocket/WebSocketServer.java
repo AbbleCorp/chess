@@ -50,7 +50,7 @@ public class WebSocketServer {
             String username = authDAO.getUsername(command.getAuthToken());
             if (username != null) {
             switch (command.getCommandType()) {
-                case CONNECT -> connect(command.getGameID(),username, session);
+                case CONNECT -> connect(command.getGameID(),username, session, (ConnectCommand) command);
                 case LEAVE -> leave(command.getGameID(), username,session);
                 case MAKE_MOVE -> makeMove((MakeMoveCommand) command, username, session);
                 case RESIGN -> resign(command.getGameID(),username,session);
@@ -104,11 +104,16 @@ public class WebSocketServer {
 
 
 
-    private void connect(int gameId, String username, Session session) throws IOException, DataAccessException {
+    private void connect(int gameId, String username, Session session, ConnectCommand command) throws IOException, DataAccessException {
         try {
             addToOpenGames(gameId, session);
+            String message = null;
+            if (command.getJoinType() == ConnectCommand.JoinType.PLAYER) {
             String playerColor = getPlayerColor(gameId, username);
-            var message = String.format("%s has joined the game as %s.", username, playerColor);
+            message = String.format("%s has joined the game as %s.", username, playerColor); }
+            else if (command.getJoinType() == ConnectCommand.JoinType.OBSERVER) {
+                message = String.format("%s is observing the game.",username);
+            }
             var notification = new NotificationMessage(message);
             broadcastToOthers(gameId, notification, session);
             session.getRemote().sendString(serializer.toJson(new LoadGameMessage(gameDAO.getGame(gameId))));

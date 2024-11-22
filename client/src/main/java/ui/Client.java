@@ -241,7 +241,15 @@ public class Client implements ServerMessageObserver {
         Scanner scanner = new Scanner(System.in);
         Integer gameId = Integer.parseInt(scanner.next());
         validGame(gameId);
+        currentGame = gameList.get(gameId);
         System.out.println("You are now observing " + gameList.get(gameId).gameName() + ".");
+        playerColor = "WHITE";
+        try {
+        serverFacade.observe(authToken,gameId,OBSERVER); }
+        catch (Exception e){
+            displayError("Error caught Client.observeGame");
+        }
+        //loadGame(currentGame);
         gamePlayMenu();
     }
 
@@ -397,6 +405,7 @@ public class Client implements ServerMessageObserver {
         if (input.equals("Y")) {
             try {
                 serverFacade.resign(authToken, currentGame.gameID());
+                gamePlayMenu();
             } catch (Exception e) {
                 System.out.println("Error caught at Client.resign");
             }

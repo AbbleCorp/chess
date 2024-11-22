@@ -92,4 +92,8 @@ public class ServerFacade {
         webSocketComm.sendMessage(new ResignCommand(authToken,gameId));
     }
 
+    public void observe(String authToken, int gameId, ConnectCommand.JoinType joinType) throws Exception {
+        webSocketComm.sendMessage(new ConnectCommand(authToken, gameId, joinType));
+    }
+
 }
