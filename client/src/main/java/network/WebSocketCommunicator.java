@@ -23,6 +23,16 @@ public class WebSocketCommunicator extends Endpoint {
     }
 
 
+    public void onMessage(String message) {
+        try {
+            ServerMessage serverMessage = serializer.fromJson(message, ServerMessage.class);
+            SMO.notify(serverMessage);
+        }
+        catch (Exception e) {
+            SMO.notify(new ErrorMessage(e.getMessage()));
+        }
+    }
+
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
 

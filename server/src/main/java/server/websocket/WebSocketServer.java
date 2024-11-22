@@ -125,10 +125,11 @@ public class WebSocketServer {
         GameData newGame = null;
         if (username.equals(game.whiteUsername())) {
             newGame = new GameData(gameId,null,game.blackUsername(),game.gameName(),game.game());
+            gameDAO.updateGame(gameId, newGame);
         } else if (username.equals(game.blackUsername())) {
             newGame = new GameData(gameId, game.whiteUsername(), null,game.gameName(),game.game());
+            gameDAO.updateGame(gameId, newGame);
         }
-        gameDAO.updateGame(gameId, newGame);
         NotificationMessage notification = new NotificationMessage(String.format("%s has left %s.",username,game.gameName()));
         broadcastToOthers(gameId,notification,session);
         openGames.get(gameId).remove(session);
