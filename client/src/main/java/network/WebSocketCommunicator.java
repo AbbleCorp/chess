@@ -29,6 +29,7 @@ public class WebSocketCommunicator extends Endpoint {
         this.session = container.connectToServer(this, uri);
 
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+            @Override
             public void onMessage(String message) {
                 try {
                     ServerMessage serverMessage = serializer.fromJson(message, ServerMessage.class);

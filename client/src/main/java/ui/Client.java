@@ -1,6 +1,6 @@
 package ui;
 
-import chess.ChessBoard;
+import static ui.EscapeSequences.*;
 import chess.ChessGame;
 import chess.ChessPosition;
 import model.*;
@@ -240,7 +240,6 @@ public class Client implements ServerMessageObserver {
             }
             postLoginMenu();
         }
-        printBoards();
     }
 
 
@@ -403,15 +402,20 @@ public class Client implements ServerMessageObserver {
     }
 
     private void displayNotification(String message) {
-        //TODO: implement
+        System.out.println();
+        System.out.println(message);
     }
 
     private void displayError(String message) {
-        //TODO: implement
+        System.out.println();
+        System.out.print(SET_TEXT_COLOR_RED);
+        System.out.println(message);
+        System.out.print(RESET_TEXT_COLOR);
     }
 
     private void loadGame(GameData game) {
-        //TODO: implement - what does this do?
+        Board board = new Board(game.game());
+        board.drawBoard(playerColor);
     }
 
     @Override
