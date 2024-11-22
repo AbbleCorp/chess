@@ -381,6 +381,7 @@ public class Client implements ServerMessageObserver {
         String endPosString = scanner.next();
         ChessPosition endPos = parsePosition(endPosString);
 
+
     }
 
     private ChessPosition parsePosition(String coord) {
