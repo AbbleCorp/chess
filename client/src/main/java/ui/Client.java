@@ -346,6 +346,7 @@ public class Client implements ServerMessageObserver {
     private void redrawChessboard() {
         Board board = new Board(currentGame.game());
         board.drawBoard(playerColor);
+        gamePlayMenu();
     }
 
     private void makeMove() {
@@ -354,8 +355,8 @@ public class Client implements ServerMessageObserver {
 
     private ChessPosition parsePosition(String coord) {
         String alphaChar = coord.substring(0, 1);
-        int intChar = Integer.parseInt(coord.substring(1));
-        if (!"abcdefgh".contains(alphaChar) || (intChar < 0) || (intChar > 8)) {
+        int row = Integer.parseInt(coord.substring(1));
+        if (!"abcdefgh".contains(alphaChar) || (row < 0) || (row > 8)) {
             System.out.println("Please enter valid coordinates.");
             gamePlayMenu();
         }
@@ -370,7 +371,7 @@ public class Client implements ServerMessageObserver {
             case "g" -> x = 7;
             case "h" -> x = 8;
         }
-        return new ChessPosition(x, intChar);
+        return new ChessPosition(row, x);
     }
 
     private void highlightLegalMoves() {
@@ -378,7 +379,9 @@ public class Client implements ServerMessageObserver {
         Scanner scanner = new Scanner(System.in);
         String coord = scanner.next();
         ChessPosition pos = parsePosition(coord);
-        //TODO: implement
+        Board board = new Board(currentGame.game());
+        board.highlightLegalMoves(playerColor,pos);
+        gamePlayMenu();
     }
 
     private void leaveGame() {

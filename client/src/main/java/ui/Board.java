@@ -32,6 +32,7 @@ public class Board {
     }
 
     public void drawBoard(String color) {
+        newLine();
         drawHeader(color);
         drawBoardSquares(color);
         drawHeader(color);
@@ -49,6 +50,7 @@ public class Board {
 
     public void highlightLegalMoves(String color, ChessPosition pos) {
         setValidMoves(pos);
+        newLine();
         drawHeader(color);
         drawHighlightedSquares(color,pos);
         drawHeader(color);
@@ -126,7 +128,9 @@ public class Board {
         } else if ((pos.getRow() == i) && (pos.getColumn()==j)) {
             setYellow();
         } else {
-        out.print(SET_BG_COLOR_LIGHT_GREY); }
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(RESET_TEXT_BOLD_FAINT);
+        }
         out.print(printPiece(i - 1, j - 1));
 
     }
@@ -137,7 +141,8 @@ public class Board {
         } else if ((pos.getRow() == i) && (pos.getColumn()==j)) {
             setYellow();
         } else {
-        out.print(SET_BG_COLOR_DARK_GREY); }
+        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(RESET_TEXT_BOLD_FAINT); }
         out.print(printPiece(i - 1, j - 1));
     }
 
