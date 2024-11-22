@@ -2,10 +2,12 @@ package ui;
 
 import static ui.EscapeSequences.*;
 import chess.ChessGame;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import model.*;
 import network.ResponseException;
 import network.ServerFacade;
+import websocket.commands.ConnectCommand;
 import websocket.messages.*;
 import websocket.messages.ErrorMessage;
 
@@ -25,6 +27,7 @@ public class Client implements ServerMessageObserver {
     private final Map<Integer, GameData> gameList = new HashMap<>();
     private String playerColor;
     private GameData currentGame;
+    ConnectCommand.JoinType joinType = null;
 
     public Client() throws ResponseException, DeploymentException, URISyntaxException, IOException {
         serverFacade = new ServerFacade(this);
@@ -219,6 +222,7 @@ public class Client implements ServerMessageObserver {
         }
         try {
             serverFacade.joinGame(new JoinGameRequest(authToken, playerColor, gameId), PLAYER);
+            joinType = PLAYER;
             currentGame = gameList.get(gameId);
             System.out.println("You have joined " + gameList.get(gameId).gameName() + " as " + playerColor + ".");
             this.playerColor = playerColor;
@@ -245,7 +249,9 @@ public class Client implements ServerMessageObserver {
         System.out.println("You are now observing " + gameList.get(gameId).gameName() + ".");
         playerColor = "WHITE";
         try {
-        serverFacade.observe(authToken,gameId,OBSERVER); }
+        serverFacade.observe(authToken,gameId,OBSERVER);
+        joinType = OBSERVER;
+        }
         catch (Exception e){
             displayError("Error caught Client.observeGame");
         }
@@ -350,8 +356,31 @@ public class Client implements ServerMessageObserver {
         gamePlayMenu();
     }
 
+    private boolean isPromotionEligible(ChessPosition start, ChessPosition end) {
+        boolean promotionEligible = false;
+        if (currentGame.game().getBoard().getPiece(start) != null &&
+                currentGame.game().getBoard().getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN) {
+            if (end.getRow() == 1 || end.getRow() == 8) {
+                promotionEligible = true;
+            }
+    }
+        return promotionEligible;
+    }
+
+
     private void makeMove() {
-        //TODO: implement
+        if (joinType == OBSERVER) {
+            displayError("Observers cannot move pieces.");
+            gamePlayMenu();
+        }
+        System.out.print("Enter coordinates of the piece you would like to move (e.g. a2): ");
+        Scanner scanner = new Scanner(System.in);
+        String startPosString = scanner.next();
+        ChessPosition startPos = parsePosition(startPosString);
+        System.out.print("Enter coordinates of where you would like to move the piece to (e.g. a3): ");
+        String endPosString = scanner.next();
+        ChessPosition endPos = parsePosition(endPosString);
+
     }
 
     private ChessPosition parsePosition(String coord) {
@@ -388,6 +417,7 @@ public class Client implements ServerMessageObserver {
     private void leaveGame() {
         try {
         serverFacade.leave(authToken,currentGame.gameID());
+        joinType = null;
         postLoginMenu(); }
         catch (Exception e) {
             displayError("Threw error in Client.leaveGame");
