@@ -27,7 +27,6 @@ public class Board {
 
     public void main(String[] args) {
         out.print(ERASE_SCREEN);
-
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
     }
@@ -53,6 +52,8 @@ public class Board {
         drawHeader(color);
         drawHighlightedSquares(color,pos);
         drawHeader(color);
+        newLine();
+        newLine();
     }
 
 
@@ -245,8 +246,13 @@ public class Board {
 
 
     void newLine() {
-        out.print(RESET_BG_COLOR);
+        resetColor();
         out.println();
+    }
+
+    void resetColor() {
+        out.print(RESET_BG_COLOR);
+        out.print(RESET_TEXT_COLOR);
     }
 
     void setDarkGreen() {

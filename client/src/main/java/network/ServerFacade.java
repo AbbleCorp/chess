@@ -2,14 +2,19 @@ package network;
 
 import model.*;
 import ui.ServerMessageObserver;
+import websocket.commands.ConnectCommand;
+
+import javax.websocket.DeploymentException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class ServerFacade {
     private HttpCommunicator clientComm;
-    private WebSocketCommunicator WebSocketComm;
+    private WebSocketCommunicator webSocketComm;
 
-    public ServerFacade(ServerMessageObserver SMO) throws ResponseException {
+    public ServerFacade(ServerMessageObserver SMO) throws ResponseException, DeploymentException, URISyntaxException, IOException {
         clientComm = new HttpCommunicator("http://localhost:8080");
-        WebSocketComm = new WebSocketCommunicator(SMO);
+        webSocketComm = new WebSocketCommunicator(SMO);
     }
 
     public ServerFacade(int port) {
@@ -59,7 +64,7 @@ public class ServerFacade {
         }
     }
 
-    public void joinGame(JoinGameRequest req) throws Exception {
+    public void joinGame(JoinGameRequest req, ConnectCommand.JoinType joinType) throws Exception {
         try {
             clientComm.makeRequestWithBoth("PUT", "/game", req, req.getAuthorization(), JoinGameResult.class);
         } catch (Exception e) {
@@ -70,6 +75,12 @@ public class ServerFacade {
             } else if (e.getMessage().contains("403")) {
                 throw new Exception("failure: 403");
             }
+        }
+        try {
+            webSocketComm.sendMessage(new ConnectCommand(req.getAuthorization(), req.getGameID(), joinType));
+        }
+        catch (Exception e){
+            throw new Exception("failure: caught at joinGame websocket");
         }
     }
 

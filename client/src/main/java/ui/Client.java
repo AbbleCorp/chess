@@ -9,9 +9,14 @@ import network.ServerFacade;
 import websocket.messages.*;
 import websocket.messages.ErrorMessage;
 
+import javax.websocket.DeploymentException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import static websocket.commands.ConnectCommand.JoinType.PLAYER;
 
 public class Client implements ServerMessageObserver {
     private String authToken;
@@ -20,7 +25,7 @@ public class Client implements ServerMessageObserver {
     private String playerColor;
     private GameData currentGame;
 
-    public Client() throws ResponseException {
+    public Client() throws ResponseException, DeploymentException, URISyntaxException, IOException {
         serverFacade = new ServerFacade(this);
     }
 
@@ -220,7 +225,7 @@ public class Client implements ServerMessageObserver {
             postLoginMenu();
         }
         try {
-            serverFacade.joinGame(new JoinGameRequest(authToken, playerColor, gameId));
+            serverFacade.joinGame(new JoinGameRequest(authToken, playerColor, gameId), PLAYER);
             currentGame = gameList.get(gameId);
             System.out.println("You have joined " + gameList.get(gameId).gameName() + " as " + playerColor + ".");
             this.playerColor = playerColor;

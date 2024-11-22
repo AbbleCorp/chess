@@ -9,29 +9,47 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
+import java.awt.*;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 //this one opens the connection, handles server messages
 public class WebSocketCommunicator extends Endpoint {
     private ServerMessageObserver SMO;
     private Gson serializer;
+    public Session session;
 
-
-    public WebSocketCommunicator(ServerMessageObserver SMO) throws ResponseException {
+    public WebSocketCommunicator(ServerMessageObserver SMO) throws ResponseException, URISyntaxException, DeploymentException, IOException {
         this.SMO = SMO;
         gsonSetup();
+        URI uri = new URI("ws://localhost:8080/ws");
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        this.session = container.connectToServer(this, uri);
+
+        this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+            public void onMessage(String message) {
+                try {
+                    ServerMessage serverMessage = serializer.fromJson(message, ServerMessage.class);
+                    SMO.notify(serverMessage);
+                }
+                catch (Exception e) {
+                    SMO.notify(new ErrorMessage(e.getMessage()));
+                }
+            }
+        });
     }
 
-
-    public void onMessage(String message) {
-        try {
-            ServerMessage serverMessage = serializer.fromJson(message, ServerMessage.class);
-            SMO.notify(serverMessage);
-        }
-        catch (Exception e) {
-            SMO.notify(new ErrorMessage(e.getMessage()));
-        }
+    private void send(String msg) throws Exception {
+        this.session.getBasicRemote().sendText(msg);
     }
+
+    public void sendMessage(UserGameCommand command) throws Exception {
+        String message = serializer.toJson(command);
+        send(message);
+    }
+
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
