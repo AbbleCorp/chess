@@ -188,25 +188,33 @@ public class WebSocketServer {
         return (game.getTeamTurn().equals(piece.getTeamColor())) && (playerColor.equals(teamTurn));
     }
 
+    private String getOtherPlayer(GameData gameData, String playerColor) {
+        String otherPlayer = null;
+        if (playerColor.equals("WHITE")) {otherPlayer = gameData.blackUsername();}
+        else if (playerColor.equals("BLACK")) {otherPlayer = gameData.whiteUsername();}
+        return otherPlayer;
+    }
+
     private String gameStatusMessage(GameData gameData, String username) throws DataAccessException {
         String statusMessage = null;
         ChessGame game = gameData.game();
         String playerColor = getPlayerColor(gameData.gameID(), username);
-        ChessGame.TeamColor teamColor = null;
         ChessGame.TeamColor otherTeamColor = null;
+        String otherUser = getOtherPlayer(gameData,playerColor);
         if (playerColor.equals("WHITE")) {
-            teamColor = WHITE;
             otherTeamColor = BLACK;}
         else if (playerColor.equals("BLACK")) {
-            teamColor = BLACK;
             otherTeamColor = WHITE;}
-        if (game.isInCheck(otherTeamColor)) {
-            statusMessage = String.format("%s is in check.",username);
-        } else if (game.isInStalemate(otherTeamColor)) {
+        if (game.isInStalemate(otherTeamColor)) {
             statusMessage = "The game is at a stalemate.";
+            gameData.game().setGameOver(true);
+            gameDAO.updateGame(gameData.gameID(), gameData);
         } else if (game.isInCheckmate(otherTeamColor)) {
-            statusMessage = String.format("%s is in checkmate.");
-        }
+            statusMessage = String.format("%s is in checkmate.",otherUser);
+            gameData.game().setGameOver(true);
+            gameDAO.updateGame(gameData.gameID(), gameData);
+        } else if (game.isInCheck(otherTeamColor)) {
+            statusMessage = String.format("%s is in check.",otherUser); }
         return statusMessage;
     }
 
@@ -230,12 +238,20 @@ public class WebSocketServer {
             broadcastAll(command.getGameID(), new NotificationMessage(statusMessage));
         } } else {
             String message = null;
-            if (validMoves == null || !validMoves.contains(move)) {message = "Invalid move.";}
+            if (isInCheckmateOrStalemate(game)) {message = "The game is already over.";}
+            else if (validMoves == null || !validMoves.contains(move)) {message = "Invalid move.";}
             else if (!isPlayer(command.getGameID(),username)) { message = "Observers cannot move pieces."; }
             else if (!turnColorMatches(gameData,game.getBoard().getPiece(move.getStartPosition()),username)) {message = "It is not your turn."; }
             session.getRemote().sendString(serializer.toJson(new ErrorMessage(message)));
+        }}
+
+        private boolean isInCheckmateOrStalemate(ChessGame game) {
+            return (game.isInCheckmate(WHITE) || game.isInStalemate(WHITE)
+                    || game.isInCheckmate(BLACK) || game.isInStalemate(BLACK));
         }
-    }
+
+
+
 
     private boolean validPlayer(GameData gameData, String username) {
         return (username.equals(gameData.blackUsername()) || username.equals(gameData.whiteUsername()));

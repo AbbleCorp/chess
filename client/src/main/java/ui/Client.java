@@ -494,6 +494,7 @@ public class Client implements ServerMessageObserver {
     }
 
     private void loadGame(GameData game) {
+        currentGame = game;
         Board board = new Board(game.game());
         board.drawBoard(playerColor);
     }
