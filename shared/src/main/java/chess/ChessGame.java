@@ -98,7 +98,8 @@ public class ChessGame {
             String message = "Illegal Move";
             if (gameOver) {
                 message = "The game is over.";
-            } else if (chessboard.getPiece(move.getStartPosition()).getTeamColor() != teamTurn){
+            } else if (chessboard.pieceFound(move.getStartPosition()) &&
+                    chessboard.getPiece(move.getStartPosition()).getTeamColor() != teamTurn){
                 message = "It is not your turn.";
             }
             throw new InvalidMoveException(message);

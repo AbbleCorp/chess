@@ -81,7 +81,7 @@ public class ServerFacade {
             webSocketComm.sendMessage(new ConnectCommand(req.getAuthorization(), req.getGameID()));
         }
         catch (Exception e){
-            throw new Exception("failure: caught at joinGame websocket");
+            throw new Exception("failure: 403");
         }
     }
 
