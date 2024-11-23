@@ -65,7 +65,7 @@ public class ServerFacade {
         }
     }
 
-    public void joinGame(JoinGameRequest req, ConnectCommand.JoinType joinType) throws Exception {
+    public void joinGame(JoinGameRequest req) throws Exception {
         try {
             clientComm.makeRequestWithBoth("PUT", "/game", req, req.getAuthorization(), JoinGameResult.class);
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class ServerFacade {
             }
         }
         try {
-            webSocketComm.sendMessage(new ConnectCommand(req.getAuthorization(), req.getGameID(), joinType));
+            webSocketComm.sendMessage(new ConnectCommand(req.getAuthorization(), req.getGameID()));
         }
         catch (Exception e){
             throw new Exception("failure: caught at joinGame websocket");
@@ -93,8 +93,8 @@ public class ServerFacade {
         webSocketComm.sendMessage(new ResignCommand(authToken,gameId));
     }
 
-    public void observe(String authToken, int gameId, ConnectCommand.JoinType joinType) throws Exception {
-        webSocketComm.sendMessage(new ConnectCommand(authToken, gameId, joinType));
+    public void observe(String authToken, int gameId) throws Exception {
+        webSocketComm.sendMessage(new ConnectCommand(authToken, gameId));
     }
 
     public void makeMove(String authToken, int gameId, ChessMove move) throws Exception {

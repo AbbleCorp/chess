@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import static websocket.commands.ConnectCommand.JoinType.OBSERVER;
-import static websocket.commands.ConnectCommand.JoinType.PLAYER;
 
 public class Client implements ServerMessageObserver {
     private String authToken;
@@ -26,7 +24,6 @@ public class Client implements ServerMessageObserver {
     private final Map<Integer, GameData> gameList = new HashMap<>();
     private String playerColor;
     private GameData currentGame;
-    ConnectCommand.JoinType joinType = null;
 
     public Client() throws ResponseException, DeploymentException, URISyntaxException, IOException {
         serverFacade = new ServerFacade(this);
@@ -220,8 +217,7 @@ public class Client implements ServerMessageObserver {
             postLoginMenu();
         }
         try {
-            serverFacade.joinGame(new JoinGameRequest(authToken, playerColor, gameId), PLAYER);
-            joinType = PLAYER;
+            serverFacade.joinGame(new JoinGameRequest(authToken, playerColor, gameId));
             currentGame = gameList.get(gameId);
             System.out.println("You have joined " + gameList.get(gameId).gameName() + " as " + playerColor + ".");
             this.playerColor = playerColor;
@@ -248,8 +244,7 @@ public class Client implements ServerMessageObserver {
         System.out.println("You are now observing " + gameList.get(gameId).gameName() + ".");
         playerColor = "WHITE";
         try {
-        serverFacade.observe(authToken,gameId,OBSERVER);
-        joinType = OBSERVER;
+        serverFacade.observe(authToken,gameId);
         }
         catch (Exception e){
             displayError("Error caught Client.observeGame");
@@ -391,10 +386,6 @@ public class Client implements ServerMessageObserver {
     }
 
     private void makeMove() {
-        if (joinType == OBSERVER) {
-            displayError("Observers cannot move pieces.");
-            gamePlayMenu();
-        }
         System.out.print("Enter coordinates of the piece you would like to move (e.g. a2): ");
         Scanner scanner = new Scanner(System.in);
         String startPosString = scanner.next();
@@ -452,7 +443,6 @@ public class Client implements ServerMessageObserver {
     private void leaveGame() {
         try {
         serverFacade.leave(authToken,currentGame.gameID());
-        joinType = null;
         postLoginMenu(); }
         catch (Exception e) {
             displayError("Threw error in Client.leaveGame");

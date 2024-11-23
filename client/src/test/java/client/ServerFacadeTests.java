@@ -6,6 +6,9 @@ import model.*;
 import network.ServerFacade;
 import org.junit.jupiter.api.*;
 import server.Server;
+import websocket.commands.ConnectCommand;
+
+
 
 
 public class ServerFacadeTests {

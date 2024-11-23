@@ -106,15 +106,24 @@ public class WebSocketServer {
     }
 
 
+    private boolean isPlayer(int gameId, String username) throws DataAccessException {
+        GameData game = gameDAO.getGame(gameId);
+        boolean isPlayer = false;
+        if (username.equals(game.whiteUsername()) || username.equals(game.blackUsername())) {
+            isPlayer = true;
+        }
+        return isPlayer;
+    }
+
 
     private void connect(int gameId, String username, Session session, ConnectCommand command) throws IOException, DataAccessException {
         try {
             addToOpenGames(gameId, session);
             String message = null;
-            if (command.getJoinType() == ConnectCommand.JoinType.PLAYER) {
+            if (isPlayer(gameId,username)) {
             String playerColor = getPlayerColor(gameId, username);
             message = String.format("%s has joined the game as %s.", username, playerColor); }
-            else if (command.getJoinType() == ConnectCommand.JoinType.OBSERVER) {
+            else  {
                 message = String.format("%s is observing the game.",username);
             }
             var notification = new NotificationMessage(message);
@@ -207,21 +216,27 @@ public class WebSocketServer {
         ChessGame game = gameData.game();
         Collection<ChessMove> validMoves = game.validMoves(move.getStartPosition());
         ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
-        if (validMoves.contains(move)) {
-            game.makeMove(move);
-        } else {
-            throw new InvalidMoveException("Error: Invalid Move");
-        }
-        GameData newGameData = new GameData(command.getGameID(),gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
-        gameDAO.updateGame(command.getGameID(), newGameData);
-        LoadGameMessage loadGame = new LoadGameMessage(newGameData);
-        broadcastAll(command.getGameID(), loadGame);
-        String message = makeMoveString(username,move,piece);
-        NotificationMessage notif = new NotificationMessage(message);
-        broadcastToOthers(command.getGameID(),notif, session);
-        String statusMessage = gameStatusMessage(newGameData,username);
+        if (isPlayer(command.getGameID(),username) && turnColorMatches(gameData, game.getBoard().getPiece(move.getStartPosition()),username)) {
+            if (validMoves.contains(move)) {
+                game.makeMove(move);
+            } else {
+                throw new InvalidMoveException("Error: Invalid Move");
+            }
+            GameData newGameData = new GameData(command.getGameID(),gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            gameDAO.updateGame(command.getGameID(), newGameData);
+            LoadGameMessage loadGame = new LoadGameMessage(newGameData);
+            broadcastAll(command.getGameID(), loadGame);
+            String message = makeMoveString(username,move,piece);
+            NotificationMessage notif = new NotificationMessage(message);
+            broadcastToOthers(command.getGameID(),notif, session);
+            String statusMessage = gameStatusMessage(newGameData,username);
         if (statusMessage != null) {
             broadcastAll(command.getGameID(), new NotificationMessage(statusMessage));
+        } } else {
+            String message = null;
+            if (!isPlayer(command.getGameID(),username)) { message = "Observers cannot move pieces."; }
+            else if (!turnColorMatches(gameData,game.getBoard().getPiece(move.getStartPosition()),username)) {message = "It is not your turn."; }
+            session.getRemote().sendString(serializer.toJson(new ErrorMessage(message)));
         }
     }
 
