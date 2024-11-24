@@ -339,7 +339,7 @@ public class Client implements ServerMessageObserver {
             case ("6") -> helpGamePlay();
             case null, default -> {
                 System.out.println("Please enter a valid menu option.");
-                postLoginMenu();
+                gamePlayMenu();
             }
         }
     }

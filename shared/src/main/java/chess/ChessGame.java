@@ -166,7 +166,6 @@ public class ChessGame {
         //if empty, and isInCheck is true, then return true
         boolean hasMoves = teamHasMoves(teamColor);
         boolean checkmate = isInCheck(teamColor) && !hasMoves;
-        if (checkmate) {gameOver = true;}
         return checkmate;
     }
 
@@ -198,7 +197,6 @@ public class ChessGame {
         //check for valid moves
         boolean hasMoves = teamHasMoves(teamColor);
         boolean stalemate = !isInCheck(teamColor) && !hasMoves;
-        if (stalemate) {gameOver = true;}
         return stalemate;
         //if not in check and validMoves returns empty
     }

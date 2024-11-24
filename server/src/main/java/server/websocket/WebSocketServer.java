@@ -207,12 +207,14 @@ public class WebSocketServer {
             otherTeamColor = WHITE;}
         if (game.isInStalemate(otherTeamColor)) {
             statusMessage = "The game is at a stalemate.";
-            gameData.game().setGameOver(true);
-            gameDAO.updateGame(gameData.gameID(), gameData);
+            game.setGameOver(true);
+            GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            gameDAO.updateGame(gameData.gameID(), newGameData);
         } else if (game.isInCheckmate(otherTeamColor)) {
             statusMessage = String.format("%s is in checkmate.",otherUser);
-            gameData.game().setGameOver(true);
-            gameDAO.updateGame(gameData.gameID(), gameData);
+            game.setGameOver(true);
+            GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            gameDAO.updateGame(gameData.gameID(), newGameData);
         } else if (game.isInCheck(otherTeamColor)) {
             statusMessage = String.format("%s is in check.",otherUser); }
         return statusMessage;
@@ -238,10 +240,10 @@ public class WebSocketServer {
             broadcastAll(command.getGameID(), new NotificationMessage(statusMessage));
         } } else {
             String message = null;
-            if (isInCheckmateOrStalemate(game)) {message = "The game is already over.";}
-            else if (validMoves == null || !validMoves.contains(move)) {message = "Invalid move.";}
-            else if (!isPlayer(command.getGameID(),username)) { message = "Observers cannot move pieces."; }
-            else if (!turnColorMatches(gameData,game.getBoard().getPiece(move.getStartPosition()),username)) {message = "It is not your turn."; }
+            if (isInCheckmateOrStalemate(game)) {message = "Error: The game is already over.";}
+            else if (validMoves == null || !validMoves.contains(move)) {message = "Error: Invalid move.";}
+            else if (!isPlayer(command.getGameID(),username)) { message = "Error: Observers cannot move pieces."; }
+            else if (!turnColorMatches(gameData,game.getBoard().getPiece(move.getStartPosition()),username)) {message = "Error: It is not your turn."; }
             session.getRemote().sendString(serializer.toJson(new ErrorMessage(message)));
         }}
 
@@ -271,7 +273,7 @@ public class WebSocketServer {
                 String message = "Error: ";
                 if (!validPlayer(gameData,username)) {message += "Observers cannot resign from the game.";}
                 else if (game.isGameOver()) {message += "The game has already ended.";}
-                throw new Exception(message);
+                session.getRemote().sendString(serializer.toJson(new ErrorMessage(message)));
             }
         }
         catch (Exception e){
