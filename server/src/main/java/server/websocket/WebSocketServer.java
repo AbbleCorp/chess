@@ -53,7 +53,7 @@ public class WebSocketServer {
             String username = authDAO.getUsername(command.getAuthToken());
             if (username != null) {
             switch (command.getCommandType()) {
-                case CONNECT -> connect(command.getGameID(),username, session, (ConnectCommand) command);
+                case CONNECT -> connect(command.getGameID(),username, session);
                 case LEAVE -> leave(command.getGameID(), username,session);
                 case MAKE_MOVE -> makeMove((MakeMoveCommand) command, username, session);
                 case RESIGN -> resign(command.getGameID(),username,session);
@@ -116,7 +116,7 @@ public class WebSocketServer {
     }
 
 
-    private void connect(int gameId, String username, Session session, ConnectCommand command) throws IOException, DataAccessException {
+    private void connect(int gameId, String username, Session session) throws DataAccessException {
         try {
             addToOpenGames(gameId, session);
             String message = null;
@@ -150,7 +150,8 @@ public class WebSocketServer {
             newGame = new GameData(gameId, game.whiteUsername(), null,game.gameName(),game.game());
             gameDAO.updateGame(gameId, newGame);
         }
-        NotificationMessage notification = new NotificationMessage(String.format("%s has left %s.",username,game.gameName()));
+        NotificationMessage notification = new NotificationMessage(String.format("%s has left %s.",
+                username,game.gameName()));
         broadcastToOthers(gameId,notification,session);
         openGames.get(gameId).remove(session);
         }
@@ -178,7 +179,8 @@ public class WebSocketServer {
         String pieceType = piece.getPieceType().toString();
         String startPos = moveToString(move.getStartPosition());
         String endPos = moveToString(move.getEndPosition());
-        return String.format("%s has moved their %s from %s to %s.", username, pieceType.toLowerCase(), startPos,endPos);
+        return String.format("%s has moved their %s from %s to %s.",
+                username, pieceType.toLowerCase(), startPos,endPos);
     }
 
     private boolean turnColorMatches(GameData gameData, ChessPiece piece, String username) throws DataAccessException {
@@ -208,27 +210,33 @@ public class WebSocketServer {
         if (game.isInStalemate(otherTeamColor)) {
             statusMessage = "The game is at a stalemate.";
             game.setGameOver(true);
-            GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
+                    gameData.gameName(), game);
             gameDAO.updateGame(gameData.gameID(), newGameData);
         } else if (game.isInCheckmate(otherTeamColor)) {
             statusMessage = String.format("%s is in checkmate.",otherUser);
             game.setGameOver(true);
-            GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            GameData newGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(),
+                    gameData.gameName(), game);
             gameDAO.updateGame(gameData.gameID(), newGameData);
         } else if (game.isInCheck(otherTeamColor)) {
             statusMessage = String.format("%s is in check.",otherUser); }
         return statusMessage;
     }
 
-    private void makeMove(MakeMoveCommand command, String username, Session session) throws DataAccessException, InvalidMoveException, IOException {
+    private void makeMove(MakeMoveCommand command, String username, Session session) throws DataAccessException,
+            InvalidMoveException, IOException {
         ChessMove move = command.getMove();
         GameData gameData = gameDAO.getGame(command.getGameID());
         ChessGame game = gameData.game();
         Collection<ChessMove> validMoves = game.validMoves(move.getStartPosition());
         ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
-        if (validMoves != null && validMoves.contains(move) && isPlayer(command.getGameID(),username) && turnColorMatches(gameData, game.getBoard().getPiece(move.getStartPosition()),username)) {
+        if (validMoves != null && validMoves.contains(move) &&
+                isPlayer(command.getGameID(),username)
+                && turnColorMatches(gameData, game.getBoard().getPiece(move.getStartPosition()),username)) {
             game.makeMove(move);
-            GameData newGameData = new GameData(command.getGameID(),gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            GameData newGameData = new GameData(command.getGameID(),gameData.whiteUsername(),
+                    gameData.blackUsername(), gameData.gameName(), game);
             gameDAO.updateGame(command.getGameID(), newGameData);
             LoadGameMessage loadGame = new LoadGameMessage(newGameData);
             broadcastAll(command.getGameID(), loadGame);
@@ -243,7 +251,8 @@ public class WebSocketServer {
             if (isInCheckmateOrStalemate(game)) {message = "Error: The game is already over.";}
             else if (validMoves == null || !validMoves.contains(move)) {message = "Error: Invalid move.";}
             else if (!isPlayer(command.getGameID(),username)) { message = "Error: Observers cannot move pieces."; }
-            else if (!turnColorMatches(gameData,game.getBoard().getPiece(move.getStartPosition()),username)) {message = "Error: It is not your turn."; }
+            else if (!turnColorMatches(gameData,game.getBoard().getPiece(move.getStartPosition()),username))
+                    {message = "Error: It is not your turn."; }
             session.getRemote().sendString(serializer.toJson(new ErrorMessage(message)));
         }}
 
@@ -265,7 +274,8 @@ public class WebSocketServer {
         try {
             if (validPlayer(gameData,username) && !game.isGameOver()) {
                 game.setGameOver(true);
-        GameData newGameData = new GameData(gameId,gameData.whiteUsername(),gameData.blackUsername(), gameData.gameName(), game);
+        GameData newGameData = new GameData(gameId,gameData.whiteUsername(),gameData.blackUsername(),
+                gameData.gameName(), game);
         gameDAO.updateGame(gameId,newGameData);
         NotificationMessage notif = new NotificationMessage(String.format("%s has resigned.",username));
         broadcastAll(gameId,notif);

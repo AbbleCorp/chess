@@ -13,9 +13,9 @@ public class ServerFacade {
     private HttpCommunicator clientComm;
     private WebSocketCommunicator webSocketComm;
 
-    public ServerFacade(ServerMessageObserver SMO) throws ResponseException, DeploymentException, URISyntaxException, IOException {
+    public ServerFacade(ServerMessageObserver messageObserver) throws ResponseException, DeploymentException, URISyntaxException, IOException {
         clientComm = new HttpCommunicator("http://localhost:8080");
-        webSocketComm = new WebSocketCommunicator(SMO);
+        webSocketComm = new WebSocketCommunicator(messageObserver);
     }
 
     public ServerFacade(int port) {

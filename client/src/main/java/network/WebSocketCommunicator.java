@@ -9,7 +9,6 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
-import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -17,12 +16,12 @@ import java.net.URISyntaxException;
 
 //this one opens the connection, handles server messages
 public class WebSocketCommunicator extends Endpoint {
-    private ServerMessageObserver SMO;
+    private ServerMessageObserver messageObserver;
     private Gson serializer;
     public Session session;
 
-    public WebSocketCommunicator(ServerMessageObserver SMO) throws ResponseException, URISyntaxException, DeploymentException, IOException {
-        this.SMO = SMO;
+    public WebSocketCommunicator(ServerMessageObserver messageObserver) throws ResponseException, URISyntaxException, DeploymentException, IOException {
+        this.messageObserver = messageObserver;
         gsonSetup();
         URI uri = new URI("ws://localhost:8080/ws");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -33,10 +32,10 @@ public class WebSocketCommunicator extends Endpoint {
             public void onMessage(String message) {
                 try {
                     ServerMessage serverMessage = serializer.fromJson(message, ServerMessage.class);
-                    SMO.notify(serverMessage);
+                    messageObserver.notify(serverMessage);
                 }
                 catch (Exception e) {
-                    SMO.notify(new ErrorMessage(e.getMessage()));
+                    messageObserver.notify(new ErrorMessage(e.getMessage()));
                 }
             }
         });

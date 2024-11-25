@@ -1,22 +1,17 @@
 package ui;
-
 import static ui.EscapeSequences.*;
-
 import chess.*;
 import model.*;
 import network.ResponseException;
 import network.ServerFacade;
-import websocket.commands.ConnectCommand;
 import websocket.messages.*;
 import websocket.messages.ErrorMessage;
-
 import javax.websocket.DeploymentException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 
 public class Client implements ServerMessageObserver {
     private String authToken;
@@ -49,7 +44,6 @@ public class Client implements ServerMessageObserver {
         }
     }
 
-
     private void login() {
         System.out.print("Username: ");
         Scanner scanner = new Scanner(System.in);
@@ -77,7 +71,6 @@ public class Client implements ServerMessageObserver {
         }
         preLoginMenu();
     }
-
 
     private void register() {
         System.out.print("Username: ");
@@ -165,7 +158,6 @@ public class Client implements ServerMessageObserver {
         }
     }
 
-
     private void validGame(Integer gameId) {
         if (gameId == null) {
             System.out.println("Please enter a valid game number");
@@ -234,7 +226,6 @@ public class Client implements ServerMessageObserver {
         }
     }
 
-
     private void observeGame() {
         System.out.print("Enter the number of the game you would like to observe: ");
         Scanner scanner = new Scanner(System.in);
@@ -293,7 +284,6 @@ public class Client implements ServerMessageObserver {
         System.out.println("Black Player: " + black);
     }
 
-
     private void logout() {
         try {
             serverFacade.logout(new LogoutRequest(authToken));
@@ -307,7 +297,6 @@ public class Client implements ServerMessageObserver {
             }
         }
     }
-
 
     private void helpPostLogin() {
         String[] info = {"1 - Create Game: Create a new chess game.", "2 - Play Game: Join an existing chess game.",
@@ -508,6 +497,4 @@ public class Client implements ServerMessageObserver {
         }
 
     }
-
-
 }
