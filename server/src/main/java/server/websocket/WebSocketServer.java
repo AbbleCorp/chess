@@ -7,7 +7,6 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import websocket.messages.ErrorMessage;
 import model.GameData;
-import model.UserData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.*;
@@ -30,7 +29,7 @@ public class WebSocketServer {
     private static Gson serializer;
     private final GameDAO gameDAO;
     private final AuthDAO authDAO;
-    private Map<Integer, List<Session>> openGames = new HashMap<>();
+    private final Map<Integer, List<Session>> openGames = new HashMap<>();
 
 
     public WebSocketServer(GameDAO gameDAO, AuthDAO authDAO) {
@@ -108,18 +107,14 @@ public class WebSocketServer {
 
     private boolean isPlayer(int gameId, String username) throws DataAccessException {
         GameData game = gameDAO.getGame(gameId);
-        boolean isPlayer = false;
-        if (username.equals(game.whiteUsername()) || username.equals(game.blackUsername())) {
-            isPlayer = true;
-        }
-        return isPlayer;
+        return username.equals(game.whiteUsername()) || username.equals(game.blackUsername());
     }
 
 
     private void connect(int gameId, String username, Session session) throws DataAccessException {
         try {
             addToOpenGames(gameId, session);
-            String message = null;
+            String message;
             if (isPlayer(gameId,username)) {
             String playerColor = getPlayerColor(gameId, username);
             message = String.format("%s has joined the game as %s.", username, playerColor); }
@@ -139,10 +134,10 @@ public class WebSocketServer {
     }
 
 
-    private void leave(int gameId, String username, Session session) throws DataAccessException, IOException {
+    private void leave(int gameId, String username, Session session) throws DataAccessException {
         try {
         GameData game = gameDAO.getGame(gameId);
-        GameData newGame = null;
+        GameData newGame;
         if (username.equals(game.whiteUsername())) {
             newGame = new GameData(gameId,null,game.blackUsername(),game.gameName(),game.game());
             gameDAO.updateGame(gameId, newGame);

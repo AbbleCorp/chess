@@ -20,7 +20,8 @@ public class WebSocketCommunicator extends Endpoint {
     private Gson serializer;
     public Session session;
 
-    public WebSocketCommunicator(ServerMessageObserver messageObserver) throws ResponseException, URISyntaxException, DeploymentException, IOException {
+    public WebSocketCommunicator(ServerMessageObserver messageObserver) throws ResponseException,
+            URISyntaxException, DeploymentException, IOException {
         this.messageObserver = messageObserver;
         gsonSetup();
         URI uri = new URI("ws://localhost:8080/ws");
